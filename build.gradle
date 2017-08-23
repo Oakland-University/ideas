@@ -45,7 +45,7 @@ configurations {
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-cache')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	runtime('org.postgresql:postgresql')
+	compile('org.postgresql:postgresql')
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	providedRuntime('org.apache.tomcat.embed:tomcat-embed-jasper')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
@@ -55,4 +55,6 @@ dependencies {
 	compile("io.jsonwebtoken:jjwt:0.6.0")
 	compileOnly('org.projectlombok:lombok')
 	compile("org.apache.commons:commons-lang3:3.4")
+	compile("org.springframework:spring-jdbc")
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 }
