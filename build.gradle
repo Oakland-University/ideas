@@ -20,9 +20,30 @@ plugins {
     id "net.linguica.maven-settings" version "0.5" 
 }
 
+node {
+  // Version of node to use.
+  version = '8.1.3'
+  // Base URL for fetching node distributions (change if you have a mirror).
+  distBaseUrl = 'https://nodejs.org/dist'
+  // If true, it will download node using above parameters.
+  // If false, it will try to use globally installed node.
+  download = true
+  // Set the work directory for unpacking node
+  workDir = file("${project.buildDir}/nodejs")
+  // Set the work directory where node_modules should be located
+
+  // Set the work directory for Yarn
+  yarnWorkDir = file("${project.buildDir}/yarn")
+
+  nodeModulesDir = file("src/main/react")
+}
+
+
+
 apply plugin: 'java'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'com.moowork.node'
 apply plugin: 'war'
 
 war {
@@ -40,6 +61,27 @@ repositories {
 
 configurations {
 	providedRuntime
+}
+
+task runBuild(type: YarnTask) {
+  args = ['run', 'build']
+}
+
+task copyTask(type: Copy) {
+  from 'src/main/react/build/static/'
+  into 'src/main/webapp/'
+}
+
+clean.doFirst{
+  delete 'src/main/webapp/js'
+}
+
+clean.finalizedBy(yarn_install)
+yarn_install.finalizedBy(runBuild)
+runBuild.finalizedBy(copyTask)
+
+war {
+  archiveName project.name + '.war'
 }
 
 dependencies {
