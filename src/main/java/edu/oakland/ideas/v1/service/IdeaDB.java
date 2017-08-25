@@ -37,11 +37,32 @@ public class IdeaDB implements IIdeaDB {
     System.out.println("Hello world");
   }
 
+
   public List<Idea> getIdeaList(int ideaNumber){
 
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if ( rowNum < ideaNumber ){
         return new Idea(rs.getString("title"), rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"), rs.getInt("category"));
+      }else{
+        return null;
+      }
+    };
+
+    List<Idea> stuff = jdbcTemplate.query("SELECT * from idea_post where category=1;", rowMapper);
+    return stuff;
+
+  }
+
+
+  public List<Idea> getIdeaList(int ideaNumber, int category){
+
+    RowMapper<Idea> rowMapper = (rs, rowNum) -> {
+      if (rs.getInt("category") == category){
+        if ( rowNum < ideaNumber ){
+          return new Idea(rs.getString("title"), rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"), rs.getInt("category"));
+        }else{
+          return null;
+        }
       }else{
         return null;
       }
