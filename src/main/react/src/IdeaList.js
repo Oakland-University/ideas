@@ -40,9 +40,10 @@ class IdeaList extends Component {
 
   generateList = () => {
     let iArray = []
+    let index = 0
     for (let idea of this.state.listItems) {
       iArray.push(
-        <ListItem style={{ paddingTop: 0, paddingBottom: 0 }}>
+        <ListItem style={{ paddingTop: 0, paddingBottom: 0 }} key={index++}>
           <Card style={{ display: "flex" }}>
             <div>
               <CardHeader
