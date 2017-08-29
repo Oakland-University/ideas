@@ -42,7 +42,7 @@ public class IdeaDB implements IIdeaDB {
 
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if ( rowNum < ideaNumber ){
-        return new Idea(rs.getString("title"), rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"), rs.getInt("category"));
+        return new Idea(rs.getString("title"), rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"), rs.getString("category"));
       }else{
         return null;
       }
@@ -54,12 +54,12 @@ public class IdeaDB implements IIdeaDB {
   }
 
 
-  public List<Idea> getIdeaList(int ideaNumber, int category){
+  public List<Idea> getIdeaList(int ideaNumber, String category){
 
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
-      if (rs.getInt("category") == category){
+      if (rs.getString("category").equals(category)){
         if ( rowNum < ideaNumber ){
-          return new Idea(rs.getString("title"), rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"), rs.getInt("category"));
+          return new Idea(rs.getString("title"), rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"), rs.getString("category"));
         }else{
           return null;
         }
@@ -71,6 +71,17 @@ public class IdeaDB implements IIdeaDB {
     List<Idea> stuff = jdbcTemplate.query("SELECT * from idea_post where category=1;", rowMapper);
     return stuff;
 
+  }
+
+
+  public void addIdea(Idea idea){
+    jdbcTemplate.update("insert into idea_post (title, description, created_by, created_at, category) values (?, ?, ?, ?, (select category_id from idea_categories where category='test'))", 
+        idea.getTitle(), idea.getDescription(), idea.getCreatedBy(), idea.getCreatedAt());
+  }
+
+  public int getCategoryInt(String cat){
+    int thing = jdbcTemplate.queryForObject("SELECT id from idea_category where name like ?", new Object[] { cat }, Integer.class);   
+    return thing;
   }
 }
 

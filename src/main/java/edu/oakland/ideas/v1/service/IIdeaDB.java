@@ -9,5 +9,9 @@ public interface IIdeaDB {
   public void getIdea();
 
   public List<Idea> getIdeaList(int ideaNumber);
+
+  public void addIdea(Idea idea);
+
+  public int getCategoryInt(String category);
 }
 

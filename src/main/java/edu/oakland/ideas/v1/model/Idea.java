@@ -17,17 +17,21 @@ public class Idea {
     private Timestamp startVoteDate;
     private Timestamp endVoteDate;
     private int voteCount;
-    private int category;
+    private String category;
 
-    public Idea(){
-    }
+    public Idea(){}
 
-    public Idea(String title, String description, String createdBy, Timestamp createdAt, int category){
+    public Idea(String title, String description, String createdBy, Timestamp createdAt, String category){
       this.title = title;
       this.description = description;
       this.createdBy = createdBy;
       this.createdAt = createdAt;
       this.category = category;
+      this.approved = false;
     }
 
+    public String toString(){
+      String bob = title + "\n" + description + "\n" + createdAt.toString();
+      return bob;
+    }
 }
