@@ -26,13 +26,14 @@ class IdeaList extends Component {
 
   componentDidMount() {
     getList({
+      token: this.props.token,
       url: this.props.url,
       credentialsNeeded: false
     }).then(ideas => {
       this.setState({
-        category: ideas.category,
-        amount: ideas.amount,
-        listItems: ideas.listItems,
+        category: "blob",
+        amount: 5,
+        listItems: ideas,
         loading: false
       })
     })
@@ -43,22 +44,21 @@ class IdeaList extends Component {
     let index = 0
     for (let idea of this.state.listItems) {
       iArray.push(
-        <ListItem style={{ paddingTop: 0, paddingBottom: 0 }} key={index++}>
+        <ListItem
+          style={{ paddingTop: 0, paddingBottom: 0, width: "100%" }}
+          key={index++}
+        >
           <Card style={{ display: "flex" }}>
             <div>
               <CardHeader
                 avatar={
-                  <Avatar aria-label={idea.category}>
-                    {idea.avatar}
-                  </Avatar>
+                  <Avatar aria-label={idea.category}>{idea.avatar}</Avatar>
                 }
                 title={idea.title}
                 subheader="September 14, 2016"
               />
               <CardContent>
-                <Typography component="p">
-                  {idea.description}
-                </Typography>
+                <Typography component="p">{idea.description}</Typography>
               </CardContent>
             </div>
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -96,11 +96,7 @@ class IdeaList extends Component {
     } else if (Object.is(this.state.listItems, null)) {
       return <div>Error state</div>
     }
-    return (
-      <List>
-        {this.generateList()}
-      </List>
-    )
+    return <List>{this.generateList()}</List>
   }
 }
 

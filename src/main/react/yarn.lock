@@ -3704,6 +3704,10 @@ istanbul-reports@^1.1.1:
   dependencies:
     handlebars "^4.0.3"
 
+iterators-polyfill@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/iterators-polyfill/-/iterators-polyfill-1.0.2.tgz#23b415256bd023d236c39ad7c7ea3a4862184c4a"
+
 jest-changed-files@^20.0.3:
   version "20.0.3"
   resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-20.0.3.tgz#9394d5cc65c438406149bef1bf4d52b68e03e3f8"
@@ -6714,6 +6718,10 @@ type-is@~1.6.15:
 typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
+
+typeface-arimo@^0.0.35:
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/typeface-arimo/-/typeface-arimo-0.0.35.tgz#4bffdf46785924fef712deb1f8754916bf2e0639"
 
 ua-parser-js@^0.7.9:
   version "0.7.14"
