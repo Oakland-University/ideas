@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "iterators-polyfill": "^1.0.2",
     "material-ui": "next",
     "material-ui-icons": "^1.0.0-alpha.19",
     "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "react-dom": "^15.6.1",
+    "typeface-arimo": "^0.0.35"
   },
   "devDependencies": {
     "react-scripts": "1.0.10"
