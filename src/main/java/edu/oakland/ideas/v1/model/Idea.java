@@ -18,6 +18,7 @@ public class Idea {
     private Timestamp endVoteDate;
     private int voteCount;
     private String category;
+    private String avatar;
 
     public Idea(){}
 
@@ -28,6 +29,7 @@ public class Idea {
       this.createdAt = createdAt;
       this.category = category;
       this.approved = false;
+      this.avatar = category.toUpperCase().substring(0,1);
     }
 
     public String toString(){

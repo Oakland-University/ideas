@@ -48,7 +48,7 @@ public class IdeaDB implements IIdeaDB {
       }
     };
 
-    List<Idea> stuff = jdbcTemplate.query("SELECT * from idea_post where category=1;", rowMapper);
+    List<Idea> stuff = jdbcTemplate.query("SELECT * from idea_post where category=1 limit ?;", rowMapper, ideaNumber);
     return stuff;
 
   }
