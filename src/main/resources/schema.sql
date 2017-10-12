@@ -42,3 +42,13 @@ CREATE TABLE if not exists idea_vote
 );
 
 
+CREATE OR REPLACE FUNCTION submit_vote(in p_idea integer, in p_pidm text, in p_stuff SMALLINT) RETURNS VOID AS '
+    BEGIN
+        if exists (select 1 from idea_vote where idea_id = p_idea and pidm = p_pidm) then
+            update idea_vote set vote_value = p_stuff where idea_id = p_idea and pidm = p_pidm;
+        else
+            insert into idea_vote (idea_id, pidm, vote_value, voted_at) values (p_idea, p_pidm, p_stuff, now());
+        end if;
+    END
+' LANGUAGE plpgsql
+;
