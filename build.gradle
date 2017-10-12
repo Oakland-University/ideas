@@ -84,6 +84,20 @@ war {
   archiveName project.name + '.war'
 }
 
+processResources {
+
+    filesMatching('**/application.properties') {
+		def props = new Properties()
+
+		file(System.getProperty("filters")).withInputStream {
+			props.load(it)
+		}
+
+		filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: props)
+    }
+}
+
+
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-cache')
 	compile('org.springframework.boot:spring-boot-starter-web')
