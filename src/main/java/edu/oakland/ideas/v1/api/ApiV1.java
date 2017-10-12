@@ -7,34 +7,41 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import edu.oakland.jwtservice.JwtService;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import edu.oakland.jwtservice.IJwtService;
+import java.time.Instant;
 import io.jsonwebtoken.Claims;
 
 import edu.oakland.ideas.v1.model.Idea;
+import edu.oakland.ideas.v1.model.Vote;
 import edu.oakland.ideas.v1.service.*;
 import java.util.List;
 import java.sql.Timestamp;
 
 import javax.servlet.http.HttpServletRequest;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
 public class ApiV1 {
 
     @Autowired IIdeaDB ideaDB;
 
+    @Autowired IJwtService jwtService;
+
     @RequestMapping("/getList")
-    public List<Idea> idea(@RequestParam(value = "i", required = false, defaultValue = "5") int i) {
+    public List<Idea> idea(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request) {
+      Claims claims = jwtService.decrypt(request);
+      String pidm = (String) claims.get("pidm");
 
       if (i < 1) {
-        return ideaDB.getIdeaList(5);
+        return ideaDB.getIdeaList(5, pidm);
       }
-      return ideaDB.getIdeaList(i); 
+      return ideaDB.getIdeaList(i, pidm); 
     }
 
     @PostMapping("/submitIdea")
     public void putIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
-      JwtService jwtService = new JwtService();
       Claims claims = jwtService.decrypt(request);
       System.out.println("\n\nCreating new idea:");
       idea.setCreatedAt(new Timestamp(System.currentTimeMillis()));
@@ -43,4 +50,19 @@ public class ApiV1 {
       ideaDB.addIdea(idea);
     }
     
+    @CrossOrigin
+    @PostMapping("/submitVote")
+    public void submitVote(@ModelAttribute Vote vote, String time, HttpServletRequest request){
+      if (vote.getVoteValue() > 1){
+        vote.setVoteValue(1);
+      }else if (vote.getVoteValue() < -1 ){
+        vote.setVoteValue(-1);
+      }
+      Claims claims = jwtService.decrypt(request);      
+      vote.setVotedAt(new Timestamp(System.currentTimeMillis()));
+      vote.setUserPidm((String)claims.get("pidm"));
+      System.out.println(vote.toString());
+      ideaDB.submitVote(vote);
+    }
+
 }
