@@ -49,6 +49,7 @@ CREATE OR REPLACE FUNCTION submit_vote(in p_idea integer, in p_pidm text, in p_s
         else
             insert into idea_vote (idea_id, pidm, vote_value, voted_at) values (p_idea, p_pidm, p_stuff, now());
         end if;
+        update idea_post set vote_count = (select sum(vote_value) from idea_vote where idea_id = p_idea) where idea_id = p_idea;
     END
 ' LANGUAGE plpgsql
 ;
