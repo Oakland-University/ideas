@@ -68,6 +68,37 @@ export const submitIdea = async (title, desc, cat, token) => {
       method: "POST"
     })
     let blob = await response.json()
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export const submitVote = async (ideaID, createdAt, voteValue, token) => {
+  console.log("Submitting Idea")
+  //const d = new Date().toISOString()
+  try {
+    let response
+    let data = {
+      ideaID: ideaID,
+      voteValue: voteValue,
+      time: createdAt
+    }
+
+    const formBody = Object.keys(data)
+      .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+      .join("&")
+
+    response = await fetch("http://localhost:8080/ideas/api/v1/submitVote", {
+      body: formBody,
+      credentials: "include",
+      headers: {
+        Authorization: "Bearer " + token,
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      method: "POST"
+    })
+    let blob = await response.json()
     console.log(blob)
   } catch (err) {
     console.log(err)

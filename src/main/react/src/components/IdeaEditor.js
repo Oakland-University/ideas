@@ -34,6 +34,9 @@ class IdeaEditor extends Component {
   }
 
   generateForm = () => {
+    if (this.state.title === "" || this.state.description == "") {
+      alert("Gotta put stuff in places")
+    }
     for (let word of badWords) {
       if (
         this.state.title.includes(word) ||
@@ -57,14 +60,14 @@ class IdeaEditor extends Component {
       <Dialog
         fullScreen
         open={this.props.open}
-        onRequestClose={this.handleRequestClose}
+        onRequestClose={this.props.handleClose}
         transition={<Slide direction="up" />}
       >
         <AppBar position="relative">
           <Toolbar>
             <IconButton
               color="contrast"
-              onClick={this.handleRequestClose}
+              onClick={this.props.handleClose}
               aria-label="Close"
               style={{ marginRight: 24 }}
             >
@@ -73,7 +76,7 @@ class IdeaEditor extends Component {
             <Typography type="title" color="inherit" style={{ flex: 1 }}>
               Compose
             </Typography>
-            <Button color="contrast" onClick={this.handleRequestClose}>
+            <Button color="contrast" onClick={this.props.handleClose}>
               Submit{" "}
             </Button>
           </Toolbar>
@@ -165,3 +168,5 @@ class IdeaEditor extends Component {
     )
   }
 }
+
+export default IdeaEditor

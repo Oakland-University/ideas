@@ -14,14 +14,15 @@ import Typography from "material-ui/Typography"
 import ArrowDropUp from "material-ui-icons/ArrowDropUp"
 import ArrowDropDown from "material-ui-icons/ArrowDropDown"
 import IconButton from "material-ui/IconButton"
-import { getList } from "./api/api.js"
+import { getList, submitVote } from "./api/api.js"
 
 class IdeaList extends Component {
   state = {
     loading: true,
     category: "loading",
     listItems: "loading",
-    amount: "loading"
+    amount: "loading",
+    createdAt: "loading"
   }
 
   componentDidMount() {
@@ -42,50 +43,10 @@ class IdeaList extends Component {
   generateList = () => {
     let iArray = []
     let index = 0
-    for (let idea of this.state.listItems) {
-      iArray.push(
-        <ListItem
-          style={{ paddingTop: 0, paddingBottom: 0, width: "100%" }}
-          key={index++}
-        >
-          <Card style={{ display: "flex" }}>
-            <div>
-              <CardHeader
-                avatar={
-                  <Avatar aria-label={idea.category}>{idea.avatar}</Avatar>
-                }
-                title={idea.title}
-                subheader="September 14, 2016"
-              />
-              <CardContent>
-                <Typography component="p">{idea.description}</Typography>
-              </CardContent>
-            </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center"
-                }}
-              >
-                <IconButton>
-                  <ArrowDropUp />
-                </IconButton>
-                <IconButton>
-                  <ArrowDropDown />
-                </IconButton>
-              </div>
-              <Typography
-                component="p"
-                style={{ marginRight: 20, fontSize: "24px" }}
-              >
-                {idea.voteCount}
-              </Typography>
-            </div>
-          </Card>
-        </ListItem>
-      )
+    const { listItems } = this.state
+    for (let idea of listItems) {
+      iArray.push(<IdeaListItem idea={idea} index={index} />)
+      index++
     }
     return iArray
   }
@@ -96,7 +57,104 @@ class IdeaList extends Component {
     } else if (Object.is(this.state.listItems, null)) {
       return <div>Error state</div>
     }
-    return <List>{this.generateList()}</List>
+    return (
+      <List style={{ alignItems: "flex-start", width: "100%" }}>
+        {this.generateList()}
+      </List>
+    )
+  }
+}
+
+class IdeaListItem extends Component {
+  state = {
+    voteCount: this.props.idea.voteCount,
+    userVote: this.props.idea.userVote
+  }
+
+  handleVote = (id, createdAt, vote, index) => {
+    submitVote(id, createdAt, vote, this.props.token)
+    if (this.state.userVote === 0) {
+      this.setState({
+        userVote: vote,
+        voteCount: this.state.voteCount + vote
+      })
+    } else if (this.state.userVote != vote) {
+      this.setState({
+        userVote: 0,
+        voteCount: this.state.voteCount + vote
+      })
+    }
+    this.forceUpdate()
+    console.log(this.state.userVote)
+  }
+
+  render() {
+    let { idea, index } = this.props
+    const createdAt = new Date(idea.createdAt)
+    const date = `${createdAt.getMonth()}/${createdAt.getDate()}/${createdAt.getFullYear()}`
+    let arrowStyle = {
+      up: {
+        color: "grey"
+      },
+      down: {
+        color: "grey"
+      }
+    }
+
+    if (this.state.userVote === 1) {
+      arrowStyle.up.color = "green"
+    } else if (this.state.userVote === -1) {
+      arrowStyle.down.color = "red"
+    }
+    return (
+      <ListItem
+        style={{ paddingTop: 0, paddingBottom: 0, width: "100%" }}
+        key={index++}
+      >
+        <Card style={{ display: "flex", flex: 1 }}>
+          <div style={{ width: "100%" }}>
+            <CardHeader
+              avatar={<Avatar aria-label={idea.category}>{idea.avatar}</Avatar>}
+              title={idea.title}
+              subheader={date}
+            />
+            <CardContent style={{ paddingLeft: "18px" }}>
+              <Typography style={{ hyphens: "auto" }} component="p">
+                {idea.description}
+              </Typography>
+            </CardContent>
+          </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center"
+              }}
+            >
+              <IconButton
+                onClick={() =>
+                  this.handleVote(idea.id, idea.createdAt, 1, index)}
+              >
+                <ArrowDropUp style={arrowStyle.up} />
+              </IconButton>
+              <IconButton
+                onClick={() =>
+                  this.handleVote(idea.id, idea.createdAt, -1, index)}
+              >
+                <ArrowDropDown style={arrowStyle.down} />
+              </IconButton>
+            </div>
+            <Typography
+              component="p"
+              style={{ marginRight: 20, fontSize: "24px" }}
+            >
+              {this.state.voteCount}
+            </Typography>
+          </div>
+        </Card>
+      </ListItem>
+    )
   }
 }
 

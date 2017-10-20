@@ -2,16 +2,6 @@ import React, { Component } from "react"
 import IdeaList from "./IdeaList"
 import ModeEditIcon from "material-ui-icons/ModeEdit"
 import Button from "material-ui/Button"
-import Dialog, { DialogContent } from "material-ui/Dialog"
-import AppBar from "material-ui/AppBar"
-import { submitIdea } from "./api/api.js"
-import Toolbar from "material-ui/Toolbar"
-import IconButton from "material-ui/IconButton"
-import Typography from "material-ui/Typography"
-import { ArrowBack, Send } from "material-ui-icons"
-import TextField from "material-ui/TextField"
-import Slide from "material-ui/transitions/Slide"
-import Radio, { RadioGroup } from "material-ui/Radio"
 import { badWords } from "./utils/badWords"
 import { FormLabel, FormControl, FormControlLabel } from "material-ui/Form"
 import IdeaEditor from "./components/IdeaEditor"
@@ -59,6 +49,10 @@ class IdeaSoffit extends Component {
         >
           <ModeEditIcon />
         </Button>
+        <IdeaEditor
+          handleClose={this.handleRequestClose}
+          open={this.state.open}
+        />
       </div>
     )
   }
