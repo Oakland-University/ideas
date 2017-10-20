@@ -53,41 +53,23 @@ public class IdeaDB implements IIdeaDB {
         int vote = 0;
         int id = 0;
         try {
-          //TODO: Add idea)id
-          vote = jdbcTemplate.queryForObject("SELECT idea_id from idea_vote where pidm like ?", new Object[] {pidm}, Integer.class);   
+          vote = jdbcTemplate.queryForObject("SELECT vote_value from idea_vote where pidm like ? and idea_id = ?", new Object[] {pidm, rs.getInt("idea_id")}, Integer.class);   
         }catch(Exception e){
           System.out.println(e);
         }
-        return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"), rs.getString("category"), vote);
+        return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"), rs.getString("category"), rs.getInt("vote_count"), vote);
       }else{
         return null;
       }
     };
 
-    List<Idea> stuff = jdbcTemplate.query("SELECT * from idea_post where category=1 limit ?", rowMapper, ideaNumber);
-    return stuff;
+        
+
+    List<Idea> list = jdbcTemplate.query("SELECT * from idea_post where category=1 ORDER BY vote_count DESC limit ?", rowMapper, ideaNumber);
+    return list;
 
   }
 
-
-  //public List<Idea> getIdeaList(int ideaNumber, String pidm, String category){
-
-  //  RowMapper<Idea> rowMapper = (rs, rowNum) -> {
-  //    if (rs.getString("category").equals(category)){
-  //      if ( rowNum < ideaNumber ){
-  //        return new Idea(rs.getString("title"), rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"), rs.getString("category"), 0);
-  //      }else{
-  //        return null;
-  //      }
-  //    }else{
-  //      return null;
-  //    }
-  //  };
-
-  //  List<Idea> stuff = jdbcTemplate.query("SELECT * from idea_post where category=1;", rowMapper);
-  //  return stuff;
-
-  //}
 
 
   public void addIdea(Idea idea){

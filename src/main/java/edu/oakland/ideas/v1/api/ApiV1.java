@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import edu.oakland.jwtservice.IJwtService;
 import java.time.Instant;
 import io.jsonwebtoken.Claims;
+import java.util.HashMap;
 
 import edu.oakland.ideas.v1.model.Idea;
 import edu.oakland.ideas.v1.model.Vote;

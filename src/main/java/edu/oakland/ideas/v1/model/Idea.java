@@ -25,7 +25,7 @@ public class Idea {
 
     public Idea(){}
 
-    public Idea(String title, String description, String createdBy, Timestamp createdAt, String category, int userVote){
+    public Idea(String title, String description, String createdBy, Timestamp createdAt, String category, int voteCount){
       this.title = title;
       this.description = description;
       this.createdBy = createdBy;
@@ -33,10 +33,10 @@ public class Idea {
       this.category = category;
       this.approved = false;
       this.avatar = category.toUpperCase().substring(0,1);
-      this.userVote = userVote;
+      this.voteCount = voteCount;
     }
 
-    public Idea(int id, String title, String description, String createdBy, Timestamp createdAt, String category, int userVote){
+    public Idea(int id, String title, String description, String createdBy, Timestamp createdAt, String category, int voteCount, int userVote){
       this.id = id;
       this.title = title;
       this.description = description;
@@ -45,6 +45,7 @@ public class Idea {
       this.category = category;
       this.approved = false;
       this.avatar = category.toUpperCase().substring(0,1);
+      this.voteCount = voteCount;
       this.userVote = userVote;
     }
 
