@@ -1,41 +1,41 @@
-import React, { Component } from "react"
-import PropTypes from "prop-types"
-import { withStyles, createStyleSheet } from "material-ui/styles"
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
+import {withStyles, createStyleSheet} from 'material-ui/styles'
 import Card, {
   CardHeader,
   CardMedia,
   CardContent,
-  CardActions
-} from "material-ui/Card"
-import Avatar from "material-ui/Avatar"
-import FolderIcon from "material-ui-icons/Folder"
-import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List"
-import Typography from "material-ui/Typography"
-import ArrowDropUp from "material-ui-icons/ArrowDropUp"
-import ArrowDropDown from "material-ui-icons/ArrowDropDown"
-import IconButton from "material-ui/IconButton"
-import { getList, submitVote } from "./api/api.js"
+  CardActions,
+} from 'material-ui/Card'
+import Avatar from 'material-ui/Avatar'
+import FolderIcon from 'material-ui-icons/Folder'
+import List, {ListItem, ListItemIcon, ListItemText} from 'material-ui/List'
+import Typography from 'material-ui/Typography'
+import ArrowDropUp from 'material-ui-icons/ArrowDropUp'
+import ArrowDropDown from 'material-ui-icons/ArrowDropDown'
+import IconButton from 'material-ui/IconButton'
+import {getList, submitVote} from './api/api.js'
 
 class IdeaList extends Component {
   state = {
     loading: true,
-    category: "loading",
-    listItems: "loading",
-    amount: "loading",
-    createdAt: "loading"
+    category: 'loading',
+    listItems: 'loading',
+    amount: 'loading',
+    createdAt: 'loading',
   }
 
   componentDidMount() {
     getList({
       token: this.props.token,
       url: this.props.url,
-      credentialsNeeded: false
+      credentialsNeeded: false,
     }).then(ideas => {
       this.setState({
-        category: "blob",
+        category: 'blob',
         amount: 5,
         listItems: ideas,
-        loading: false
+        loading: false,
       })
     })
   }
@@ -43,7 +43,7 @@ class IdeaList extends Component {
   generateList = () => {
     let iArray = []
     let index = 0
-    const { listItems } = this.state
+    const {listItems} = this.state
     for (let idea of listItems) {
       iArray.push(<IdeaListItem idea={idea} index={index} />)
       index++
@@ -58,7 +58,7 @@ class IdeaList extends Component {
       return <div>Error state</div>
     }
     return (
-      <List style={{ alignItems: "flex-start", width: "100%" }}>
+      <List style={{alignItems: 'flex-start', width: '100%'}}>
         {this.generateList()}
       </List>
     )
@@ -68,7 +68,7 @@ class IdeaList extends Component {
 class IdeaListItem extends Component {
   state = {
     voteCount: this.props.idea.voteCount,
-    userVote: this.props.idea.userVote
+    userVote: this.props.idea.userVote,
   }
 
   handleVote = (id, createdAt, vote, index) => {
@@ -76,12 +76,12 @@ class IdeaListItem extends Component {
     if (this.state.userVote === 0) {
       this.setState({
         userVote: vote,
-        voteCount: this.state.voteCount + vote
+        voteCount: this.state.voteCount + vote,
       })
     } else if (this.state.userVote != vote) {
       this.setState({
         userVote: 0,
-        voteCount: this.state.voteCount + vote
+        voteCount: this.state.voteCount + vote,
       })
     }
     this.forceUpdate()
@@ -89,66 +89,61 @@ class IdeaListItem extends Component {
   }
 
   render() {
-    let { idea, index } = this.props
+    let {idea, index} = this.props
     const createdAt = new Date(idea.createdAt)
     const date = `${createdAt.getMonth()}/${createdAt.getDate()}/${createdAt.getFullYear()}`
     let arrowStyle = {
       up: {
-        color: "grey"
+        color: 'grey',
       },
       down: {
-        color: "grey"
-      }
+        color: 'grey',
+      },
     }
 
     if (this.state.userVote === 1) {
-      arrowStyle.up.color = "green"
+      arrowStyle.up.color = 'green'
     } else if (this.state.userVote === -1) {
-      arrowStyle.down.color = "red"
+      arrowStyle.down.color = 'red'
     }
     return (
       <ListItem
-        style={{ paddingTop: 0, paddingBottom: 0, width: "100%" }}
-        key={index++}
-      >
-        <Card style={{ display: "flex", flex: 1 }}>
-          <div style={{ width: "100%" }}>
+        style={{paddingTop: 0, paddingBottom: 0, width: '100%'}}
+        key={index++}>
+        <Card style={{display: 'flex', flex: 1}}>
+          <div style={{width: '100%'}}>
             <CardHeader
               avatar={<Avatar aria-label={idea.category}>{idea.avatar}</Avatar>}
               title={idea.title}
               subheader={date}
             />
-            <CardContent style={{ paddingLeft: "18px" }}>
-              <Typography style={{ hyphens: "auto" }} component="p">
+            <CardContent style={{paddingLeft: '18px'}}>
+              <Typography style={{hyphens: 'auto'}} component="p">
                 {idea.description}
               </Typography>
             </CardContent>
           </div>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{display: 'flex', alignItems: 'center'}}>
             <div
               style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center"
-              }}
-            >
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}>
               <IconButton
                 onClick={() =>
-                  this.handleVote(idea.id, idea.createdAt, 1, index)}
-              >
+                  this.handleVote(idea.id, idea.createdAt, 1, index)}>
                 <ArrowDropUp style={arrowStyle.up} />
               </IconButton>
               <IconButton
                 onClick={() =>
-                  this.handleVote(idea.id, idea.createdAt, -1, index)}
-              >
+                  this.handleVote(idea.id, idea.createdAt, -1, index)}>
                 <ArrowDropDown style={arrowStyle.down} />
               </IconButton>
             </div>
             <Typography
               component="p"
-              style={{ marginRight: 20, fontSize: "24px" }}
-            >
+              style={{marginRight: 20, fontSize: '24px'}}>
               {this.state.voteCount}
             </Typography>
           </div>
