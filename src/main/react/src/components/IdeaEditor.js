@@ -1,13 +1,13 @@
 import React, { Component } from "react"
 import ModeEditIcon from "material-ui-icons/ModeEdit"
 import Button from "material-ui/Button"
-import Dialog, { DialogContent } from "material-ui/Dialog"
+import Dialog, { DialogContent, DialogActions } from "material-ui/Dialog"
 import AppBar from "material-ui/AppBar"
 import { submitIdea } from "../api/api.js"
 import Toolbar from "material-ui/Toolbar"
 import IconButton from "material-ui/IconButton"
 import Typography from "material-ui/Typography"
-import { ArrowBack, Send } from "material-ui-icons"
+import { ArrowBack } from "material-ui-icons"
 import TextField from "material-ui/TextField"
 import Slide from "material-ui/transitions/Slide"
 import Radio, { RadioGroup } from "material-ui/Radio"
@@ -22,7 +22,7 @@ class IdeaEditor extends Component {
   }
 
   handleChange = (event, category) => {
-    this.setState({ category })
+    this.setState({category})
   }
 
   handleTitleChange = event => {
@@ -49,7 +49,7 @@ class IdeaEditor extends Component {
     this.setState({
       description: "",
       title: "",
-      value: "general"
+      category: "general"
     })
 
     //TODO: write function to call parent onClose
@@ -58,7 +58,6 @@ class IdeaEditor extends Component {
   render() {
     return (
       <Dialog
-        fullScreen
         open={this.props.open}
         onRequestClose={this.props.handleClose}
         transition={<Slide direction="up" />}
@@ -74,7 +73,7 @@ class IdeaEditor extends Component {
               <ArrowBack />
             </IconButton>
             <Typography type="title" color="inherit" style={{ flex: 1 }}>
-              Compose
+              Compose{" "}
             </Typography>
             <Button color="contrast" onClick={this.props.handleClose}>
               Submit{" "}
@@ -85,19 +84,17 @@ class IdeaEditor extends Component {
           style={{
             display: "flex",
             flexDirection: "column",
-            width: "80%",
+            width: "85%",
             alignSelf: "center"
           }}
         >
-          <Typography type="title" color="inherit">
-            Do you have a problem with or suggestion for MySail? Feel free to
-            submit either here, and allow other students to express their
-            opinions on the issue by voting up or down on any given idea.
-            <br />
-            All ideas will be checked by an administrator before being shown to
-            students. <br />
-            Having an idea highly upvoted is a good way to bring it to the
-            MySail team's attention, but does not guaruntee any action.
+          <Typography
+            align="center"
+            type="subheading"
+            style={{ paddingTop: "20px" }}
+          >
+            Submit an idea on how to improve MySail.Give it a name, a brief description, and a category.
+            {" "}
           </Typography>
           <TextField
             required
@@ -113,57 +110,59 @@ class IdeaEditor extends Component {
             label="Description"
             multiline
             rows="4"
-            rowsMax="10"
+            maxLength="2"
+            inputProps={{ maxLength: "650" }}
             style={{ width: "100%" }}
             margin="normal"
             onChange={this.handleDescChange}
           />
           <FormControl style={{ marginTop: 50 }} component="fieldset" required>
-            <FormLabel component="legend">Category</FormLabel>
+            <FormLabel component="legend"> Category </FormLabel>
             <RadioGroup
               aria-label="category"
               name="category"
-              value={this.state.value}
+              value={this.state.category}
               onChange={this.handleChange}
-              style={{ flexDirection: "row", justifyContent: "space-around" }}
+              style={{height: "125px"}}
             >
-              <FormControlLabel
-                value="general"
-                control={<Radio />}
-                label="General"
-              />
-              <FormControlLabel
-                value="design"
-                control={<Radio />}
-                label="Design"
-              />
-              <FormControlLabel
-                value="issue"
-                control={<Radio />}
-                label="Issue"
-              />
-              <FormControlLabel
-                value="navigation"
-                control={<Radio />}
-                label="Navigation"
-              />
-              <FormControlLabel
-                value="mobile-apps"
-                control={<Radio />}
-                label="Mobile Apps"
-              />
+                <FormControlLabel
+                  value="general"
+                  control={<Radio />}
+                  label="General"
+                />
+                <FormControlLabel
+                  value="design"
+                  control={<Radio />}
+                  label="Design"
+                />
+                <FormControlLabel
+                  value="issue"
+                  control={<Radio />}
+                  label="Issue"
+                />
+                <FormControlLabel
+                  value="navigation"
+                  control={<Radio />}
+                  label="Navigation"
+                />
+                <FormControlLabel
+                  value="mobile"
+                  control={<Radio />}
+                  label="Mobile Apps"
+                />
+                <FormControlLabel
+                  value="feature"
+                  control={<Radio />}
+                  label="New Feature"
+                />
             </RadioGroup>
           </FormControl>
         </DialogContent>
-        <Button
-          fab
-          color="accent"
-          aria-label="edit"
-          style={{ position: "absolute", bottom: "15%", right: "10%" }}
-          onClick={this.generateForm}
-        >
-          <Send />
-        </Button>
+        <DialogActions>
+          <Button onClick={this.handleRequestClose} color="accent">
+            Submit{" "}
+          </Button>
+        </DialogActions>
       </Dialog>
     )
   }
