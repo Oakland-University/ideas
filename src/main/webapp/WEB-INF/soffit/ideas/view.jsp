@@ -2,7 +2,6 @@
   var bearer = '${bearer}'
   var token = '${bearer.getEncryptedToken()}'
   var group = '${bearer.getGroups()}'
-  console.log(group)
 </script>
 <link href='//fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
 <div id="idea-root">
