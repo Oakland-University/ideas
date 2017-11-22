@@ -45,6 +45,7 @@ export const getListDemo = async obj => {
 }
 
 export const submitIdea = async (title, desc, cat, token) => {
+  console.log("Submitting Idea")
   try {
     let response
     let data = {
@@ -52,6 +53,7 @@ export const submitIdea = async (title, desc, cat, token) => {
       description: desc,
       category: cat
     }
+    console.log(data)
 
     const formBody = Object.keys(data)
       .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
@@ -61,7 +63,7 @@ export const submitIdea = async (title, desc, cat, token) => {
       body: formBody,
       credentials: "include",
       headers: {
-        Authorization: token,
+        Authorization: "Bearer " + token,
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded"
       },
@@ -74,14 +76,12 @@ export const submitIdea = async (title, desc, cat, token) => {
 }
 
 export const submitVote = async (ideaID, createdAt, voteValue, token) => {
-  console.log("Submitting Idea")
-  //const d = new Date().toISOString()
   try {
     let response
     let data = {
       ideaID: ideaID,
       voteValue: voteValue,
-      time: createdAt
+      time: createdAt,
     }
 
     const formBody = Object.keys(data)

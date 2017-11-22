@@ -1,15 +1,10 @@
 import React, {Component} from 'react'
-import PropTypes from 'prop-types'
-import {withStyles, createStyleSheet} from 'material-ui/styles'
 import Card, {
   CardHeader,
-  CardMedia,
-  CardContent,
-  CardActions,
+  CardContent
 } from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar'
-import FolderIcon from 'material-ui-icons/Folder'
-import List, {ListItem, ListItemIcon, ListItemText} from 'material-ui/List'
+import List, {ListItem} from 'material-ui/List'
 import Typography from 'material-ui/Typography'
 import ArrowDropUp from 'material-ui-icons/ArrowDropUp'
 import ArrowDropDown from 'material-ui-icons/ArrowDropDown'
@@ -26,6 +21,7 @@ class IdeaList extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props.token)
     getList({
       token: this.props.token,
       url: this.props.url,

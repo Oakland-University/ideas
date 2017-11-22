@@ -52,6 +52,7 @@ class IdeaSoffit extends Component {
         <IdeaEditor
           handleClose={this.handleRequestClose}
           open={this.state.open}
+          token={token}
         />
       </div>
     )

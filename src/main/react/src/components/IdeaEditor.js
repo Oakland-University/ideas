@@ -45,12 +45,16 @@ class IdeaEditor extends Component {
         alert("Check yourself, b")
       }
     }
-    //submitIdea(this.state.title, this.state.description, this.state.value, token)
+    console.log("Prepearing to submit")
+    console.log(this.state.category)
+    submitIdea(this.state.title, this.state.description, this.state.category,  this.props.token)
+    console.log("Did submit")
     this.setState({
       description: "",
       title: "",
       category: "general"
     })
+    //this.props.handleClose()
 
     //TODO: write function to call parent onClose
   }
@@ -59,8 +63,10 @@ class IdeaEditor extends Component {
     return (
       <Dialog
         open={this.props.open}
+        role="dialog"
+        tabIndex="0"
         onRequestClose={this.props.handleClose}
-        transition={<Slide direction="up" />}
+        transition={Slide}
       >
         <AppBar position="relative">
           <Toolbar>
@@ -159,7 +165,7 @@ class IdeaEditor extends Component {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleRequestClose} color="accent">
+          <Button onClick={this.generateForm} color="accent">
             Submit{" "}
           </Button>
         </DialogActions>
