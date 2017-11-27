@@ -44,6 +44,38 @@ export const getListDemo = async obj => {
   }
 }
 
+export const getAdminDemo =  async obj => {
+  return ({
+    listItems: [
+      {
+        title: "Make the portal search better",
+        voteCount: "81",
+        category: "general",
+        avatar: "G"
+      },
+      {
+        title:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+        voteCount: "23",
+        category: "user interface",
+        avatar: "UI"
+      },
+      {
+        title: "Make the portal search better",
+        voteCount: "81",
+        category: "general",
+        avatar: "G"
+      },
+      {
+        title: "Make the portal search better",
+        voteCount: "81",
+        category: "general",
+        avatar: "G"
+      }
+    ]
+  })
+}
+
 export const submitIdea = async (title, desc, cat, token) => {
   console.log("Submitting Idea")
   try {

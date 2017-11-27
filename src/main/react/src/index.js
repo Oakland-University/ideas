@@ -63,7 +63,7 @@ const theme = createMuiTheme({
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
-    <IdeaSoffit />
+    <AdminIdeas />
   </MuiThemeProvider>,
   document.getElementById('idea-root'),
 )

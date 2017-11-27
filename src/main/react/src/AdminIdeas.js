@@ -18,6 +18,10 @@ import TextField from 'material-ui/TextField'
 import PropTypes from 'prop-types'
 import Input, {InputLabel} from 'material-ui/Input'
 import Select from 'material-ui/Select'
+import Autosuggest from 'react-autosuggest';
+import Paper from 'material-ui/Paper';
+import match from 'autosuggest-highlight/match';
+import parse from 'autosuggest-highlight/parse';
 import {withStyles} from 'material-ui/styles'
 
 const styles = theme => ({
@@ -61,20 +65,25 @@ const ideaListItem = (isApproved, title, vote, date) => {
 
 class Ideas extends Component {
 state = {
-    checkedA: true,
-    checkedB: true,
-    checkedC: true,
-    checkedD: true,
-    checkedE: true,
-    checkedF: true,
+    general: true,
+    design: true,
+    issue: true,
+    navigation: true,
+    mobile: true,
+    feature: true,
+    tabIndex: 0
   };
 
   changeCategory = category => event => {
     this.setState({[category]: event.target.checked})
   }
 
+  changeTab = (event, tabIndex) => {
+    this.setState({tabIndex})
+  }
+
   render() {
-    const {classes} = this.props
+    const {classes, tabIndex} = this.props
     return (
       <div
         className="idea-soffit-root"
@@ -91,19 +100,22 @@ state = {
               <SearchIcon />
             </IconButton>
           </Toolbar>
-          <Tabs value={0} onChange={this.handleChange}>
+          <Tabs value={this.state.tabIndex} onChange={this.changeTab}>
             <Tab label="Main" />
             <Tab label="Flagged" />
             <Tab label="Archive" />
           </Tabs>
         </AppBar>
+        {tabIndex === 0 && <div>Item One</div>}
+        {tabIndex === 1 && <div>Item One</div>}
+        {tabIndex === 2 && <div>Item One</div>}
         <div style={{display: 'flex', justifyContent: 'space-around'}}>
-          <FormControlLabel checked={this.state.checkedA} control={<Checkbox value="checkedA" onChange={this.changeCategory('checkedA')} />} label="Option A" />
-          <FormControlLabel checked={this.state.checkedB} control={<Checkbox value="checkedB" onChange={this.changeCategory('checkedB')} />} label="Option B" />
-          <FormControlLabel checked={this.state.checkedC} control={<Checkbox value="checkedC" onChange={this.changeCategory('checkedC')} />} label="Option C" />
-          <FormControlLabel checked={this.state.checkedD} control={<Checkbox value="checkedD" onChange={this.changeCategory('checkedD')} />} label="Option D" />
-          <FormControlLabel checked={this.state.checkedE} control={<Checkbox value="checkedE" onChange={this.changeCategory('checkedE')} />} label="Option E" />
-          <FormControlLabel checked={this.state.checkedF} control={<Checkbox value="checkedF" onChange={this.changeCategory('checkedF')} />} label="Option F" />
+          <FormControlLabel checked={this.state.general} control={<Checkbox value="general" onChange={this.changeCategory('general')} />} label="General" />
+          <FormControlLabel checked={this.state.design} control={<Checkbox value="design" onChange={this.changeCategory('design')} />} label="Design" />
+          <FormControlLabel checked={this.state.issue} control={<Checkbox value="issue" onChange={this.changeCategory('issue')} />} label="Issues" />
+          <FormControlLabel checked={this.state.navigation} control={<Checkbox value="navigation" onChange={this.changeCategory('navigation')} />} label="Navigation" />
+          <FormControlLabel checked={this.state.mobile} control={<Checkbox value="mobile" onChange={this.changeCategory('mobile')} />} label="MobileApps" />
+          <FormControlLabel checked={this.state.feature} control={<Checkbox value="feature" onChange={this.changeCategory('feature')} />} label="New Features" />
         </div>
         <List>
           <ListItem style={{borderBottom: '5px solid #689F38'}}>
@@ -301,5 +313,42 @@ class IdeaCard extends Component {
 Ideas.propTypes = {
   classes: PropTypes.object.isRequired,
 }
+
+const suggestions = [
+  { label: 'Afghanistan' },
+  { label: 'Aland Islands' },
+  { label: 'Albania' },
+  { label: 'Algeria' },
+  { label: 'American Samoa' },
+  { label: 'Andorra' },
+  { label: 'Angola' },
+  { label: 'Anguilla' },
+  { label: 'Antarctica' },
+  { label: 'Antigua and Barbuda' },
+  { label: 'Argentina' },
+  { label: 'Armenia' },
+  { label: 'Aruba' },
+  { label: 'Australia' },
+  { label: 'Austria' },
+  { label: 'Azerbaijan' },
+  { label: 'Bahamas' },
+  { label: 'Bahrain' },
+  { label: 'Bangladesh' },
+  { label: 'Barbados' },
+  { label: 'Belarus' },
+  { label: 'Belgium' },
+  { label: 'Belize' },
+  { label: 'Benin' },
+  { label: 'Bermuda' },
+  { label: 'Bhutan' },
+  { label: 'Bolivia, Plurinational State of' },
+  { label: 'Bonaire, Sint Eustatius and Saba' },
+  { label: 'Bosnia and Herzegovina' },
+  { label: 'Botswana' },
+  { label: 'Bouvet Island' },
+  { label: 'Brazil' },
+  { label: 'British Indian Ocean Territory' },
+  { label: 'Brunei Darussalam' },
+];
 
 export default withStyles(styles)(Ideas)

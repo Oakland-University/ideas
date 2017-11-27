@@ -9,7 +9,7 @@ import Typography from 'material-ui/Typography'
 import ArrowDropUp from 'material-ui-icons/ArrowDropUp'
 import ArrowDropDown from 'material-ui-icons/ArrowDropDown'
 import IconButton from 'material-ui/IconButton'
-import {getList, submitVote} from './api/api.js'
+import {getList, getListDemo, submitVote} from './api/api.js'
 
 class IdeaList extends Component {
   state = {
@@ -22,24 +22,38 @@ class IdeaList extends Component {
 
   componentDidMount() {
     console.log(this.props.token)
-    getList({
-      token: this.props.token,
-      url: this.props.url,
-      credentialsNeeded: false,
-    }).then(ideas => {
-      this.setState({
-        category: 'blob',
-        amount: 5,
-        listItems: ideas,
-        loading: false,
+    if (this.props.token === 'demo'){
+      var bob = getListDemo().then(ideas => {
+        console.log("ideas", ideas)
+        this.setState({
+          category: ideas.category,
+          amount: 5,
+          listItems: ideas.listItems,
+          loading: false,
+        })
       })
-    })
+    }else{
+      getList({
+        token: this.props.token,
+        url: this.props.url,
+        credentialsNeeded: false,
+      }).then(ideas => {
+        this.setState({
+          category: 'blob',
+          amount: 5,
+          listItems: ideas,
+          loading: false,
+        })
+      })
+    }
+    console.log(bob)
   }
 
   generateList = () => {
     let iArray = []
     let index = 0
     const {listItems} = this.state
+    console.log("List Items:", ListItem)
     for (let idea of listItems) {
       iArray.push(<IdeaListItem idea={idea} index={index} />)
       index++

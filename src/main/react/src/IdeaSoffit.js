@@ -31,6 +31,9 @@ class IdeaSoffit extends Component {
   }
 
   render() {
+    if (token === null || token === undefined){
+      var token = 'demo'
+    }
     return (
       <div
         className="idea-soffit-root"
