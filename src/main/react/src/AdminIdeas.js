@@ -4,7 +4,7 @@ import List, {
   ListItem,
   ListItemIcon,
   ListItemText,
-  ListItemSecondaryAction,
+  ListItemSecondaryAction
 } from 'material-ui/List'
 import Collapse from 'material-ui/transitions/Collapse'
 import AppBar from 'material-ui/AppBar'
@@ -29,28 +29,29 @@ import Paper from 'material-ui/Paper'
 import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
 import Dialog, { DialogContent, DialogActions } from 'material-ui/Dialog'
+import AdminDialog from './components/AdminDialog.js'
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
   root: {
     '& div div': {
-      width: '100%',
-    },
+      width: '100%'
+    }
   },
   textFieldRoot: {
     padding: 0,
     'label + &': {
-      marginTop: theme.spacing.unit * 3,
-    },
+      marginTop: theme.spacing.unit * 3
+    }
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   textFieldInput: {
-    height: '1.5rem',
-  },
+    height: '1.5rem'
+  }
 })
 
 class Ideas extends Component {
@@ -62,7 +63,7 @@ class Ideas extends Component {
     mobile: true,
     feature: true,
     tabIndex: 0,
-    dialog: false,
+    dialog: false
   }
 
   changeCategory = category => event => {
@@ -74,20 +75,19 @@ class Ideas extends Component {
   }
 
   openDialog = () => {
-    console.log('HEYYYY')
     this.setState({ dialog: !this.state.dialog })
   }
 
   render() {
     const { classes } = this.props
     const { tabIndex } = this.state
-    console.log(tabIndex)
+    console.log(this.state.dialog)
     return (
       <div
         className="idea-soffit-root"
         style={{
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'column'
         }}
       >
         <AppBar position="static">
@@ -168,9 +168,17 @@ class Ideas extends Component {
             label="New Features"
           />
         </div>
-        {tabIndex === 0 && <MainList />}
-        {tabIndex === 1 && <FlaggedList />}
-        {tabIndex === 2 && <ArchiveList />}
+        {tabIndex === 0 && <MainList openDialog={this.openDialog.bind(this)} />}
+        {tabIndex === 1 && (
+          <FlaggedList openDialog={this.openDialog.bind(this)} />
+        )}
+        {tabIndex === 2 && (
+          <ArchiveList openDialog={this.openDialog.bind(this)} />
+        )}
+        <AdminDialog
+          open={this.state.dialog}
+          handleClose={this.openDialog.bind(this)}
+        />
       </div>
     )
   }
@@ -194,16 +202,19 @@ class MainList extends Component {
               isApproved={true}
               title="This is a random title thing"
               vote={23}
+              openDialog={this.props.openDialog}
             />
             <IdeaListItem
               isApproved={true}
               title="This is a random title thing"
               vote={23}
+              openDialog={this.props.openDialog}
             />
             <IdeaListItem
               isApproved={true}
               title="This is a random title thing"
               vote={23}
+              openDialog={this.props.openDialog}
             />
           </List>
         </Collapse>
@@ -221,16 +232,19 @@ class MainList extends Component {
               isApproved={true}
               title="This is a random title thing"
               vote={23}
+              openDialog={this.props.openDialog.bind(this)}
             />
             <IdeaListItem
               isApproved={true}
               title="This is a random title thing"
               vote={23}
+              openDialog={this.props.openDialog.bind(this)}
             />
             <IdeaListItem
               isApproved={true}
               title="This is a random title thing"
               vote={23}
+              openDialog={this.props.openDialog.bind(this)}
             />
           </List>
         </Collapse>
@@ -248,16 +262,19 @@ class MainList extends Component {
               isApproved={true}
               title="This is a random title thing"
               vote={23}
+              openDialog={this.props.openDialog.bind(this)}
             />
             <IdeaListItem
               isApproved={true}
               title="This is a random title thing"
               vote={23}
+              openDialog={this.props.openDialog.bind(this)}
             />
             <IdeaListItem
               isApproved={true}
               title="This is a random title thing"
               vote={23}
+              openDialog={this.props.openDialog.bind(this)}
             />
           </List>
         </Collapse>
@@ -284,16 +301,19 @@ class FlaggedList extends Component {
               isApproved={true}
               title="This is a random title thing"
               vote={23}
+              openDialog={this.props.openDialog}
             />
             <IdeaListItem
               isApproved={true}
               title="This is a random title thing"
               vote={23}
+              openDialog={this.props.openDialog}
             />
             <IdeaListItem
               isApproved={true}
               title="This is a random title thing"
               vote={23}
+              openDialog={this.props.openDialog}
             />
           </List>
         </Collapse>
@@ -340,9 +360,13 @@ class ArchiveList extends Component {
 
 class IdeaListItem extends Component {
   render() {
-    const { isApproved, title, vote, date } = this.props
+    const { isApproved, title, vote, date, openDialog } = this.props
     return (
-      <ListItem button style={{ backgroundColor: 'white' }}>
+      <ListItem
+        button
+        style={{ backgroundColor: 'white' }}
+        onClick={openDialog}
+      >
         <ListItemText inset primary={title} />
         <Typography>{vote}</Typography>
       </ListItem>
@@ -350,181 +374,8 @@ class IdeaListItem extends Component {
   }
 }
 
-class IdeaCard extends Component {
-  state = {
-    title: 'Title',
-    desc: 'Lorem Ipsum',
-    voteCount: 0,
-    category: 0,
-    author: '8923832',
-    approved: false,
-  }
-
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    })
-  }
-
-  render() {
-    const { classes } = this.props
-    const d = new Date()
-    let day = d.getDay()
-    let tomorrow = d.getDay() + 1
-
-    if (day < 9) {
-      day = '0' + day
-      tomorrow = '0' + tomorrow
-    } else if (day === 9) {
-      day = '0' + day
-    }
-
-    let color
-
-    if (this.state.approved) {
-      color = { backgroundColor: '#00E676' }
-    } else {
-      color = { backgroundColor: '#E53935' }
-    }
-
-    const today1 = `${d.getFullYear()}-${d.getMonth()}-${day}`
-    const today2 = `${d.getFullYear()}-${d.getMonth()}-${tomorrow}`
-
-    return (
-      <Dialog
-        open={this.props.open}
-        role="dialog"
-        tabIndex="0"
-        onRequestClose={this.props.handleClose}
-        transition={Slide}
-      >
-        <ListItem style={{ paddingTop: 0, paddingBottom: 0, width: '100%' }}>
-          <Card style={{ flex: 1 }}>
-            <div style={{ width: '100%' }}>
-              <div className={classes.header} style={color}>
-                <FormControlLabel
-                  style={{
-                    marginLeft: '12px',
-                    display: 'flex',
-                  }}
-                  control={
-                    <Switch
-                      color="accent"
-                      checked={this.state.checkedA}
-                      onChange={() =>
-                        this.setState({ approved: !this.state.approved })
-                      }
-                    />
-                  }
-                  label="Approved"
-                />
-                <Typography type="subheading" style={{ padding: 18 }}>
-                  Votes: {this.state.voteCount}
-                </Typography>
-              </div>
-              <Typography
-                style={{ paddingLeft: 16, paddingTop: 12 }}
-                type="subheading"
-              >
-                Submitted By: {this.state.author}
-              </Typography>
-              <div
-                className="title"
-                style={{
-                  padding: '18px',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  flexFlow: 'wrap',
-                }}
-              >
-                <TextField
-                  label="Title"
-                  style={{ flex: '1 1 auto', marginRight: 8 }}
-                  value={this.state.title}
-                  onChange={this.handleChange('title')}
-                />
-                <FormControl
-                  style={{ flex: '1 1 auto', marginLeft: 8, marginRight: 8 }}
-                >
-                  <InputLabel htmlFor="age-simple">Category</InputLabel>
-                  <Select
-                    value={this.state.category}
-                    onChange={this.handleChange('category')}
-                    input={<Input id="category-select" />}
-                  >
-                    <MenuItem value={0}>General</MenuItem>
-                    <MenuItem value={10}>Issue</MenuItem>
-                    <MenuItem value={20}>Mobile Apps</MenuItem>
-                    <MenuItem value={30}>Design</MenuItem>
-                    <MenuItem value={40}>Navigation</MenuItem>
-                    <MenuItem value={50}>New Feature</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-              <CardContent style={{ paddingLeft: '18px' }}>
-                <TextField
-                  multiline
-                  rowsMax="4"
-                  label="Description"
-                  margin="normal"
-                  style={{ width: '100%', height: 18 }}
-                  value={this.state.desc}
-                  onChange={this.handleChange('desc')}
-                />
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    paddingTop: 18,
-                  }}
-                >
-                  {Object.is(this.state.approved, true) && (
-                    <div
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <TextField
-                        id="date"
-                        style={{ width: '45%' }}
-                        label="Voting Starts"
-                        inputClassName={classes.textFieldInput}
-                        type="date"
-                        defaultValue={today1}
-                      />
-                      <TextField
-                        id="dater"
-                        style={{ width: '45%' }}
-                        label="Voting Ends"
-                        inputClassName={classes.textFieldInput}
-                        type="date"
-                        defaultValue={today2}
-                      />
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-              <CardActions
-                style={{ display: 'flex', justifyContent: 'flex-end' }}
-              >
-                <Button color="accent">Save</Button>
-              </CardActions>
-            </div>
-            <Typography
-              component="p"
-              style={{ marginRight: 20, fontSize: '24px' }}
-            />
-          </Card>
-        </ListItem>
-      </Dialog>
-    )
-  }
-}
-
 Ideas.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 }
 
 const suggestions = [
@@ -561,7 +412,7 @@ const suggestions = [
   { label: 'Bouvet Island' },
   { label: 'Brazil' },
   { label: 'British Indian Ocean Territory' },
-  { label: 'Brunei Darussalam' },
+  { label: 'Brunei Darussalam' }
 ]
 
 export default withStyles(styles)(Ideas)
