@@ -32,6 +32,11 @@ import Dialog, { DialogContent, DialogActions } from 'material-ui/Dialog'
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
+  root: {
+     '& li': {
+       padding: 0
+     },
+  },
   textFieldRoot: {
     padding: 0,
     'label + &': {
@@ -78,7 +83,7 @@ class AdminDialog extends Component {
     }
 
     let color
-
+    console.log("EY", this.props)
     if (this.state.approved) {
       color = { backgroundColor: '#00E676' }
     } else {
@@ -95,6 +100,7 @@ class AdminDialog extends Component {
         tabIndex="0"
         onRequestClose={this.props.handleClose}
         transition={Slide}
+        className={classes.root}
       >
         <ListItem>
           <Card style={{ flex: 1 }}>
