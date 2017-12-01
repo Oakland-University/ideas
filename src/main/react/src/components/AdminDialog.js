@@ -55,12 +55,12 @@ const styles = theme => ({
 
 class AdminDialog extends Component {
   state = {
-    title: 'Title',
-    desc: 'Lorem Ipsum',
-    voteCount: 0,
-    category: 0,
+    title: this.props.title,
+    desc: this.props.desc,
+    voteCount: this.propsvotes,
+    category: this.props.cat,
     author: '8923832',
-    approved: false
+    approved: this.props.isApproved
   }
 
   handleChange = name => event => {
@@ -70,6 +70,7 @@ class AdminDialog extends Component {
   }
 
   render() {
+    console.log('blob', this.state)
     const { classes } = this.props
     const d = new Date()
     let day = d.getDay()

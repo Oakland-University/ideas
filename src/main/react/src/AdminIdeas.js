@@ -63,7 +63,13 @@ class Ideas extends Component {
     mobile: true,
     feature: true,
     tabIndex: 0,
-    dialog: false
+    dialogShown: false,
+    dialogTitle: 'Loading...',
+    dialogApproved: true,
+    dialogVotes: 0,
+    dialogCategory: 'general',
+    dialogDesc: 'Loading...',
+    dialogRange: null
   }
 
   changeCategory = category => event => {
@@ -74,11 +80,20 @@ class Ideas extends Component {
     this.setState({ tabIndex })
   }
 
-  openDialog = () => {
+  openDialog = (isApproved, title, votes, cat, desc, range) => {
+    const data = {
+      title: title,
+      isApproved: isApproved,
+      votes: votes,
+      cat: cat,
+      desc: desc,
+    }
+    this.setState({dialogData: data})
+    console.log(this.state.dialogData)
     this.setState({ dialog: !this.state.dialog })
   }
 
-  render() {
+   render(){
     const { classes } = this.props
     const { tabIndex } = this.state
     console.log(this.state.dialog)
@@ -155,7 +170,7 @@ class Ideas extends Component {
                 onChange={this.changeCategory('mobile')}
               />
             }
-            label="MobileApps"
+            label="Mobile Apps"
           />
           <FormControlLabel
             checked={this.state.feature}
@@ -178,6 +193,7 @@ class Ideas extends Component {
         <AdminDialog
           open={this.state.dialog}
           handleClose={this.openDialog.bind(this)}
+          data={this.state.dialogData}
         />
       </div>
     )
@@ -198,24 +214,9 @@ class MainList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-              openDialog={this.props.openDialog}
-            />
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-              openDialog={this.props.openDialog}
-            />
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-              openDialog={this.props.openDialog}
-            />
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
           </List>
         </Collapse>
         <ListItem style={{ borderBottom: '5px solid lightblue' }}>
@@ -228,24 +229,9 @@ class MainList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-              openDialog={this.props.openDialog.bind(this)}
-            />
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-              openDialog={this.props.openDialog.bind(this)}
-            />
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-              openDialog={this.props.openDialog.bind(this)}
-            />
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
           </List>
         </Collapse>
         <ListItem style={{ borderBottom: '5px solid #9575CD' }}>
@@ -258,24 +244,9 @@ class MainList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-              openDialog={this.props.openDialog.bind(this)}
-            />
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-              openDialog={this.props.openDialog.bind(this)}
-            />
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-              openDialog={this.props.openDialog.bind(this)}
-            />
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
           </List>
         </Collapse>
       </List>
@@ -297,24 +268,9 @@ class FlaggedList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-              openDialog={this.props.openDialog}
-            />
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-              openDialog={this.props.openDialog}
-            />
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-              openDialog={this.props.openDialog}
-            />
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
           </List>
         </Collapse>
       </List>
@@ -336,21 +292,9 @@ class ArchiveList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-            />
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-            />
-            <IdeaListItem
-              isApproved={true}
-              title="This is a random title thing"
-              vote={23}
-            />
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
           </List>
         </Collapse>
       </List>
@@ -358,21 +302,19 @@ class ArchiveList extends Component {
   }
 }
 
-class IdeaListItem extends Component {
-  render() {
-    const { isApproved, title, vote, date, openDialog } = this.props
-    return (
-      <ListItem
-        button
-        style={{ backgroundColor: 'white' }}
-        onClick={openDialog}
-      >
-        <ListItemText inset primary={title} />
-        <Typography>{vote}</Typography>
-      </ListItem>
-    )
-  }
+const ideaListItem =  (isApproved, title, vote, func ) => {
+  return (
+    <ListItem
+      button
+      style={{ backgroundColor: 'white' }}
+      onClick={() => func(isApproved, title, vote)}
+    >
+      <ListItemText inset primary={title} />
+      <Typography>{vote}</Typography>
+    </ListItem>
+  )
 }
+
 
 Ideas.propTypes = {
   classes: PropTypes.object.isRequired
