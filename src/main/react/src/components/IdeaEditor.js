@@ -1,28 +1,28 @@
-import React, { Component } from "react"
-import ModeEditIcon from "material-ui-icons/ModeEdit"
-import Button from "material-ui/Button"
-import Dialog, { DialogContent, DialogActions } from "material-ui/Dialog"
-import AppBar from "material-ui/AppBar"
-import { submitIdea } from "../api/api.js"
-import Toolbar from "material-ui/Toolbar"
-import IconButton from "material-ui/IconButton"
-import Typography from "material-ui/Typography"
-import { ArrowBack } from "material-ui-icons"
-import TextField from "material-ui/TextField"
-import Slide from "material-ui/transitions/Slide"
-import Radio, { RadioGroup } from "material-ui/Radio"
-import { badWords } from "../utils/badWords"
-import { FormLabel, FormControl, FormControlLabel } from "material-ui/Form"
+import React, { Component } from 'react'
+import ModeEditIcon from 'material-ui-icons/ModeEdit'
+import Button from 'material-ui/Button'
+import Dialog, { DialogContent, DialogActions } from 'material-ui/Dialog'
+import AppBar from 'material-ui/AppBar'
+import { submitIdea } from '../api/api.js'
+import Toolbar from 'material-ui/Toolbar'
+import IconButton from 'material-ui/IconButton'
+import Typography from 'material-ui/Typography'
+import { ArrowBack } from 'material-ui-icons'
+import TextField from 'material-ui/TextField'
+import Slide from 'material-ui/transitions/Slide'
+import Radio, { RadioGroup } from 'material-ui/Radio'
+import { badWords } from '../utils/badWords'
+import { FormLabel, FormControl, FormControlLabel } from 'material-ui/Form'
 
 class IdeaEditor extends Component {
   state = {
-    category: "general",
-    title: "",
-    description: ""
+    category: 'general',
+    title: '',
+    description: ''
   }
 
   handleChange = (event, category) => {
-    this.setState({category})
+    this.setState({ category })
   }
 
   handleTitleChange = event => {
@@ -34,25 +34,30 @@ class IdeaEditor extends Component {
   }
 
   generateForm = () => {
-    if (this.state.title === "" || this.state.description == "") {
-      alert("Gotta put stuff in places")
+    if (this.state.title === '' || this.state.description == '') {
+      alert('Gotta put stuff in places')
     }
     for (let word of badWords) {
       if (
         this.state.title.includes(word) ||
         this.state.description.includes(word)
       ) {
-        alert("Check yourself, b")
+        alert('Check yourself, b')
       }
     }
-    console.log("Prepearing to submit")
+    console.log('Prepearing to submit')
     console.log(this.state.category)
-    submitIdea(this.state.title, this.state.description, this.state.category,  this.props.token)
-    console.log("Did submit")
+    submitIdea(
+      this.state.title,
+      this.state.description,
+      this.state.category,
+      this.props.token
+    )
+    console.log('Did submit')
     this.setState({
-      description: "",
-      title: "",
-      category: "general"
+      description: '',
+      title: '',
+      category: 'general'
     })
     //this.props.handleClose()
 
@@ -79,34 +84,34 @@ class IdeaEditor extends Component {
               <ArrowBack />
             </IconButton>
             <Typography type="title" color="inherit" style={{ flex: 1 }}>
-              Compose{" "}
+              Compose{' '}
             </Typography>
             <Button color="contrast" onClick={this.props.handleClose}>
-              Submit{" "}
+              Submit{' '}
             </Button>
           </Toolbar>
         </AppBar>
         <DialogContent
           style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "85%",
-            alignSelf: "center"
+            display: 'flex',
+            flexDirection: 'column',
+            width: '85%',
+            alignSelf: 'center'
           }}
         >
           <Typography
             align="center"
             type="subheading"
-            style={{ paddingTop: "20px" }}
+            style={{ paddingTop: '20px' }}
           >
-            Submit an idea on how to improve MySail.Give it a name, a brief description, and a category.
-            {" "}
+            Submit an idea on how to improve MySail.Give it a name, a brief
+            description, and a category.{' '}
           </Typography>
           <TextField
             required
             id="idea-title"
             label="Title"
-            style={{ width: "50%" }}
+            style={{ width: '50%' }}
             margin="normal"
             onChange={this.handleTitleChange}
           />
@@ -117,8 +122,8 @@ class IdeaEditor extends Component {
             multiline
             rows="4"
             maxLength="2"
-            inputProps={{ maxLength: "650" }}
-            style={{ width: "100%" }}
+            inputProps={{ maxLength: '650' }}
+            style={{ width: '100%' }}
             margin="normal"
             onChange={this.handleDescChange}
           />
@@ -129,44 +134,44 @@ class IdeaEditor extends Component {
               name="category"
               value={this.state.category}
               onChange={this.handleChange}
-              style={{height: "125px"}}
+              style={{ height: '125px' }}
             >
-                <FormControlLabel
-                  value="general"
-                  control={<Radio />}
-                  label="General"
-                />
-                <FormControlLabel
-                  value="design"
-                  control={<Radio />}
-                  label="Design"
-                />
-                <FormControlLabel
-                  value="issue"
-                  control={<Radio />}
-                  label="Issue"
-                />
-                <FormControlLabel
-                  value="navigation"
-                  control={<Radio />}
-                  label="Navigation"
-                />
-                <FormControlLabel
-                  value="mobile"
-                  control={<Radio />}
-                  label="Mobile Apps"
-                />
-                <FormControlLabel
-                  value="feature"
-                  control={<Radio />}
-                  label="New Feature"
-                />
+              <FormControlLabel
+                value="general"
+                control={<Radio />}
+                label="General"
+              />
+              <FormControlLabel
+                value="design"
+                control={<Radio />}
+                label="Design"
+              />
+              <FormControlLabel
+                value="issue"
+                control={<Radio />}
+                label="Issue"
+              />
+              <FormControlLabel
+                value="navigation"
+                control={<Radio />}
+                label="Navigation"
+              />
+              <FormControlLabel
+                value="mobile"
+                control={<Radio />}
+                label="Mobile Apps"
+              />
+              <FormControlLabel
+                value="feature"
+                control={<Radio />}
+                label="New Feature"
+              />
             </RadioGroup>
           </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.generateForm} color="accent">
-            Submit{" "}
+            Submit{' '}
           </Button>
         </DialogActions>
       </Dialog>

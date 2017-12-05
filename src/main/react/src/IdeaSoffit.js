@@ -1,25 +1,25 @@
-import React, { Component } from "react"
-import IdeaList from "./IdeaList"
-import ModeEditIcon from "material-ui-icons/ModeEdit"
-import Button from "material-ui/Button"
-import { badWords } from "./utils/badWords"
-import { FormLabel, FormControl, FormControlLabel } from "material-ui/Form"
-import IdeaEditor from "./components/IdeaEditor"
+import React, { Component } from 'react'
+import IdeaList from './IdeaList'
+import ModeEditIcon from 'material-ui-icons/ModeEdit'
+import Button from 'material-ui/Button'
+import { badWords } from './utils/badWords'
+import { FormLabel, FormControl, FormControlLabel } from 'material-ui/Form'
+import IdeaEditor from './components/IdeaEditor'
 
 /* global pidm */
 /* global token */
 
 const buttonStyle = {
-  marginTop: "-37px",
-  marginRight: "28px"
+  marginTop: '-37px',
+  marginRight: '28px'
 }
 
 class IdeaSoffit extends Component {
   state = {
     open: false,
-    value: "general",
-    title: "",
-    description: ""
+    value: 'general',
+    title: '',
+    description: ''
   }
 
   handleRequestClose = () => {
@@ -31,16 +31,16 @@ class IdeaSoffit extends Component {
   }
 
   render() {
-    if (token === null || token === undefined){
+    if (token === null || token === undefined) {
       var token = 'demo'
     }
     return (
       <div
         className="idea-soffit-root"
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end"
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end'
         }}
       >
         <IdeaList url="./api/example.json" token={token} />

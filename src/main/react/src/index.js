@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import IdeaSoffit from './IdeaSoffit'
-import {MuiThemeProvider, createMuiTheme} from 'material-ui/styles'
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import 'typeface-arimo'
 import AdminIdeas from './AdminIdeas'
-import {red} from 'material-ui/colors'
+import { red } from 'material-ui/colors'
 
 const oakland = {
   50: '#f1eee9',
@@ -21,7 +21,7 @@ const oakland = {
   A200: '#0074b7',
   A400: '#0074b7',
   A700: '#0074b7',
-  contrastDefaultColor: 'light',
+  contrastDefaultColor: 'light'
 }
 
 const oaklandAccent = {
@@ -39,7 +39,7 @@ const oaklandAccent = {
   A200: '#0074b7',
   A400: '#5699ff',
   A700: '#3c8aff',
-  contrastDefaultColor: 'light',
+  contrastDefaultColor: 'light'
 }
 
 const theme = createMuiTheme({
@@ -47,23 +47,23 @@ const theme = createMuiTheme({
     primary: oakland,
     secondary: oaklandAccent,
     error: red,
-    type: 'light',
+    type: 'light'
   },
   typography: {
-    fontFamily: 'Arimo',
+    fontFamily: 'Arimo'
   },
   overrides: {
     Input: {
       textFieldInput: {
-        fontSize: '16px',
-      },
-    },
-  },
+        fontSize: '16px'
+      }
+    }
+  }
 })
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <AdminIdeas />
   </MuiThemeProvider>,
-  document.getElementById('idea-root'),
+  document.getElementById('idea-root')
 )
