@@ -33,9 +33,9 @@ import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
   root: {
-     '& li': {
-       padding: 0
-     },
+    '& li': {
+      padding: 0
+    }
   },
   textFieldRoot: {
     padding: 0,
@@ -54,27 +54,31 @@ const styles = theme => ({
 })
 
 class AdminDialog extends Component {
-  state = {
-    title: this.props.title,
-    desc: this.props.desc,
-    voteCount: this.propsvotes,
-    category: this.props.cat,
-    author: '8923832',
-    approved: this.props.isApproved
-  }
-
   handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value
-    })
+    let stateVar = 'd_' + [name]
+    this.props.changeParent(stateVar, event.target.value)
   }
 
   render() {
-    console.log('blob', this.state)
     const { classes } = this.props
     const d = new Date()
+    let title = this.props.title
+    let desc = this.props.desc
+    let vote = this.props.vote
+    let approved = this.props.approved
+    const category = 'bloop'
     let day = d.getDay()
     let tomorrow = d.getDay() + 1
+
+    if (title == null || title == undefined) {
+      title = 'null'
+    }
+    if (desc == null || desc == undefined) {
+      desc = 'null'
+    }
+    if (approved == null || approved == undefined) {
+      approved = false
+    }
 
     if (day < 9) {
       day = '0' + day
@@ -84,8 +88,7 @@ class AdminDialog extends Component {
     }
 
     let color
-    console.log("EY", this.props)
-    if (this.state.approved) {
+    if (approved) {
       color = { backgroundColor: '#00E676' }
     } else {
       color = { backgroundColor: '#E53935' }
@@ -94,6 +97,7 @@ class AdminDialog extends Component {
     const today1 = `${d.getFullYear()}-${d.getMonth()}-${day}`
     const today2 = `${d.getFullYear()}-${d.getMonth()}-${tomorrow}`
 
+    console.log(approved)
     return (
       <Dialog
         open={this.props.open}
@@ -115,23 +119,23 @@ class AdminDialog extends Component {
                   control={
                     <Switch
                       color="accent"
-                      checked={this.state.checkedA}
+                      checked={approved}
                       onChange={() =>
-                        this.setState({ approved: !this.state.approved })
+                        this.props.changeParent('d_approved', !approved)
                       }
                     />
                   }
                   label="Approved"
                 />
                 <Typography type="subheading" style={{ padding: 18 }}>
-                  Votes: {this.state.voteCount}
+                  Votes: {vote}
                 </Typography>
               </div>
               <Typography
                 style={{ paddingLeft: 16, paddingTop: 12 }}
                 type="subheading"
               >
-                Submitted By: {this.state.author}
+                Submitted By: {'killme'}
               </Typography>
               <div
                 className="title"
@@ -145,7 +149,7 @@ class AdminDialog extends Component {
                 <TextField
                   label="Title"
                   style={{ flex: '1 1 auto', marginRight: 8 }}
-                  value={this.state.title}
+                  value={title}
                   onChange={this.handleChange('title')}
                 />
                 <FormControl
@@ -153,7 +157,7 @@ class AdminDialog extends Component {
                 >
                   <InputLabel htmlFor="age-simple">Category</InputLabel>
                   <Select
-                    value={this.state.category}
+                    value={category}
                     onChange={this.handleChange('category')}
                     input={<Input id="category-select" />}
                   >
@@ -173,7 +177,7 @@ class AdminDialog extends Component {
                   label="Description"
                   margin="normal"
                   style={{ width: '100%', height: 18 }}
-                  value={this.state.desc}
+                  value={desc}
                   onChange={this.handleChange('desc')}
                 />
                 <div
@@ -183,7 +187,7 @@ class AdminDialog extends Component {
                     paddingTop: 18
                   }}
                 >
-                  {Object.is(this.state.approved, true) && (
+                  {Object.is(approved, true) && (
                     <div
                       style={{
                         width: '100%',

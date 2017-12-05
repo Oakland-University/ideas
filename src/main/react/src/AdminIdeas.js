@@ -63,13 +63,11 @@ class Ideas extends Component {
     mobile: true,
     feature: true,
     tabIndex: 0,
-    dialogShown: false,
-    dialogTitle: 'Loading...',
-    dialogApproved: true,
-    dialogVotes: 0,
-    dialogCategory: 'general',
-    dialogDesc: 'Loading...',
-    dialogRange: null
+    dialog: false,
+    d_title: 'Hello',
+    d_approved: true,
+    d_desc: 'stuff and things',
+    d_vote: 0
   }
 
   changeCategory = category => event => {
@@ -80,23 +78,25 @@ class Ideas extends Component {
     this.setState({ tabIndex })
   }
 
-  openDialog = (isApproved, title, votes, cat, desc, range) => {
-    const data = {
-      title: title,
-      isApproved: isApproved,
-      votes: votes,
-      cat: cat,
-      desc: desc,
-    }
-    this.setState({dialogData: data})
-    console.log(this.state.dialogData)
-    this.setState({ dialog: !this.state.dialog })
+  handleDialogChange = (name, variable) => {
+    console.log(name, variable)
+    this.setState({
+      name: variable
+    })
   }
 
-   render(){
+  openDialog = (isApproved, title, vote) => {
+    this.setState({
+      d_approved: isApproved,
+      d_title: title,
+      d_vote: vote,
+      dialog: !this.state.dialog
+    })
+  }
+
+  render() {
     const { classes } = this.props
     const { tabIndex } = this.state
-    console.log(this.state.dialog)
     return (
       <div
         className="idea-soffit-root"
@@ -192,8 +192,12 @@ class Ideas extends Component {
         )}
         <AdminDialog
           open={this.state.dialog}
-          handleClose={this.openDialog.bind(this)}
-          data={this.state.dialogData}
+          handleClose={() => this.setState({ dialog: false })}
+          dialogData={this.state.dialogData}
+          title={this.state.d_title}
+          approved={this.state.d_approved}
+          vote={this.state.d_vote}
+          description={this.state.d_desc}
         />
       </div>
     )
@@ -214,9 +218,9 @@ class MainList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, 'Hello', 23, this.props.openDialog)}
+            {ideaListItem(true, 'Hello', 23, this.props.openDialog)}
+            {ideaListItem(true, 'Hello', 23, this.props.openDialog)}
           </List>
         </Collapse>
         <ListItem style={{ borderBottom: '5px solid lightblue' }}>
@@ -229,9 +233,9 @@ class MainList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, 'Hello', 23, this.props.openDialog)}
+            {ideaListItem(true, 'Hello', 23, this.props.openDialog)}
+            {ideaListItem(true, 'Hello', 23, this.props.openDialog)}
           </List>
         </Collapse>
         <ListItem style={{ borderBottom: '5px solid #9575CD' }}>
@@ -244,9 +248,9 @@ class MainList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(false, 'Hello', 23, this.props.openDialog)}
+            {ideaListItem(false, 'Hello', 23, this.props.openDialog)}
+            {ideaListItem(false, 'Hello', 23, this.props.openDialog)}
           </List>
         </Collapse>
       </List>
@@ -268,9 +272,9 @@ class FlaggedList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, 'Hello', 23, this.props.openDialog)}
+            {ideaListItem(true, 'Hello', 23, this.props.openDialog)}
+            {ideaListItem(true, 'Hello', 23, this.props.openDialog)}
           </List>
         </Collapse>
       </List>
@@ -292,9 +296,9 @@ class ArchiveList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
-            {ideaListItem(true, "Hello", 23, this.props.openDialog)}
+            {ideaListItem(true, 'Hello', 23, this.props.openDialog)}
+            {ideaListItem(true, 'Hello', 23, this.props.openDialog)}
+            {ideaListItem(true, 'Hello', 23, this.props.openDialog)}
           </List>
         </Collapse>
       </List>
@@ -302,7 +306,7 @@ class ArchiveList extends Component {
   }
 }
 
-const ideaListItem =  (isApproved, title, vote, func ) => {
+const ideaListItem = (isApproved, title, vote, func) => {
   return (
     <ListItem
       button
@@ -314,7 +318,6 @@ const ideaListItem =  (isApproved, title, vote, func ) => {
     </ListItem>
   )
 }
-
 
 Ideas.propTypes = {
   classes: PropTypes.object.isRequired
