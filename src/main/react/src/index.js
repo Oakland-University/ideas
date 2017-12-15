@@ -5,6 +5,9 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import 'typeface-arimo'
 import AdminIdeas from './AdminIdeas'
 import { red } from 'material-ui/colors'
+import {getList} from './api/api'
+
+/* global token */
 
 const oakland = {
   50: '#f1eee9',
@@ -61,9 +64,10 @@ const theme = createMuiTheme({
   }
 })
 
+
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
-    <AdminIdeas />
+    <AdminIdeas token={token} />
   </MuiThemeProvider>,
   document.getElementById('idea-root')
 )

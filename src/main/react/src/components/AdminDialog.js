@@ -63,10 +63,10 @@ class AdminDialog extends Component {
     const { classes } = this.props
     const d = new Date()
     let title = this.props.title
-    let desc = this.props.desc
+    let desc = this.props.description
     let vote = this.props.vote
     let approved = this.props.approved
-    const category = 'bloop'
+    const category = this.props.category
     let day = d.getDay()
     let tomorrow = d.getDay() + 1
 
@@ -74,7 +74,7 @@ class AdminDialog extends Component {
       title = 'null'
     }
     if (desc == null || desc == undefined) {
-      desc = 'null'
+      desc = 'ull'
     }
     if (approved == null || approved == undefined) {
       approved = false
@@ -96,6 +96,7 @@ class AdminDialog extends Component {
 
     const today1 = `${d.getFullYear()}-${d.getMonth()}-${day}`
     const today2 = `${d.getFullYear()}-${d.getMonth()}-${tomorrow}`
+    const switchColor = '#e0eef6'
 
     console.log(approved)
     return (
@@ -118,7 +119,7 @@ class AdminDialog extends Component {
                   }}
                   control={
                     <Switch
-                      color="accent"
+                      style={{color: switchColor}}
                       checked={approved}
                       onChange={() =>
                         this.props.changeParent('d_approved', !approved)

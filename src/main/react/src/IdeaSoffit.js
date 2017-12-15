@@ -6,8 +6,6 @@ import { badWords } from './utils/badWords'
 import { FormLabel, FormControl, FormControlLabel } from 'material-ui/Form'
 import IdeaEditor from './components/IdeaEditor'
 
-/* global pidm */
-/* global token */
 
 const buttonStyle = {
   marginTop: '-37px',
@@ -31,9 +29,9 @@ class IdeaSoffit extends Component {
   }
 
   render() {
-    if (token === null || token === undefined) {
-      var token = 'demo'
-    }
+    const token = (Object.is(this.props.token, null)) ?  'demo' : this.props.token 
+    console.log("token", token)
+
     return (
       <div
         className="idea-soffit-root"

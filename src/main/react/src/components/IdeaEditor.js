@@ -59,7 +59,8 @@ class IdeaEditor extends Component {
       title: '',
       category: 'general'
     })
-    //this.props.handleClose()
+
+    this.props.handleClose()
 
     //TODO: write function to call parent onClose
   }
