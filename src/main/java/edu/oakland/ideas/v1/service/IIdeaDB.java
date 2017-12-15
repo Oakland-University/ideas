@@ -13,8 +13,6 @@ public interface IIdeaDB {
 
   public void addIdea(Idea idea);
 
-  public int getCategoryInt(String category);
-
   public void submitVote(Vote vote);
 
   public void logForAdmin(String description, String ideaID, String pidm, Timestamp time);

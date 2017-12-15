@@ -37,10 +37,10 @@ public class IdeaDB implements IIdeaDB {
   private JdbcTemplate jdbcTemplate;
 
 
-  @Resource(name = "dataSource")
-  public void setDataSource(DataSource dataSource) {
-    this.jdbcTemplate = new JdbcTemplate(dataSource);
-  }
+  //@Resource(name = "dataSource")
+  //public void setDataSource(DataSource dataSource) {
+  //  this.jdbcTemplate = new JdbcTemplate(dataSource);
+  //}
 
   public void getIdea(){
   }
@@ -57,7 +57,8 @@ public class IdeaDB implements IIdeaDB {
         }catch(Exception e){
           System.out.println(e);
         }
-        return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"), rs.getString("category"), rs.getInt("vote_count"), vote);
+        return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"), rs.getString("created_by"), 
+            rs.getTimestamp("created_at"), rs.getString("category"), rs.getInt("vote_count"), vote);
       }else{
         return null;
       }
@@ -73,14 +74,11 @@ public class IdeaDB implements IIdeaDB {
 
 
   public void addIdea(Idea idea){
-    jdbcTemplate.update("insert into idea_post (title, description, created_by, created_at, category) values (?, ?, ?, ?, (select category_id from idea_categories where category='test'))", 
-        idea.getTitle(), idea.getDescription(), idea.getCreatedBy(), idea.getCreatedAt());
+    int cat = jdbcTemplate.queryForObject("SELECT category_id from idea_categories where category like ?", new Object[] { idea.getCategory() }, Integer.class);
+    jdbcTemplate.update("insert into idea_post (title, description, created_by, created_at, category) values (?, ?, ?, ?, ?)", 
+        idea.getTitle(), idea.getDescription(), idea.getCreatedBy(), idea.getCreatedAt(), cat);
   }
 
-  public int getCategoryInt(String cat){
-    int thing = jdbcTemplate.queryForObject("SELECT id from idea_category where name like ?", new Object[] { cat }, Integer.class);   
-    return thing;
-  }
 
   public void submitVote(Vote vote){
 
