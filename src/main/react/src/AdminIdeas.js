@@ -31,7 +31,7 @@ import parse from 'autosuggest-highlight/parse'
 import Dialog, { DialogContent, DialogActions } from 'material-ui/Dialog'
 import AdminDialog from './components/AdminDialog.js'
 import { withStyles } from 'material-ui/styles'
-import { getList } from './api/api.js'
+import { getList, getAdminData } from './api/api.js'
 
 const styles = theme => ({
   root: {
@@ -65,22 +65,40 @@ class Ideas extends Component {
     feature: true,
     tabIndex: 0,
     idea_list: {},
+    flagged_list: {},
+    unapproved_list: {},
     dialog: false,
     d_title: 'Hello',
     d_approved: true,
     d_desc: 'stuff and things',
     d_vote: 0,
-    d_category: 0
+    d_category: 0,
+    d_start: 0,
+    d_end: 0
   }
 
-  componentDidMount(){
-     getList({
-       token: this.props.token,
-       url:"./api/example.json",
-       credentialsNeeded: false
-     }).then(ideas => {
-       this.setState({idea_list: ideas})
-     })
+  componentDidMount() {
+    getList({
+      token: this.props.token,
+      url: './api/example.json',
+      credentialsNeeded: false
+    }).then(ideas => {
+      this.setState({ idea_list: ideas })
+    })
+    getAdminData({
+      token: this.props.token,
+      url: 'getUnapprovedIdeas',
+      credentialsNeeded: false
+    }).then(unapproved => {
+      this.setState({ unapproved_list: unapproved })
+    })
+    getAdminData({
+      token: this.props.token,
+      url: 'getArchive',
+      credentialsNeeded: false
+    }).then(unapproved => {
+      this.setState({ unapproved_list: unapproved })
+    })
   }
 
   changeCategory = category => event => {
@@ -99,6 +117,7 @@ class Ideas extends Component {
   }
 
   openDialog = (isApproved, title, vote, desc, category) => {
+    console.log("Hitting 'open'")
     this.setState({
       d_approved: isApproved,
       d_title: title,
@@ -198,7 +217,13 @@ class Ideas extends Component {
             label="New Features"
           />
         </div>
-        {tabIndex === 0 && <MainList ideas={this.state.idea_list} openDialog={this.openDialog.bind(this)} />}
+        {tabIndex === 0 && (
+          <MainList
+            ideas={this.state.idea_list}
+            unapproved={this.state.unapproved_list}
+            openDialog={this.openDialog.bind(this)}
+          />
+        )}
         {tabIndex === 1 && (
           <FlaggedList openDialog={this.openDialog.bind(this)} />
         )}
@@ -215,6 +240,7 @@ class Ideas extends Component {
           vote={this.state.d_vote}
           category={this.state.d_category}
           description={this.state.d_desc}
+          token={this.props.token}
         />
       </div>
     )
@@ -222,11 +248,10 @@ class Ideas extends Component {
 }
 
 class MainList extends Component {
-
   createList = () => {
-    const {ideas} = this.props
+    const { ideas } = this.props
 
-    if (ideas === null || ideas === undefined){
+    if (ideas === null || ideas === undefined) {
       return null
     }
 
@@ -234,13 +259,22 @@ class MainList extends Component {
 
     for (let value in ideas) {
       const idea = ideas[value]
-      ideaArray.add(ideaListItem(idea.approved, idea.title, idea.userVote, idea.description, idea.category, this.props.openDialog))
-      console.log(ideas[value])
+      ideaArray.push(
+        ideaListItem(
+          idea.approved,
+          idea.title,
+          idea.userVote,
+          idea.description,
+          idea.category,
+          this.props.openDialog
+        )
+      )
     }
+
+    return ideaArray
   }
 
   render() {
-    this.createList()
     return (
       <List>
         <ListItem style={{ borderBottom: '5px solid #689F38' }}>
@@ -253,8 +287,7 @@ class MainList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            {ideaListItem(true, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
-            {ideaListItem(true, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
+            {ideaListItem(this.props.ideas, this.props.openDialog)}
           </List>
         </Collapse>
         <ListItem style={{ borderBottom: '5px solid lightblue' }}>
@@ -267,9 +300,7 @@ class MainList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            {ideaListItem(true, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
-            {ideaListItem(true, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
-            {ideaListItem(true, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
+            {ideaListItem(this.props.ideas, this.props.openDialog)}
           </List>
         </Collapse>
         <ListItem style={{ borderBottom: '5px solid #9575CD' }}>
@@ -282,9 +313,7 @@ class MainList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            {ideaListItem(false, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
-            {ideaListItem(false, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
-            {ideaListItem(false, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
+            {ideaListItem(this.props.unapproved, this.props.openDialog)}
           </List>
         </Collapse>
       </List>
@@ -305,11 +334,7 @@ class FlaggedList extends Component {
           transitionDuration="auto"
           unmountOnExit
         >
-          <List disablePadding>
-            {ideaListItem(true, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
-            {ideaListItem(true, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
-            {ideaListItem(true, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
-          </List>
+          <List disablePadding />
         </Collapse>
       </List>
     )
@@ -329,28 +354,43 @@ class ArchiveList extends Component {
           transitionDuration="auto"
           unmountOnExit
         >
-          <List disablePadding>
-            {ideaListItem(true, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
-            {ideaListItem(true, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
-            {ideaListItem(true, 'Hello', 23, 'stuff and things', 0, this.props.openDialog)}
-          </List>
+          <List disablePadding />
         </Collapse>
       </List>
     )
   }
 }
 
-const ideaListItem = (isApproved, title, vote, desc, category ,func) => {
-  return (
-    <ListItem
-      button
-      style={{ backgroundColor: 'white' }}
-      onClick={() => func(isApproved, title, vote, desc, category)}
-    >
-      <ListItemText inset primary={title} />
-      <Typography>{vote}</Typography>
-    </ListItem>
-  )
+const ideaListItem = (ideas, func) => {
+  if (ideas === null || ideas === undefined) {
+    return null
+  }
+
+  let ideaArray = []
+
+  for (let value in ideas) {
+    const idea = ideas[value]
+    ideaArray.push(
+      <ListItem
+        button
+        style={{ backgroundColor: 'white' }}
+        onClick={() =>
+          func(
+            idea.approved,
+            idea.title,
+            idea.userVote,
+            idea.description,
+            idea.category
+          )
+        }
+      >
+        <ListItemText inset primary={idea.title} />
+        <Typography>{idea.vote}</Typography>
+      </ListItem>
+    )
+  }
+
+  return ideaArray
 }
 
 Ideas.propTypes = {

@@ -144,9 +144,56 @@ export const getList = async obj => {
       headers: { Authorization: 'Bearer ' + obj.token }
     })
     let blob = await response.json()
-    console.log(blob)
     return blob
   } catch (err) {
     console.error(err)
+  }
+}
+
+export const getAdminData = async obj => {
+  try {
+    const url = 'http://localhost:8080/ideas/api/v1/' + obj.url
+    let response = await fetch(url, {
+      credentials: 'include',
+      headers: { Authorization: 'Bearer ' + obj.token }
+    })
+    let blob = await response.json()
+    return blob
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const editIdea = async obj => {
+  try {
+    console.log(obj)
+    let response
+    let data = {
+      title: obj.title,
+      description: obj.description,
+      category: obj.category,
+      approved: obj.approved
+    }
+    //
+    //  startVoteDate: obj.start,
+    //  endVoteDate: obj.end
+
+    const formBody = Object.keys(data)
+      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+      .join('&')
+
+    //response = await fetch('http://localhost:8080/ideas/api/v1/editIdea', {
+    //  body: formBody,
+    //  credentials: 'include',
+    //  headers: {
+    //    Authorization: 'Bearer ' + obj.token,
+    //    Accept: 'application/json',
+    //    'Content-Type': 'application/x-www-form-urlencoded'
+    //  },
+    //  method: 'POST'
+    //})
+    //let blob = await response.json()
+  } catch (err) {
+    console.log(err)
   }
 }

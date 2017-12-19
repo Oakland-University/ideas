@@ -29,6 +29,7 @@ import Paper from 'material-ui/Paper'
 import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
 import Dialog, { DialogContent, DialogActions } from 'material-ui/Dialog'
+import { editIdea } from '../api/api.js'
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
@@ -57,6 +58,10 @@ class AdminDialog extends Component {
   handleChange = name => event => {
     let stateVar = 'd_' + [name]
     this.props.changeParent(stateVar, event.target.value)
+  }
+
+  handleSave = () => {
+    editIdea(this.props)
   }
 
   render() {
@@ -94,8 +99,8 @@ class AdminDialog extends Component {
       color = { backgroundColor: '#E53935' }
     }
 
-    const today1 = `${d.getFullYear()}-${d.getMonth()}-${day}`
-    const today2 = `${d.getFullYear()}-${d.getMonth()}-${tomorrow}`
+    const date1 = this.props.start
+    const date2 = this.props.end
     const switchColor = '#e0eef6'
 
     console.log(approved)
@@ -107,6 +112,7 @@ class AdminDialog extends Component {
         onRequestClose={this.props.handleClose}
         transition={Slide}
         className={classes.root}
+        contentStyle={{ width: '100%' }}
       >
         <ListItem>
           <Card style={{ flex: 1 }}>
@@ -119,7 +125,7 @@ class AdminDialog extends Component {
                   }}
                   control={
                     <Switch
-                      style={{color: switchColor}}
+                      style={{ color: switchColor }}
                       checked={approved}
                       onChange={() =>
                         this.props.changeParent('d_approved', !approved)
@@ -202,7 +208,7 @@ class AdminDialog extends Component {
                         label="Voting Starts"
                         inputClassName={classes.textFieldInput}
                         type="date"
-                        defaultValue={today1}
+                        defaultValue={date1}
                       />
                       <TextField
                         id="dater"
@@ -210,7 +216,7 @@ class AdminDialog extends Component {
                         label="Voting Ends"
                         inputClassName={classes.textFieldInput}
                         type="date"
-                        defaultValue={today2}
+                        defaultValue={date2}
                       />
                     </div>
                   )}
@@ -219,7 +225,9 @@ class AdminDialog extends Component {
               <CardActions
                 style={{ display: 'flex', justifyContent: 'flex-end' }}
               >
-                <Button color="accent">Save</Button>
+                <Button color="accent" onClick={this.handleSave}>
+                  Save
+                </Button>
               </CardActions>
             </div>
             <Typography

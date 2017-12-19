@@ -5,7 +5,7 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import 'typeface-arimo'
 import AdminIdeas from './AdminIdeas'
 import { red } from 'material-ui/colors'
-import {getList} from './api/api'
+import { getList } from './api/api'
 
 /* global token */
 
@@ -53,17 +53,20 @@ const theme = createMuiTheme({
     type: 'light'
   },
   typography: {
-    fontFamily: 'Arimo'
+    fontFamily: 'Arimo',
+    fontSize: '16px'
   },
   overrides: {
     Input: {
       textFieldInput: {
         fontSize: '16px'
       }
+    },
+    Checkbox: {
+      fontSize: '16px'
     }
   }
 })
-
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
