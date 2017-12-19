@@ -18,6 +18,9 @@ import edu.oakland.ideas.v1.model.Vote;
 import edu.oakland.ideas.v1.service.*;
 import java.util.List;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,6 +42,78 @@ public class ApiV1 {
         return ideaDB.getIdeaList(5, pidm);
       }
       return ideaDB.getIdeaList(i, pidm); 
+    }
+
+    @RequestMapping("/getUnapprovedIdeas")
+    public List<Idea> getUnapprovedIdeas(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request){
+      Claims claims = jwtService.decrypt(request);
+      String pidm = (String) claims.get("pidm");
+
+      if (ideaDB.isAdmin(pidm)){
+        return ideaDB.getUnapprovedIdeas(i);
+      } else {
+        return ideaDB.getIdeaList(i, pidm);
+      }
+
+    }
+
+    @RequestMapping("/getWaitingIdeas")
+    public List<Idea> getWaitingIdeas(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request){
+      Claims claims = jwtService.decrypt(request);
+      String pidm = (String) claims.get("pidm");
+
+      if (ideaDB.isAdmin(pidm)){
+        return ideaDB.getWaitingIdeas(i);
+      } else {
+        return ideaDB.getIdeaList(i, pidm);
+      }
+
+    }
+
+    @RequestMapping("/getArchive")
+    public List<Idea> getArchive(@RequestParam(value = "i", required = false, defaultValue = "10") int i, HttpServletRequest request){
+      Claims claims = jwtService.decrypt(request);
+      String pidm = (String) claims.get("pidm");
+
+      if (ideaDB.isAdmin(pidm)){
+        return ideaDB.getAdminIdeas(7, i);
+      } else {
+        return ideaDB.getIdeaList(i, pidm);
+      }
+
+    }
+
+    @RequestMapping("/getFlagged")
+    public List<Idea> getFlagged(@RequestParam(value = "i", required = false, defaultValue = "10") int i, HttpServletRequest request){
+      Claims claims = jwtService.decrypt(request);
+      String pidm = (String) claims.get("pidm");
+
+      if (ideaDB.isAdmin(pidm)){
+        return ideaDB.getAdminIdeas(8, i);
+      } else {
+        return ideaDB.getIdeaList(i, pidm);
+      }
+
+    }
+
+    @RequestMapping("/getAdminIdeas")
+    public List<Idea> getUnapprovedIdeas(@RequestParam Map<String, Integer> requestParams, HttpServletRequest request){
+      Claims claims = jwtService.decrypt(request);
+      String pidm = (String) claims.get("pidm");
+
+      if (ideaDB.isAdmin(pidm)){
+        return ideaDB.getAdminIdeas(requestParams.get("stuff"),requestParams.get("stuff"));
+      } else {
+        return ideaDB.getIdeaList(requestParams.get("stuff"), pidm);
+      }
+
+    }
+
+    @PostMapping("/editIdea")
+    public void editIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
+      Claims claims = jwtService.decrypt(request);
+      System.out.println("\n\nEditing idea:");
+      ideaDB.editIdea(idea);
     }
 
     @PostMapping("/submitIdea")
