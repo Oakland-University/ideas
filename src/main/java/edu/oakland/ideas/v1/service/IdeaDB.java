@@ -65,9 +65,84 @@ public class IdeaDB implements IIdeaDB {
     };
 
         
-
-    List<Idea> list = jdbcTemplate.query("SELECT * from idea_post where category=1 ORDER BY vote_count DESC limit ?", rowMapper, ideaNumber);
+    //TODO: Add a check for dates
+    String sql = "SELECT * from idea_post where category=1 and approved=true and start_vote_date <= now() and end_vote_date >= now() ORDER BY vote_count DESC limit ?";
+    List<Idea> list = jdbcTemplate.query(sql, rowMapper, ideaNumber);
     return list;
+
+  }
+
+  public List<Idea> getUnapprovedIdeas(int ideaNumber) {
+
+    RowMapper<Idea> rowMapper = (rs, rowNum) -> {
+      if ( rowNum < ideaNumber ){
+        return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"), rs.getString("created_by"), 
+            rs.getTimestamp("created_at"), rs.getString("category"), rs.getInt("vote_count"), 0);
+      }else{
+        return null;
+      }
+    };
+
+        
+    //TODO: Add a check for dates
+
+    List<Idea> list = jdbcTemplate.query("SELECT * from idea_post where category=1 and approved=false ORDER BY created_at ", rowMapper);
+    return list;
+
+  }
+
+  public List<Idea> getWaitingIdeas(int ideaNumber) {
+
+    RowMapper<Idea> rowMapper = (rs, rowNum) -> {
+      if ( rowNum < ideaNumber ){
+        return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"), rs.getString("created_by"), 
+            rs.getTimestamp("created_at"), rs.getString("category"), rs.getInt("vote_count"), 0);
+      }else{
+        return null;
+      }
+    };
+
+        
+    //TODO: Add a check for dates
+    List<Idea> list = jdbcTemplate.query("SELECT * from idea_post where category=1 and start_vote_date > now() and approved=true ORDER BY created_at ", rowMapper);
+    return list;
+
+  }
+
+  public List<Idea> getAdminIdeas(int category, int ideaNumber) {
+
+    RowMapper<Idea> rowMapper = (rs, rowNum) -> {
+      if ( rowNum < ideaNumber ){
+        return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"), rs.getString("created_by"), 
+            rs.getTimestamp("created_at"), rs.getString("category"), rs.getInt("vote_count"), 0);
+      }else{
+        return null;
+      }
+    };
+
+        
+    //TODO: Add a check for dates
+
+    List<Idea> list = jdbcTemplate.query("SELECT * from idea_post where category=? ORDER BY created_at ", rowMapper, category);
+    return list;
+
+  }
+
+  public boolean isAdmin(String pidm){
+    try { 
+      return jdbcTemplate.queryForObject("select exists(select 1 from idea_approvers where pidm=?)", new Object[] {pidm}, Boolean.class);   
+    }catch (Exception e){
+      System.out.println(e);
+      return false;
+    }
+  }
+
+  public void editIdea(Idea idea) {
+
+    System.out.println(idea.getUserVote());
+    
+    jdbcTemplate.update("insert into idea_post (title, description, category, approved, start_vote_date, end_vote_date) values (?, ?, ?, ?, ?, ?)", 
+        idea.getTitle(), idea.getDescription(), idea.getCategory(), idea.isApproved(), idea.getStartVoteDate(), idea.getEndVoteDate());
 
   }
 
