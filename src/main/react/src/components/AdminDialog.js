@@ -55,6 +55,7 @@ const styles = theme => ({
 })
 
 class AdminDialog extends Component {
+
   handleChange = name => event => {
     let stateVar = 'd_' + [name]
     this.props.changeParent(stateVar, event.target.value)
@@ -112,7 +113,7 @@ class AdminDialog extends Component {
         onRequestClose={this.props.handleClose}
         transition={Slide}
         className={classes.root}
-        contentStyle={{ width: '100%' }}
+        contentStyle={{width: "100%"}}
       >
         <ListItem>
           <Card style={{ flex: 1 }}>
@@ -125,7 +126,7 @@ class AdminDialog extends Component {
                   }}
                   control={
                     <Switch
-                      style={{ color: switchColor }}
+                      style={{color: switchColor}}
                       checked={approved}
                       onChange={() =>
                         this.props.changeParent('d_approved', !approved)
@@ -209,6 +210,7 @@ class AdminDialog extends Component {
                         inputClassName={classes.textFieldInput}
                         type="date"
                         defaultValue={date1}
+                        value={this.props.start}
                       />
                       <TextField
                         id="dater"
@@ -217,6 +219,8 @@ class AdminDialog extends Component {
                         inputClassName={classes.textFieldInput}
                         type="date"
                         defaultValue={date2}
+                        value={this.props.end}
+                         
                       />
                     </div>
                   )}
@@ -225,9 +229,7 @@ class AdminDialog extends Component {
               <CardActions
                 style={{ display: 'flex', justifyContent: 'flex-end' }}
               >
-                <Button color="accent" onClick={this.handleSave}>
-                  Save
-                </Button>
+                <Button color="accent" onClick={this.handleSave} >Save</Button>
               </CardActions>
             </div>
             <Typography
