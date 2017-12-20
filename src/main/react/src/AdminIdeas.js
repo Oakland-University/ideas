@@ -58,7 +58,8 @@ class Ideas extends Component {
     d_category: 0,
     d_start: 0,
     d_end: 0,
-    d_id: 0
+    d_id: 0,
+    d_submitter: '00000'
   }
 
   componentDidMount() {
@@ -135,13 +136,14 @@ class Ideas extends Component {
     })
   }
 
-  openDialog = (isApproved, title, vote, desc, category, id) => {
+  openDialog = (isApproved, title, vote, desc, category, submitter, id) => {
     this.setState({
       d_approved: isApproved,
       d_title: title,
       d_vote: vote,
       d_desc: desc,
       d_category: category,
+      d_submitter: submitter,
       d_id: id,
       dialog: !this.state.dialog
     })
@@ -177,7 +179,13 @@ class Ideas extends Component {
             <Tab label="Archive" />
           </Tabs>
         </AppBar>
-        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            flexWrap: 'wrap'
+          }}
+        >
           <FormControlLabel
             checked={this.state.general}
             control={
@@ -263,6 +271,7 @@ class Ideas extends Component {
           start={this.state.d_start}
           end={this.state.d_end}
           id={this.state.d_id}
+          submitter={this.state.d_submitter}
           token={this.props.token}
         />
       </div>
@@ -381,6 +390,7 @@ const ideaListItem = (ideas, func) => {
             idea.userVote,
             idea.description,
             idea.category,
+            idea.createdBy,
             idea.id
           )
         }

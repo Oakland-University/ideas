@@ -197,3 +197,18 @@ export const editIdea = async obj => {
     console.log(err)
   }
 }
+
+export const adminCheck = async token => {
+  try {
+    const url = 'http://localhost:8080/ideas/api/v1/adminCheck'
+    let response = await fetch(url, {
+      credentials: 'include',
+      headers: { Authorization: 'Bearer ' + token }
+    })
+    let blob = await response.json()
+    console.log('API', blob)
+    return blob
+  } catch (err) {
+    console.error(err)
+  }
+}

@@ -116,6 +116,13 @@ public class ApiV1 {
       ideaDB.editIdea(idea);
     }
 
+    @RequestMapping("/adminCheck")
+    public boolean adminCheck(HttpServletRequest request) {
+      Claims claims = jwtService.decrypt(request);
+      String pidm = (String) claims.get("pidm");
+      return ideaDB.isAdmin(pidm);
+    }
+
     @PostMapping("/submitIdea")
     public void putIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);

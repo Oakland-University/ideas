@@ -55,6 +55,7 @@ class AdminDialog extends Component {
     let vote = this.props.vote
     let approved = this.props.approved
     const category = this.props.category
+    const submitter = this.props.submitter
 
     if (title === null || title === undefined) {
       title = 'null'
@@ -114,7 +115,7 @@ class AdminDialog extends Component {
                 style={{ paddingLeft: 16, paddingTop: 12 }}
                 type="subheading"
               >
-                Submitted By: {'killme'}
+                Submitted By: {submitter}
               </Typography>
               <div
                 className="title"

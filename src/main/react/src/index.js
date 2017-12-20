@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import IdeaSoffit from './IdeaSoffit'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import 'typeface-arimo'
 import AdminIdeas from './AdminIdeas'
 import { red } from 'material-ui/colors'
-import { getList } from './api/api'
+import { adminCheck } from './api/api'
 
 /* global token */
 
@@ -68,9 +68,29 @@ const theme = createMuiTheme({
   }
 })
 
+class ParentElement extends Component {
+  state = {
+    isAdmin: false
+  }
+
+  componentDidMount() {
+    adminCheck(token).then(isAdmin => {
+      this.setState({ isAdmin })
+    })
+  }
+
+  render() {
+    const { isAdmin } = this.state
+    if (isAdmin) {
+      return <AdminIdeas token={token} />
+    } else {
+      return <IdeaSoffit token={token} />
+    }
+  }
+}
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
-    <AdminIdeas token={token} />
+    <ParentElement />
   </MuiThemeProvider>,
   document.getElementById('idea-root')
 )
