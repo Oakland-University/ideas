@@ -49,6 +49,19 @@ public class Idea {
       this.userVote = userVote;
     }
 
+    public Idea(int id, boolean approved, String title, String description, String createdBy, Timestamp createdAt, String category, int voteCount, int userVote){
+      this.id = id;
+      this.title = title;
+      this.description = description;
+      this.createdBy = createdBy;
+      this.createdAt = createdAt;
+      this.category = category;
+      this.approved = approved;
+      this.avatar = category.toUpperCase().substring(0,1);
+      this.voteCount = voteCount;
+      this.userVote = userVote;
+    }
+
     public Idea(String title, String description, String createdBy, Timestamp createdAt, String category){
       this.title = title;
       this.description = description;
@@ -59,8 +72,19 @@ public class Idea {
       this.avatar = category.toUpperCase().substring(0,1);
     }
 
+    public Idea(int id, String title, String description, String category, boolean approved, Timestamp startVoteDate, Timestamp endVoteDate){
+      this.id = id;
+      this.title = title;
+      this.description = description;
+      this.category = category;
+      this.approved = approved;
+      this.avatar = category.toUpperCase().substring(0,1);
+      this.startVoteDate = startVoteDate;
+      this.endVoteDate = endVoteDate;
+    }
+
     public String toString(){
-      String bob = title + "\n" + description + "\n" + createdAt.toString();
+      String bob = title + "\n" + description + "\n";
       return bob;
     }
 }

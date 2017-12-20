@@ -7,8 +7,6 @@ import java.sql.Timestamp;
 
 public interface IIdeaDB {
 
-  public void getIdea();
-
   public List<Idea> getIdeaList(int ideaNumber, String pidm);
 
   public void addIdea(Idea idea);

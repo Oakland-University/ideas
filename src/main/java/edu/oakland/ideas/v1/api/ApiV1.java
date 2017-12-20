@@ -37,7 +37,7 @@ public class ApiV1 {
     public List<Idea> idea(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
-
+      
       if (i < 1) {
         return ideaDB.getIdeaList(5, pidm);
       }
@@ -61,6 +61,7 @@ public class ApiV1 {
     public List<Idea> getWaitingIdeas(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
+
 
       if (ideaDB.isAdmin(pidm)){
         return ideaDB.getWaitingIdeas(i);
@@ -112,17 +113,14 @@ public class ApiV1 {
     @PostMapping("/editIdea")
     public void editIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
-      System.out.println("\n\nEditing idea:");
       ideaDB.editIdea(idea);
     }
 
     @PostMapping("/submitIdea")
     public void putIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
-      System.out.println("\n\nCreating new idea:");
       idea.setCreatedAt(new Timestamp(System.currentTimeMillis()));
       idea.setCreatedBy((String)claims.get("pidm"));
-      System.out.println(idea.toString());
       ideaDB.addIdea(idea);
     }
     
@@ -137,7 +135,6 @@ public class ApiV1 {
       Claims claims = jwtService.decrypt(request);      
       vote.setVotedAt(new Timestamp(System.currentTimeMillis()));
       vote.setUserPidm((String)claims.get("pidm"));
-      System.out.println(vote.toString());
       ideaDB.submitVote(vote);
     }
 

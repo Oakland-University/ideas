@@ -37,14 +37,6 @@ public class IdeaDB implements IIdeaDB {
   private JdbcTemplate jdbcTemplate;
 
 
-  //@Resource(name = "dataSource")
-  //public void setDataSource(DataSource dataSource) {
-  //  this.jdbcTemplate = new JdbcTemplate(dataSource);
-  //}
-
-  public void getIdea(){
-  }
-
 
   public List<Idea> getIdeaList(int ideaNumber, String pidm){
 
@@ -57,7 +49,7 @@ public class IdeaDB implements IIdeaDB {
         }catch(Exception e){
           System.out.println(e);
         }
-        return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"), rs.getString("created_by"), 
+        return new Idea(rs.getInt("idea_id"), rs.getBoolean("approved"), rs.getString("title"), rs.getString("description"), rs.getString("created_by"), 
             rs.getTimestamp("created_at"), rs.getString("category"), rs.getInt("vote_count"), vote);
       }else{
         return null;
@@ -95,7 +87,7 @@ public class IdeaDB implements IIdeaDB {
 
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if ( rowNum < ideaNumber ){
-        return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"), rs.getString("created_by"), 
+        return new Idea(rs.getInt("idea_id"), rs.getBoolean("approved"), rs.getString("title"), rs.getString("description"), rs.getString("created_by"), 
             rs.getTimestamp("created_at"), rs.getString("category"), rs.getInt("vote_count"), 0);
       }else{
         return null;
@@ -139,10 +131,8 @@ public class IdeaDB implements IIdeaDB {
 
   public void editIdea(Idea idea) {
 
-    System.out.println(idea.getUserVote());
-    
-    jdbcTemplate.update("insert into idea_post (title, description, category, approved, start_vote_date, end_vote_date) values (?, ?, ?, ?, ?, ?)", 
-        idea.getTitle(), idea.getDescription(), idea.getCategory(), idea.isApproved(), idea.getStartVoteDate(), idea.getEndVoteDate());
+    jdbcTemplate.update("update idea_post set (title, description, category, approved, start_vote_date, end_vote_date) = (?, ?, ?, ?, ?, ?) where idea_id=?", 
+        idea.getTitle(), idea.getDescription(), Integer.parseInt(idea.getCategory()), idea.isApproved(), idea.getStartVoteDate(), idea.getEndVoteDate(), idea.getId());
 
   }
 
