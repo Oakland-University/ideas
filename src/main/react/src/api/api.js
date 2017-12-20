@@ -169,30 +169,30 @@ export const editIdea = async obj => {
     console.log(obj)
     let response
     let data = {
+      id: obj.id,
       title: obj.title,
       description: obj.description,
       category: obj.category,
-      approved: obj.approved
+      approved: obj.approved,
+      startVoteDate: obj.start + ' 00:00:00',
+      endVoteDate: obj.end + ' 00:00:00'
     }
-    //
-    //  startVoteDate: obj.start,
-    //  endVoteDate: obj.end
 
     const formBody = Object.keys(data)
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
       .join('&')
 
-    //response = await fetch('http://localhost:8080/ideas/api/v1/editIdea', {
-    //  body: formBody,
-    //  credentials: 'include',
-    //  headers: {
-    //    Authorization: 'Bearer ' + obj.token,
-    //    Accept: 'application/json',
-    //    'Content-Type': 'application/x-www-form-urlencoded'
-    //  },
-    //  method: 'POST'
-    //})
-    //let blob = await response.json()
+    response = await fetch('http://localhost:8080/ideas/api/v1/editIdea', {
+      body: formBody,
+      credentials: 'include',
+      headers: {
+        Authorization: 'Bearer ' + obj.token,
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      method: 'POST'
+    })
+    let blob = await response.json()
   } catch (err) {
     console.log(err)
   }

@@ -1,34 +1,17 @@
 import React, { Component } from 'react'
+import { ListItem } from 'material-ui/List'
 import Slide from 'material-ui/transitions/Slide'
-import List, {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListItemSecondaryAction
-} from 'material-ui/List'
-import Collapse from 'material-ui/transitions/Collapse'
-import AppBar from 'material-ui/AppBar'
-import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
-import IconButton from 'material-ui/IconButton'
-import SearchIcon from 'material-ui-icons/Search'
-import AccountCircle from 'material-ui-icons/AccountCircle'
 import Switch from 'material-ui/Switch'
-import { FormControl, FormGroup, FormControlLabel } from 'material-ui/Form'
-import Checkbox from 'material-ui/Checkbox'
-import Menu, { MenuItem } from 'material-ui/Menu'
-import Tabs, { Tab } from 'material-ui/Tabs'
+import { FormControl, FormControlLabel } from 'material-ui/Form'
+import { MenuItem } from 'material-ui/Menu'
 import Button from 'material-ui/Button'
 import Card, { CardContent, CardActions } from 'material-ui/Card'
 import TextField from 'material-ui/TextField'
 import PropTypes from 'prop-types'
 import Input, { InputLabel } from 'material-ui/Input'
 import Select from 'material-ui/Select'
-import Autosuggest from 'react-autosuggest'
-import Paper from 'material-ui/Paper'
-import match from 'autosuggest-highlight/match'
-import parse from 'autosuggest-highlight/parse'
-import Dialog, { DialogContent, DialogActions } from 'material-ui/Dialog'
+import Dialog from 'material-ui/Dialog'
 import { editIdea } from '../api/api.js'
 import { withStyles } from 'material-ui/styles'
 
@@ -55,7 +38,6 @@ const styles = theme => ({
 })
 
 class AdminDialog extends Component {
-
   handleChange = name => event => {
     let stateVar = 'd_' + [name]
     this.props.changeParent(stateVar, event.target.value)
@@ -73,38 +55,27 @@ class AdminDialog extends Component {
     let vote = this.props.vote
     let approved = this.props.approved
     const category = this.props.category
-    let day = d.getDay()
-    let tomorrow = d.getDay() + 1
 
-    if (title == null || title == undefined) {
+    if (title === null || title === undefined) {
       title = 'null'
     }
-    if (desc == null || desc == undefined) {
+    if (desc === null || desc === undefined) {
       desc = 'ull'
     }
-    if (approved == null || approved == undefined) {
+    if (approved === null || approved === undefined) {
       approved = false
     }
 
-    if (day < 9) {
-      day = '0' + day
-      tomorrow = '0' + tomorrow
-    } else if (day === 9) {
-      day = '0' + day
-    }
-
     let color
-    if (approved) {
+    if (this.props.approved) {
       color = { backgroundColor: '#00E676' }
     } else {
+      console.log()
       color = { backgroundColor: '#E53935' }
     }
 
-    const date1 = this.props.start
-    const date2 = this.props.end
     const switchColor = '#e0eef6'
 
-    console.log(approved)
     return (
       <Dialog
         open={this.props.open}
@@ -113,7 +84,7 @@ class AdminDialog extends Component {
         onRequestClose={this.props.handleClose}
         transition={Slide}
         className={classes.root}
-        contentStyle={{width: "100%"}}
+        contentStyle={{ width: '100%' }}
       >
         <ListItem>
           <Card style={{ flex: 1 }}>
@@ -126,7 +97,7 @@ class AdminDialog extends Component {
                   }}
                   control={
                     <Switch
-                      style={{color: switchColor}}
+                      style={{ color: switchColor }}
                       checked={approved}
                       onChange={() =>
                         this.props.changeParent('d_approved', !approved)
@@ -175,6 +146,8 @@ class AdminDialog extends Component {
                     <MenuItem value={30}>Design</MenuItem>
                     <MenuItem value={40}>Navigation</MenuItem>
                     <MenuItem value={50}>New Feature</MenuItem>
+                    <MenuItem value={60}>Archived</MenuItem>
+                    <MenuItem value={70}>Flagged</MenuItem>
                   </Select>
                 </FormControl>
               </div>
@@ -209,8 +182,9 @@ class AdminDialog extends Component {
                         label="Voting Starts"
                         inputClassName={classes.textFieldInput}
                         type="date"
-                        defaultValue={date1}
                         value={this.props.start}
+                        defaultValue={this.props.start}
+                        onChange={this.handleChange('start')}
                       />
                       <TextField
                         id="dater"
@@ -218,9 +192,9 @@ class AdminDialog extends Component {
                         label="Voting Ends"
                         inputClassName={classes.textFieldInput}
                         type="date"
-                        defaultValue={date2}
                         value={this.props.end}
-                         
+                        defaultValue={this.props.end}
+                        onChange={this.handleChange('end')}
                       />
                     </div>
                   )}
@@ -229,7 +203,9 @@ class AdminDialog extends Component {
               <CardActions
                 style={{ display: 'flex', justifyContent: 'flex-end' }}
               >
-                <Button color="accent" onClick={this.handleSave} >Save</Button>
+                <Button color="accent" onClick={this.handleSave}>
+                  Save
+                </Button>
               </CardActions>
             </div>
             <Typography

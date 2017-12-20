@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import IdeaList from './IdeaList'
 import ModeEditIcon from 'material-ui-icons/ModeEdit'
 import Button from 'material-ui/Button'
-import { badWords } from './utils/badWords'
-import { FormLabel, FormControl, FormControlLabel } from 'material-ui/Form'
 import IdeaEditor from './components/IdeaEditor'
 
 const buttonStyle = {

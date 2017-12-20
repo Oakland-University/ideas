@@ -1,34 +1,15 @@
 import React, { Component } from 'react'
-import Slide from 'material-ui/transitions/Slide'
-import List, {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListItemSecondaryAction
-} from 'material-ui/List'
+import List, { ListItem, ListItemText } from 'material-ui/List'
 import Collapse from 'material-ui/transitions/Collapse'
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 import IconButton from 'material-ui/IconButton'
 import SearchIcon from 'material-ui-icons/Search'
-import AccountCircle from 'material-ui-icons/AccountCircle'
-import Switch from 'material-ui/Switch'
-import { FormControl, FormGroup, FormControlLabel } from 'material-ui/Form'
+import { FormControlLabel } from 'material-ui/Form'
 import Checkbox from 'material-ui/Checkbox'
-import Menu, { MenuItem } from 'material-ui/Menu'
 import Tabs, { Tab } from 'material-ui/Tabs'
-import Button from 'material-ui/Button'
-import Card, { CardContent, CardActions } from 'material-ui/Card'
-import TextField from 'material-ui/TextField'
 import PropTypes from 'prop-types'
-import Input, { InputLabel } from 'material-ui/Input'
-import Select from 'material-ui/Select'
-import Autosuggest from 'react-autosuggest'
-import Paper from 'material-ui/Paper'
-import match from 'autosuggest-highlight/match'
-import parse from 'autosuggest-highlight/parse'
-import Dialog, { DialogContent, DialogActions } from 'material-ui/Dialog'
 import AdminDialog from './components/AdminDialog.js'
 import { withStyles } from 'material-ui/styles'
 import { getList, getAdminData } from './api/api.js'
@@ -64,9 +45,11 @@ class Ideas extends Component {
     mobile: true,
     feature: true,
     tabIndex: 0,
+    archive_list: {},
     idea_list: {},
     flagged_list: {},
     unapproved_list: {},
+    waiting_list: {},
     dialog: false,
     d_title: 'Hello',
     d_approved: true,
@@ -74,30 +57,66 @@ class Ideas extends Component {
     d_vote: 0,
     d_category: 0,
     d_start: 0,
-    d_end: 0
+    d_end: 0,
+    d_id: 0
   }
 
   componentDidMount() {
-    getList({
+    let idea_list, waiting, unapproved, archive
+    var a = getList({
       token: this.props.token,
       url: './api/example.json',
       credentialsNeeded: false
     }).then(ideas => {
-      this.setState({ idea_list: ideas })
+      return ideas
+      console.log('1')
     })
-    getAdminData({
+    var b = getAdminData({
+      token: this.props.token,
+      url: 'getWaitingIdeas',
+      credentialsNeeded: false
+    }).then(ideas => {
+      return ideas
+      console.log('2')
+    })
+    var c = getAdminData({
       token: this.props.token,
       url: 'getUnapprovedIdeas',
       credentialsNeeded: false
-    }).then(unapproved => {
-      this.setState({ unapproved_list: unapproved })
+    }).then(ideas => {
+      return ideas
+      console.log('3')
     })
-    getAdminData({
+    var f = getAdminData({
       token: this.props.token,
       url: 'getArchive',
       credentialsNeeded: false
-    }).then(unapproved => {
-      this.setState({ unapproved_list: unapproved })
+    }).then(ideas => {
+      return ideas
+      console.log('4')
+    })
+    const d = new Date()
+    let day = d.getDay()
+    let tomorrow = d.getDay() + 1
+    if (day < 9) {
+      day = '0' + day
+      tomorrow = '0' + tomorrow
+    } else if (day === 9) {
+      day = '0' + day
+    }
+    const start = `${d.getFullYear()}-${d.getMonth()}-${day}`
+    const end = `${d.getFullYear()}-${d.getMonth()}-${tomorrow}`
+
+    //TODO: Add https://github.com/stefanpenner/es6-promise for IE
+    Promise.all([a, b, c, f]).then(values => {
+      this.setState({
+        idea_list: values[0],
+        waiting_list: values[1],
+        unapproved_list: values[2],
+        archive_list: values[3],
+        d_start: start,
+        d_end: end
+      })
     })
   }
 
@@ -116,14 +135,14 @@ class Ideas extends Component {
     })
   }
 
-  openDialog = (isApproved, title, vote, desc, category) => {
-    console.log("Hitting 'open'")
+  openDialog = (isApproved, title, vote, desc, category, id) => {
     this.setState({
       d_approved: isApproved,
       d_title: title,
       d_vote: vote,
       d_desc: desc,
       d_category: category,
+      d_id: id,
       dialog: !this.state.dialog
     })
   }
@@ -221,6 +240,7 @@ class Ideas extends Component {
           <MainList
             ideas={this.state.idea_list}
             unapproved={this.state.unapproved_list}
+            waiting={this.state.waiting_list}
             openDialog={this.openDialog.bind(this)}
           />
         )}
@@ -240,6 +260,9 @@ class Ideas extends Component {
           vote={this.state.d_vote}
           category={this.state.d_category}
           description={this.state.d_desc}
+          start={this.state.d_start}
+          end={this.state.d_end}
+          id={this.state.d_id}
           token={this.props.token}
         />
       </div>
@@ -248,32 +271,6 @@ class Ideas extends Component {
 }
 
 class MainList extends Component {
-  createList = () => {
-    const { ideas } = this.props
-
-    if (ideas === null || ideas === undefined) {
-      return null
-    }
-
-    let ideaArray = []
-
-    for (let value in ideas) {
-      const idea = ideas[value]
-      ideaArray.push(
-        ideaListItem(
-          idea.approved,
-          idea.title,
-          idea.userVote,
-          idea.description,
-          idea.category,
-          this.props.openDialog
-        )
-      )
-    }
-
-    return ideaArray
-  }
-
   render() {
     return (
       <List>
@@ -288,6 +285,7 @@ class MainList extends Component {
         >
           <List disablePadding>
             {ideaListItem(this.props.ideas, this.props.openDialog)}
+            {console.log(this.props.ideas)}
           </List>
         </Collapse>
         <ListItem style={{ borderBottom: '5px solid lightblue' }}>
@@ -300,7 +298,8 @@ class MainList extends Component {
           unmountOnExit
         >
           <List disablePadding>
-            {ideaListItem(this.props.ideas, this.props.openDialog)}
+            {ideaListItem(this.props.waiting, this.props.openDialog)}
+            {console.log(this.props.waiting)}
           </List>
         </Collapse>
         <ListItem style={{ borderBottom: '5px solid #9575CD' }}>
@@ -314,6 +313,7 @@ class MainList extends Component {
         >
           <List disablePadding>
             {ideaListItem(this.props.unapproved, this.props.openDialog)}
+            {console.log(this.props.unapproved)}
           </List>
         </Collapse>
       </List>
@@ -380,7 +380,8 @@ const ideaListItem = (ideas, func) => {
             idea.title,
             idea.userVote,
             idea.description,
-            idea.category
+            idea.category,
+            idea.id
           )
         }
       >
@@ -396,42 +397,5 @@ const ideaListItem = (ideas, func) => {
 Ideas.propTypes = {
   classes: PropTypes.object.isRequired
 }
-
-const suggestions = [
-  { label: 'Afghanistan' },
-  { label: 'Aland Islands' },
-  { label: 'Albania' },
-  { label: 'Algeria' },
-  { label: 'American Samoa' },
-  { label: 'Andorra' },
-  { label: 'Angola' },
-  { label: 'Anguilla' },
-  { label: 'Antarctica' },
-  { label: 'Antigua and Barbuda' },
-  { label: 'Argentina' },
-  { label: 'Armenia' },
-  { label: 'Aruba' },
-  { label: 'Australia' },
-  { label: 'Austria' },
-  { label: 'Azerbaijan' },
-  { label: 'Bahamas' },
-  { label: 'Bahrain' },
-  { label: 'Bangladesh' },
-  { label: 'Barbados' },
-  { label: 'Belarus' },
-  { label: 'Belgium' },
-  { label: 'Belize' },
-  { label: 'Benin' },
-  { label: 'Bermuda' },
-  { label: 'Bhutan' },
-  { label: 'Bolivia, Plurinational State of' },
-  { label: 'Bonaire, Sint Eustatius and Saba' },
-  { label: 'Bosnia and Herzegovina' },
-  { label: 'Botswana' },
-  { label: 'Bouvet Island' },
-  { label: 'Brazil' },
-  { label: 'British Indian Ocean Territory' },
-  { label: 'Brunei Darussalam' }
-]
 
 export default withStyles(styles)(Ideas)
