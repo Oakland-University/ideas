@@ -256,7 +256,10 @@ class Ideas extends Component {
           <FlaggedList openDialog={this.openDialog.bind(this)} />
         )}
         {tabIndex === 2 && (
-          <ArchiveList openDialog={this.openDialog.bind(this)} />
+          <ArchiveList
+            ideas={this.state.archive_list}
+            openDialog={this.openDialog.bind(this)}
+          />
         )}
         <AdminDialog
           open={this.state.dialog}
@@ -363,6 +366,10 @@ class ArchiveList extends Component {
           transitionDuration="auto"
           unmountOnExit
         >
+          <List disablePadding>
+            {ideaListItem(this.props.ideas, this.props.openDialog)}
+            {console.log(this.props.ideas)}
+          </List>
           <List disablePadding />
         </Collapse>
       </List>

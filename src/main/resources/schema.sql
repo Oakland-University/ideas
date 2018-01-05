@@ -26,6 +26,8 @@ CREATE TABLE if not exists idea_post
     start_vote_date TIMESTAMP,
     end_vote_date TIMESTAMP,
     vote_count INTEGER,
+    is_archived BOOLEAN,
+    is_flagged BOOLEAN,
     category integer references idea_categories,
     idea_id serial primary key,
     approved_by integer references idea_approvers(approver_id)
@@ -53,3 +55,10 @@ CREATE OR REPLACE FUNCTION submit_vote(in p_idea integer, in p_pidm text, in p_s
     END
 ' LANGUAGE plpgsql
 ;
+
+CREATE OR REPLACE FUNCTION update_ideas()
+  RETURNS void as '
+    BEGIN
+      update idea_post set (is_archived) = (true) where approved=false and is_archived=false and now() > idea_post.end_vote_date;
+    END;
+' LANGUAGE plpgsql;

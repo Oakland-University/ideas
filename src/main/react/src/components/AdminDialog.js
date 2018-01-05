@@ -45,6 +45,7 @@ class AdminDialog extends Component {
 
   handleSave = () => {
     editIdea(this.props)
+    this.props.handleClose()
   }
 
   render() {

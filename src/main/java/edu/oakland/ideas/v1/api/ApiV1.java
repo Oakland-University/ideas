@@ -77,7 +77,7 @@ public class ApiV1 {
       String pidm = (String) claims.get("pidm");
 
       if (ideaDB.isAdmin(pidm)){
-        return ideaDB.getAdminIdeas(7, i);
+        return ideaDB.getArchiveIdeas(i);
       } else {
         return ideaDB.getIdeaList(i, pidm);
       }

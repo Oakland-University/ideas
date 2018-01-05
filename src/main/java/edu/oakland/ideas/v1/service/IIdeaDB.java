@@ -25,5 +25,6 @@ public interface IIdeaDB {
 
   public void editIdea(Idea idea); 
 
-}
+  public List<Idea> getArchiveIdeas(int ideaNumber); 
 
+}

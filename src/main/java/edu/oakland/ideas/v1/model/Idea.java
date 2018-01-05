@@ -72,7 +72,30 @@ public class Idea {
       this.avatar = category.toUpperCase().substring(0,1);
     }
 
+    public Idea(int id, String title, String description, String createdBy, Timestamp createdAt, String category){
+      this.id = id;
+      this.title = title;
+      this.description = description;
+      this.createdBy = createdBy;
+      this.createdAt = createdAt;
+      this.category = category;
+      this.approved = false;
+      this.avatar = category.toUpperCase().substring(0,1);
+    }
+
     public Idea(int id, String title, String description, String category, boolean approved, Timestamp startVoteDate, Timestamp endVoteDate){
+      this.id = id;
+      this.title = title;
+      this.description = description;
+      this.category = category;
+      this.approved = approved;
+      this.avatar = category.toUpperCase().substring(0,1);
+      this.startVoteDate = startVoteDate;
+      this.endVoteDate = endVoteDate;
+    }
+
+    public Idea(int id, String title, String description, boolean approved, String createdBy, Timestamp createdAt, 
+        Timestamp startVoteDate, Timestamp endVoteDate, int voteCount, String category){
       this.id = id;
       this.title = title;
       this.description = description;

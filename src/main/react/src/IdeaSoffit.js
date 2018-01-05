@@ -1,8 +1,9 @@
-import React, { Component } from 'react'
-import IdeaList from './IdeaList'
 import ModeEditIcon from 'material-ui-icons/ModeEdit'
 import Button from 'material-ui/Button'
+import React, { Component } from 'react'
+
 import IdeaEditor from './components/IdeaEditor'
+import IdeaList from './IdeaList'
 
 const buttonStyle = {
   marginTop: '-37px',
@@ -10,12 +11,7 @@ const buttonStyle = {
 }
 
 class IdeaSoffit extends Component {
-  state = {
-    open: false,
-    value: 'general',
-    title: '',
-    description: ''
-  }
+  state = { open: false, value: 'general', title: '', description: '' }
 
   handleRequestClose = () => {
     this.setState({ open: false })
@@ -38,6 +34,7 @@ class IdeaSoffit extends Component {
           alignItems: 'flex-end'
         }}
       >
+        {' '}
         <IdeaList url="./api/example.json" token={token} />
         <Button
           fab
