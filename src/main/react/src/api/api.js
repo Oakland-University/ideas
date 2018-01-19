@@ -77,7 +77,6 @@ export const getAdminDemo = async obj => {
 }
 
 export const submitIdea = async (title, desc, cat, token) => {
-  console.log('Submitting Idea')
   try {
     let response
     let data = {
@@ -85,7 +84,6 @@ export const submitIdea = async (title, desc, cat, token) => {
       description: desc,
       category: cat
     }
-    console.log(data)
 
     const formBody = Object.keys(data)
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
@@ -131,7 +129,6 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
       method: 'POST'
     })
     let blob = await response.json()
-    console.log(blob)
   } catch (err) {
     console.log(err)
   }
@@ -157,16 +154,17 @@ export const getAdminData = async obj => {
       credentials: 'include',
       headers: { Authorization: 'Bearer ' + obj.token }
     })
+    console.log(obj.url)
     let blob = await response.json()
     return blob
   } catch (err) {
+    console.log("WUT")
     console.error(err)
   }
 }
 
 export const editIdea = async obj => {
   try {
-    console.log(obj)
     let response
     let data = {
       id: obj.id,
@@ -206,7 +204,6 @@ export const adminCheck = async token => {
       headers: { Authorization: 'Bearer ' + token }
     })
     let blob = await response.json()
-    console.log('API', blob)
     return blob
   } catch (err) {
     console.error(err)

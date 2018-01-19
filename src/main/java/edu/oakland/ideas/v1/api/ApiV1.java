@@ -97,25 +97,15 @@ public class ApiV1 {
 
     }
 
-    @RequestMapping("/getAdminIdeas")
-    public List<Idea> getUnapprovedIdeas(@RequestParam Map<String, Integer> requestParams, HttpServletRequest request){
-      Claims claims = jwtService.decrypt(request);
-      String pidm = (String) claims.get("pidm");
 
-      if (ideaDB.isAdmin(pidm)){
-        return ideaDB.getAdminIdeas(requestParams.get("stuff"),requestParams.get("stuff"));
-      } else {
-        return ideaDB.getIdeaList(requestParams.get("stuff"), pidm);
-      }
-
-    }
-
+    @CrossOrigin
     @PostMapping("/editIdea")
     public void editIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
       ideaDB.editIdea(idea);
     }
 
+    @CrossOrigin
     @RequestMapping("/adminCheck")
     public boolean adminCheck(HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
@@ -123,6 +113,7 @@ public class ApiV1 {
       return ideaDB.isAdmin(pidm);
     }
 
+    @CrossOrigin
     @PostMapping("/submitIdea")
     public void putIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);

@@ -58,6 +58,7 @@ class AdminDialog extends Component {
     const category = this.props.category
     const submitter = this.props.submitter
 
+
     if (title === null || title === undefined) {
       title = 'null'
     }
@@ -72,7 +73,6 @@ class AdminDialog extends Component {
     if (this.props.approved) {
       color = { backgroundColor: '#00E676' }
     } else {
-      console.log()
       color = { backgroundColor: '#E53935' }
     }
 

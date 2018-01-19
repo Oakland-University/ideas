@@ -45,9 +45,13 @@ public class IdeaDB implements IIdeaDB {
         } catch (Exception e) {
           System.out.println(e);
         }
-        return new Idea(rs.getInt("idea_id"), rs.getBoolean("approved"), rs.getString("title"),
+        String a = getCategoryString(rs.getInt("category"));
+        Idea idea = new Idea(rs.getInt("idea_id"), rs.getBoolean("approved"), rs.getString("title"),
             rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"),
-            rs.getString("category"), rs.getInt("vote_count"), vote);
+            a, rs.getInt("vote_count"), vote);
+        idea.setStartVoteDate(rs.getTimestamp("start_vote_date"));
+        idea.setEndVoteDate(rs.getTimestamp("end_vote_date"));
+        return idea;
       } else {
         return null;
       }
@@ -63,9 +67,13 @@ public class IdeaDB implements IIdeaDB {
   public List<Idea> getUnapprovedIdeas(int ideaNumber) {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
-        return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
-            rs.getString("created_by"), rs.getTimestamp("created_at"), rs.getInt("category"),
+        String b = getCategoryString(rs.getInt("category"));
+        //System.out.println(b);
+        Idea blob = new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
+            rs.getString("created_by"), rs.getTimestamp("created_at"), b,
             rs.getInt("vote_count"), 0);
+        System.out.println(blob);
+        return blob;
       } else {
         return null;
       }
@@ -74,17 +82,19 @@ public class IdeaDB implements IIdeaDB {
     // TODO: Add a check for dates
 
     List<Idea> list = jdbcTemplate.query(
-        "SELECT * from idea_post where approved=false and is_archived=false and is_flagged=false ORDER BY created_at ",
-        rowMapper);
+        "SELECT * from idea_post where approved=false and is_archived=false and is_flagged=false ORDER BY created_at limit ?",
+        rowMapper, ideaNumber);
     return list;
   }
 
   public List<Idea> getWaitingIdeas(int ideaNumber) {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
-        return new Idea(rs.getInt("idea_id"), rs.getBoolean("approved"), rs.getString("title"),
+        Idea blob = new Idea(rs.getInt("idea_id"), rs.getBoolean("approved"), rs.getString("title"),
             rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"),
-            rs.getString("category"), rs.getInt("vote_count"), 0);
+            getCategoryString(rs.getInt("category")), rs.getInt("vote_count"), 0);
+        System.out.println(blob);
+        return blob;
       } else {
         return null;
       }
@@ -100,8 +110,9 @@ public class IdeaDB implements IIdeaDB {
   public List<Idea> getAdminIdeas(int category, int ideaNumber) {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
+        String a = getCategoryString(rs.getInt("category"));
         return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
-            rs.getString("created_by"), rs.getTimestamp("created_at"), rs.getString("category"),
+            rs.getString("created_by"), rs.getTimestamp("created_at"), a,
             rs.getInt("vote_count"), 0);
       } else {
         return null;
@@ -118,10 +129,11 @@ public class IdeaDB implements IIdeaDB {
   public List<Idea> getArchiveIdeas(int ideaNumber) {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
+        String a = getCategoryString(rs.getInt("category"));
         return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
             rs.getBoolean("approved"), rs.getString("created_by"), rs.getTimestamp("created_at"),
             rs.getTimestamp("start_vote_date"), rs.getTimestamp("end_vote_date"),
-            rs.getInt("vote_count"), rs.getString("category"));
+            rs.getInt("vote_count"), a);
       } else {
         return null;
       }
@@ -147,7 +159,7 @@ public class IdeaDB implements IIdeaDB {
   public void editIdea(Idea idea) {
     jdbcTemplate.update(
         "update idea_post set (title, description, category, approved, start_vote_date, end_vote_date) = (?, ?, ?, ?, ?, ?) where idea_id=?",
-        idea.getTitle(), idea.getDescription(), Integer.parseInt(idea.getCategory()),
+        idea.getTitle(), idea.getDescription(), getCategoryInt(idea.getCategory()),
         idea.isApproved(), idea.getStartVoteDate(), idea.getEndVoteDate(), idea.getId());
   }
 
@@ -177,4 +189,15 @@ public class IdeaDB implements IIdeaDB {
         "insert into idea_flagged (idea_id, description, pidm, time) values (?, ?, ?, ?)", ideaID,
         description, pidm, time);
   }
+
+  public int getCategoryInt(String cat){
+    int thing = jdbcTemplate.queryForObject("SELECT category_id from idea_categories where category like ?", new Object[] { cat }, Integer.class);   
+    return thing;
+  }
+
+  public String getCategoryString(int cid){
+    String thing = jdbcTemplate.queryForObject("SELECT category from idea_categories where category_id = ?", new Object[] { cid }, String.class);   
+    return thing;
+  }
+
 }

@@ -105,8 +105,12 @@ class Ideas extends Component {
     } else if (day === 9) {
       day = '0' + day
     }
-    const start = `${d.getFullYear()}-${d.getMonth()}-${day}`
-    const end = `${d.getFullYear()}-${d.getMonth()}-${tomorrow}`
+
+    let month = d.getMonth() + 1
+
+    if (month < 10){
+      month = '0' + month
+    }
 
     //TODO: Add https://github.com/stefanpenner/es6-promise for IE
     Promise.all([a, b, c, f]).then(values => {
@@ -115,8 +119,6 @@ class Ideas extends Component {
         waiting_list: values[1],
         unapproved_list: values[2],
         archive_list: values[3],
-        d_start: start,
-        d_end: end
       })
     })
   }
@@ -130,14 +132,15 @@ class Ideas extends Component {
   }
 
   handleDialogChange = (name, variable) => {
-    console.log(name, variable)
     this.setState({
       [name]: variable
     })
   }
 
-  openDialog = (isApproved, title, vote, desc, category, submitter, id) => {
+  openDialog = (start, end, isApproved, title, vote, desc, category, submitter, id) => {
     this.setState({
+      d_start: start,
+      d_end: end,
       d_approved: isApproved,
       d_title: title,
       d_vote: vote,
@@ -297,7 +300,6 @@ class MainList extends Component {
         >
           <List disablePadding>
             {ideaListItem(this.props.ideas, this.props.openDialog)}
-            {console.log(this.props.ideas)}
           </List>
         </Collapse>
         <ListItem style={{ borderBottom: '5px solid lightblue' }}>
@@ -311,7 +313,6 @@ class MainList extends Component {
         >
           <List disablePadding>
             {ideaListItem(this.props.waiting, this.props.openDialog)}
-            {console.log(this.props.waiting)}
           </List>
         </Collapse>
         <ListItem style={{ borderBottom: '5px solid #9575CD' }}>
@@ -325,7 +326,6 @@ class MainList extends Component {
         >
           <List disablePadding>
             {ideaListItem(this.props.unapproved, this.props.openDialog)}
-            {console.log(this.props.unapproved)}
           </List>
         </Collapse>
       </List>
@@ -368,7 +368,6 @@ class ArchiveList extends Component {
         >
           <List disablePadding>
             {ideaListItem(this.props.ideas, this.props.openDialog)}
-            {console.log(this.props.ideas)}
           </List>
           <List disablePadding />
         </Collapse>
@@ -383,15 +382,71 @@ const ideaListItem = (ideas, func) => {
   }
 
   let ideaArray = []
-
   for (let value in ideas) {
     const idea = ideas[value]
+    var start
+    var end
+    let s, e
+    if (idea.startVoteDate !== null && idea.startVoteDate !== undefined) {
+      s = new Date(idea.startVoteDate)
+      e = new Date(idea.endVoteDate)
+
+      let today = s.getDay()
+      let tomorrow = e.getDay() + 1
+      console.log(s, e)
+
+      if (today < 9) {
+        today = '0' + today 
+        tomorrow = '0' + tomorrow
+      } else if (day === 9) {
+        day = '0' + day
+      }
+
+      let month1 = s.getMonth() + 1
+      let month2 = e.getMonth() + 1
+
+      if (month1 < 10){
+        month1 = '0' + month1
+      }
+      if (month2 < 10){
+        month2 = '0' + month2
+      }
+
+      start = `${s.getFullYear()}-${month1}-${day}`
+      end = `${e.getFullYear()}-${month2}-${tomorrow}`
+
+    }else{
+
+      var d = new Date()
+      var day = d.getDay()
+      var tomorrow = d.getDay() + 1
+      if (day < 9) {
+        day = '0' + day
+        tomorrow = '0' + tomorrow
+      } else if (day === 9) {
+        day = '0' + day
+      }
+
+      var month = d.getMonth() + 1
+
+      if (month < 10){
+        month = '0' + month
+      }
+      
+      start = `${d.getFullYear()}-${month}-${day}`
+      end = `${d.getFullYear()}-${month}-${tomorrow}`
+    }
+
+
+
     ideaArray.push(
       <ListItem
         button
         style={{ backgroundColor: 'white' }}
         onClick={() =>
           func(
+            start,
+            end,
             idea.approved,
             idea.title,
             idea.userVote,
