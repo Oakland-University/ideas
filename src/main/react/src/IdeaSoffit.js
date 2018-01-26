@@ -23,7 +23,6 @@ class IdeaSoffit extends Component {
 
   render() {
     const token = Object.is(this.props.token, null) ? 'demo' : this.props.token
-    console.log('token', token)
 
     return (
       <div

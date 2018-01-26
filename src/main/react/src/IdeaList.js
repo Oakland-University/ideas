@@ -52,7 +52,7 @@ class IdeaList extends Component {
     const { listItems } = this.state
     console.log('List Items:', ListItem)
     for (let idea of listItems) {
-      iArray.push(<IdeaListItem idea={idea} index={index} />)
+      iArray.push(<IdeaListItem token={this.props.token} idea={idea} index={index} />)
       index++
     }
     return iArray

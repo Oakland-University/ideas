@@ -48,12 +48,25 @@ class AdminDialog extends Component {
     this.props.handleClose()
   }
 
+  handleFlag = () => {
+    const payload = Object.assign({}, this.props, {flagged: true})
+    editIdea(payload)
+  }
+
+  handleArchive = () => {
+    this.props.end = '2015-01-31'
+    console.log(this.props)
+    const payload = Object.assign({}, this.props, {is_archived: true})
+  }
+
   render() {
     const { classes } = this.props
     const d = new Date()
     let title = this.props.title
     let desc = this.props.description
     let vote = this.props.vote
+    console.log(this.props)
+    console.log(vote)
     let approved = this.props.approved
     const category = this.props.category
     const submitter = this.props.submitter
@@ -77,6 +90,7 @@ class AdminDialog extends Component {
     }
 
     const switchColor = '#e0eef6'
+
 
     return (
       <Dialog
@@ -159,7 +173,7 @@ class AdminDialog extends Component {
                   rowsMax="4"
                   label="Description"
                   margin="normal"
-                  style={{ width: '100%', height: 18 }}
+                  style={{ width: '100%'}}
                   value={desc}
                   onChange={this.handleChange('desc')}
                 />
@@ -205,6 +219,12 @@ class AdminDialog extends Component {
               <CardActions
                 style={{ display: 'flex', justifyContent: 'flex-end' }}
               >
+                <Button color="accent" onClick={this.handleArchive}>
+                  Archive
+                </Button>
+                <Button color="accent" onClick={this.handleFlag}>
+                  Flag
+                </Button>
                 <Button color="accent" onClick={this.handleSave}>
                   Save
                 </Button>

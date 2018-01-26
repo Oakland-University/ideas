@@ -70,7 +70,6 @@ class Ideas extends Component {
       credentialsNeeded: false
     }).then(ideas => {
       return ideas
-      console.log('1')
     })
     var b = getAdminData({
       token: this.props.token,
@@ -78,7 +77,6 @@ class Ideas extends Component {
       credentialsNeeded: false
     }).then(ideas => {
       return ideas
-      console.log('2')
     })
     var c = getAdminData({
       token: this.props.token,
@@ -86,7 +84,6 @@ class Ideas extends Component {
       credentialsNeeded: false
     }).then(ideas => {
       return ideas
-      console.log('3')
     })
     var f = getAdminData({
       token: this.props.token,
@@ -94,7 +91,13 @@ class Ideas extends Component {
       credentialsNeeded: false
     }).then(ideas => {
       return ideas
-      console.log('4')
+    })
+    var g = getAdminData({
+      token: this.props.token,
+      url: 'getFlagged',
+      credentialsNeeded: false
+    }).then(ideas => {
+      return ideas
     })
     const d = new Date()
     let day = d.getDay()
@@ -113,12 +116,13 @@ class Ideas extends Component {
     }
 
     //TODO: Add https://github.com/stefanpenner/es6-promise for IE
-    Promise.all([a, b, c, f]).then(values => {
+    Promise.all([a, b, c, f, g]).then(values => {
       this.setState({
         idea_list: values[0],
         waiting_list: values[1],
         unapproved_list: values[2],
         archive_list: values[3],
+        flagged_list: values[4],
       })
     })
   }
@@ -137,13 +141,13 @@ class Ideas extends Component {
     })
   }
 
-  openDialog = (start, end, isApproved, title, vote, desc, category, submitter, id) => {
+  openDialog = (start, end, voteCount, isApproved, title, vote, desc, category, submitter, id) => {
     this.setState({
       d_start: start,
       d_end: end,
       d_approved: isApproved,
       d_title: title,
-      d_vote: vote,
+      d_vote: voteCount,
       d_desc: desc,
       d_category: category,
       d_submitter: submitter,
@@ -256,7 +260,7 @@ class Ideas extends Component {
           />
         )}
         {tabIndex === 1 && (
-          <FlaggedList openDialog={this.openDialog.bind(this)} />
+          <FlaggedList ideas={this.state.flagged_list} openDialog={this.openDialog.bind(this)} />
         )}
         {tabIndex === 2 && (
           <ArchiveList
@@ -346,7 +350,9 @@ class FlaggedList extends Component {
           transitionDuration="auto"
           unmountOnExit
         >
-          <List disablePadding />
+          <List disablePadding>
+            {ideaListItem(this.props.ideas, this.props.openDialog)}
+          </List>
         </Collapse>
       </List>
     )
@@ -384,26 +390,26 @@ const ideaListItem = (ideas, func) => {
   let ideaArray = []
   for (let value in ideas) {
     const idea = ideas[value]
-    var start
-    var end
+    let start
+    let end
     let s, e
     if (idea.startVoteDate !== null && idea.startVoteDate !== undefined) {
       s = new Date(idea.startVoteDate)
       e = new Date(idea.endVoteDate)
 
-      let today = s.getDay()
-      let tomorrow = e.getDay() + 1
-      console.log(s, e)
+      let today = s.getDate()
+      let tomorrow = e.getDate()
 
       if (today < 9) {
         today = '0' + today 
         tomorrow = '0' + tomorrow
-      } else if (day === 9) {
-        day = '0' + day
+      } else if (today === 9) {
+        today = '0' + today
       }
 
       let month1 = s.getMonth() + 1
       let month2 = e.getMonth() + 1
+
 
       if (month1 < 10){
         month1 = '0' + month1
@@ -412,7 +418,7 @@ const ideaListItem = (ideas, func) => {
         month2 = '0' + month2
       }
 
-      start = `${s.getFullYear()}-${month1}-${day}`
+      start = `${s.getFullYear()}-${month1}-${today}`
       end = `${e.getFullYear()}-${month2}-${tomorrow}`
 
     }else{
@@ -447,6 +453,7 @@ const ideaListItem = (ideas, func) => {
           func(
             start,
             end,
+            idea.voteCount,
             idea.approved,
             idea.title,
             idea.userVote,
@@ -458,7 +465,7 @@ const ideaListItem = (ideas, func) => {
         }
       >
         <ListItemText inset primary={idea.title} />
-        <Typography>{idea.vote}</Typography>
+        <Typography>{idea.voteCount}</Typography>
       </ListItem>
     )
   }

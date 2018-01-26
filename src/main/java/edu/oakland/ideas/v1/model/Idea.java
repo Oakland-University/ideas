@@ -22,6 +22,8 @@ public class Idea {
     private String avatar;
     private int userVote;
     private boolean isFlagged;
+    private Timestamp flaggedOn;
+    private String flaggedBy;
 
     public Idea(){}
 

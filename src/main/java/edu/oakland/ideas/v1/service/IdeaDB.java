@@ -68,11 +68,9 @@ public class IdeaDB implements IIdeaDB {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
         String b = getCategoryString(rs.getInt("category"));
-        //System.out.println(b);
         Idea blob = new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
             rs.getString("created_by"), rs.getTimestamp("created_at"), b,
             rs.getInt("vote_count"), 0);
-        System.out.println(blob);
         return blob;
       } else {
         return null;
@@ -87,13 +85,14 @@ public class IdeaDB implements IIdeaDB {
     return list;
   }
 
+  //Ideas approved but waiting for their start_vote_date
   public List<Idea> getWaitingIdeas(int ideaNumber) {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
-        Idea blob = new Idea(rs.getInt("idea_id"), rs.getBoolean("approved"), rs.getString("title"),
-            rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"),
-            getCategoryString(rs.getInt("category")), rs.getInt("vote_count"), 0);
-        System.out.println(blob);
+        String a = getCategoryString(rs.getInt("category"));
+        Idea blob = new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"), 
+            rs.getBoolean("approved"), rs.getString("created_by"), rs.getTimestamp("created_at"),
+            rs.getTimestamp("start_vote_date"), rs.getTimestamp("end_vote_date"), 0, a);
         return blob;
       } else {
         return null;
@@ -106,11 +105,33 @@ public class IdeaDB implements IIdeaDB {
         rowMapper);
     return list;
   }
+  
+  //Ideas approved but waiting for their start_vote_date
+  public List<Idea> getFlaggedIdeas(int ideaNumber) {
+    RowMapper<Idea> rowMapper = (rs, rowNum) -> {
+      if (rowNum < ideaNumber) {
+        String b = getCategoryString(rs.getInt("category"));
+        Idea blob = new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
+            rs.getString("created_by"), rs.getTimestamp("created_at"), b,
+            rs.getInt("vote_count"), 0);
+        return blob;
+      } else {
+        return null;
+      }
+    };
+
+    // TODO: Add a check for dates
+    List<Idea> list = jdbcTemplate.query(
+        "SELECT * from idea_post where is_flagged=true ORDER BY created_at ",
+        rowMapper);
+    return list;
+  }
 
   public List<Idea> getAdminIdeas(int category, int ideaNumber) {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
         String a = getCategoryString(rs.getInt("category"));
+        System.out.println("getAdminIdea");
         return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
             rs.getString("created_by"), rs.getTimestamp("created_at"), a,
             rs.getInt("vote_count"), 0);
@@ -120,7 +141,6 @@ public class IdeaDB implements IIdeaDB {
     };
 
     // TODO: Add a check for dates
-
     List<Idea> list = jdbcTemplate.query(
         "SELECT * from idea_post where category=? ORDER BY created_at ", rowMapper, category);
     return list;
@@ -140,7 +160,6 @@ public class IdeaDB implements IIdeaDB {
     };
 
     // TODO: Add a check for dates
-
     List<Idea> list = jdbcTemplate.query(
         "SELECT * from idea_post where is_archived=true ORDER BY created_at ", rowMapper);
     return list;
@@ -178,6 +197,9 @@ public class IdeaDB implements IIdeaDB {
     params.put("p_pidm", vote.getUserPidm());
     params.put("p_stuff", vote.getVoteValue());
 
+    System.out.println(vote.getUserPidm());
+    System.out.println("Executing stuff");
+
     SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate).withFunctionName("submit_vote");
     SqlParameterSource voteSQL = new MapSqlParameterSource().addValues(params);
 
@@ -198,6 +220,12 @@ public class IdeaDB implements IIdeaDB {
   public String getCategoryString(int cid){
     String thing = jdbcTemplate.queryForObject("SELECT category from idea_categories where category_id = ?", new Object[] { cid }, String.class);   
     return thing;
+  }
+
+  public void flagIdea(Idea idea){
+    jdbcTemplate.update(
+        "update idea_post set (is_flagged, flagged_by, flagged_on, approved) = (true, ?, ?, false) where idea_id=?",
+        idea.getFlaggedBy(), idea.getFlaggedOn(), idea.getId());
   }
 
 }

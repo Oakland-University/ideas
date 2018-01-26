@@ -106,6 +106,7 @@ export const submitIdea = async (title, desc, cat, token) => {
 }
 
 export const submitVote = async (ideaID, createdAt, voteValue, token) => {
+  console.log(token)
   try {
     let response
     let data = {
@@ -154,11 +155,9 @@ export const getAdminData = async obj => {
       credentials: 'include',
       headers: { Authorization: 'Bearer ' + obj.token }
     })
-    console.log(obj.url)
     let blob = await response.json()
     return blob
   } catch (err) {
-    console.log("WUT")
     console.error(err)
   }
 }
@@ -180,7 +179,11 @@ export const editIdea = async obj => {
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
       .join('&')
 
-    response = await fetch('http://localhost:8080/ideas/api/v1/editIdea', {
+    let url = 'editIdea'
+    if (obj.flagged === true){
+      url = 'flagIdea'
+    }
+    response = await fetch('http://localhost:8080/ideas/api/v1/' + url, {
       body: formBody,
       credentials: 'include',
       headers: {
@@ -190,6 +193,7 @@ export const editIdea = async obj => {
       },
       method: 'POST'
     })
+
     let blob = await response.json()
   } catch (err) {
     console.log(err)
