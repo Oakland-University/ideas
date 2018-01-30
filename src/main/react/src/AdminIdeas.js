@@ -53,13 +53,15 @@ class Ideas extends Component {
     dialog: false,
     d_title: 'Hello',
     d_approved: true,
+    d_archived: false,
+    d_flagged: false,
     d_desc: 'stuff and things',
     d_vote: 0,
     d_category: 0,
     d_start: 0,
     d_end: 0,
     d_id: 0,
-    d_submitter: '00000'
+    d_submitter: '00000',
   }
 
   componentDidMount() {
@@ -141,10 +143,12 @@ class Ideas extends Component {
     })
   }
 
-  openDialog = (start, end, voteCount, isApproved, title, vote, desc, category, submitter, id) => {
+  openDialog = (start, end, isFlagged, isArchived, voteCount, isApproved, title, vote, desc, category, submitter, id) => {
     this.setState({
       d_start: start,
       d_end: end,
+      d_flagged: isFlagged,
+      d_archived: isArchived,
       d_approved: isApproved,
       d_title: title,
       d_vote: voteCount,
@@ -283,6 +287,7 @@ class Ideas extends Component {
           id={this.state.d_id}
           submitter={this.state.d_submitter}
           token={this.props.token}
+          flagged={this.state.d_flagged}
         />
       </div>
     )
@@ -400,11 +405,11 @@ const ideaListItem = (ideas, func) => {
       let today = s.getDate()
       let tomorrow = e.getDate()
 
-      if (today < 9) {
+      if (today <= 9) {
         today = '0' + today 
+      } 
+      if (tomorrow <= 9){
         tomorrow = '0' + tomorrow
-      } else if (today === 9) {
-        today = '0' + today
       }
 
       let month1 = s.getMonth() + 1
@@ -426,11 +431,12 @@ const ideaListItem = (ideas, func) => {
       var d = new Date()
       var day = d.getDay()
       var tomorrow = d.getDay() + 1
-      if (day < 9) {
+      if (day <= 9) {
         day = '0' + day
+      }
+
+      if (tomorrow <= 9){
         tomorrow = '0' + tomorrow
-      } else if (day === 9) {
-        day = '0' + day
       }
 
       var month = d.getMonth() + 1
@@ -453,6 +459,8 @@ const ideaListItem = (ideas, func) => {
           func(
             start,
             end,
+            idea.flagged,
+            idea.archived,
             idea.voteCount,
             idea.approved,
             idea.title,

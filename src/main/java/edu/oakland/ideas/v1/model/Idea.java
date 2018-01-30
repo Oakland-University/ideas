@@ -112,7 +112,7 @@ public class Idea {
     public String toString(){
       String bob = title + "\n" + description + "\n" + 
         String.valueOf(approved) + "\n" + createdBy + "\n" +
-        String.valueOf(voteCount) + "\n" + String.valueOf(isArchived);
+        String.valueOf(voteCount) + "\n" + String.valueOf(isFlagged);
       return bob;
     }
 }

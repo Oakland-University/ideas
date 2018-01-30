@@ -66,12 +66,37 @@ class AdminDialog extends Component {
     let title = this.props.title
     let desc = this.props.description
     let vote = this.props.vote
-    console.log(this.props)
-    console.log(vote)
     let approved = this.props.approved
-    const category = this.props.category
-    const submitter = this.props.submitter
+    let category = this.props.category
+    const flagged = this.props.flagged
+    switch (category){
+      case "general":
+        category = 0
+        break;
+      case "issue":
+        category = 10
+        break;
+      case "mobile":
+        category = 20
+        break;
+      case "design":
+        category = 30
+        break;
+      case "navigation":
+        category = 40
+        break;
+      case "feature":
+        category = 50
+        break;
+      case "archived":
+        category = 60
+        break;
+      case "flagged":
+        category = 70
+        break;
+    }
 
+    const submitter = this.props.submitter
 
     if (title === null || title === undefined) {
       title = 'null'
@@ -107,6 +132,7 @@ class AdminDialog extends Component {
           <Card style={{ flex: 1 }}>
             <div style={{ width: '100%' }}>
               <div className={classes.header} style={color}>
+                {flagged === false &&
                 <FormControlLabel
                   style={{
                     marginLeft: '12px',
@@ -123,6 +149,7 @@ class AdminDialog extends Component {
                   }
                   label="Approved"
                 />
+                }
                 <Typography type="subheading" style={{ padding: 18 }}>
                   Votes: {vote}
                 </Typography>
@@ -217,6 +244,7 @@ class AdminDialog extends Component {
                   )}
                 </div>
               </CardContent>
+              {flagged === false &&
               <CardActions
                 style={{ display: 'flex', justifyContent: 'flex-end' }}
               >
@@ -230,6 +258,7 @@ class AdminDialog extends Component {
                   Save
                 </Button>
               </CardActions>
+              }
             </div>
             <Typography
               component="p"

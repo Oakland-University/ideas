@@ -1,4 +1,4 @@
-
+export const getListDemo = async obj => {
   return {
     category: 'all',
     amount: 5,

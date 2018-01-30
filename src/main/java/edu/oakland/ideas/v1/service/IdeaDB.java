@@ -114,6 +114,7 @@ public class IdeaDB implements IIdeaDB {
         Idea blob = new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
             rs.getString("created_by"), rs.getTimestamp("created_at"), b,
             rs.getInt("vote_count"), 0);
+        blob.setFlagged(rs.getBoolean("is_flagged"));
         return blob;
       } else {
         return null;
