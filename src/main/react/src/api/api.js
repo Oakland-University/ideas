@@ -1,4 +1,4 @@
-export const getListDemo = async obj => {
+
   return {
     category: 'all',
     amount: 5,
@@ -106,7 +106,6 @@ export const submitIdea = async (title, desc, cat, token) => {
 }
 
 export const submitVote = async (ideaID, createdAt, voteValue, token) => {
-  console.log(token)
   try {
     let response
     let data = {
@@ -182,7 +181,10 @@ export const editIdea = async obj => {
     let url = 'editIdea'
     if (obj.flagged === true){
       url = 'flagIdea'
+    }else if (obj.is_archived === true){
+      url = 'archiveIdea'
     }
+
     response = await fetch('http://localhost:8080/ideas/api/v1/' + url, {
       body: formBody,
       credentials: 'include',

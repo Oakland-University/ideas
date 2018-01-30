@@ -51,12 +51,13 @@ class AdminDialog extends Component {
   handleFlag = () => {
     const payload = Object.assign({}, this.props, {flagged: true})
     editIdea(payload)
+    this.props.handleClose()
   }
 
   handleArchive = () => {
-    this.props.end = '2015-01-31'
-    console.log(this.props)
     const payload = Object.assign({}, this.props, {is_archived: true})
+    editIdea(payload)
+    this.props.handleClose()
   }
 
   render() {
@@ -76,7 +77,7 @@ class AdminDialog extends Component {
       title = 'null'
     }
     if (desc === null || desc === undefined) {
-      desc = 'ull'
+      desc = 'null'
     }
     if (approved === null || approved === undefined) {
       approved = false

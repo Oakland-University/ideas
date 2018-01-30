@@ -35,7 +35,8 @@ class IdeaEditor extends Component {
 
   generateForm = () => {
     if (this.state.title === '' || this.state.description == '') {
-      alert('Gotta put stuff in places')
+      alert('Please fill out all fields')
+      return
     }
     for (let word of badWords) {
       if (
@@ -45,15 +46,12 @@ class IdeaEditor extends Component {
         alert('Check yourself, b')
       }
     }
-    console.log('Prepearing to submit')
-    console.log(this.state.category)
     submitIdea(
       this.state.title,
       this.state.description,
       this.state.category,
       this.props.token
     )
-    console.log('Did submit')
     this.setState({
       description: '',
       title: '',
