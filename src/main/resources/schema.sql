@@ -26,8 +26,10 @@ CREATE TABLE if not exists idea_post
     start_vote_date TIMESTAMP,
     end_vote_date TIMESTAMP,
     vote_count INTEGER,
-    is_archived BOOLEAN,
-    is_flagged BOOLEAN,
+    is_archived BOOLEAN DEFAULT false,
+    is_flagged BOOLEAN DEFAULT false,
+    flagged_by TEXT,
+    flagged_on TIMESTAMP,
     category integer references idea_categories,
     idea_id serial primary key,
     approved_by integer references idea_approvers(approver_id)
