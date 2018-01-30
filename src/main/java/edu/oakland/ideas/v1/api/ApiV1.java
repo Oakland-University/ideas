@@ -138,6 +138,17 @@ public class ApiV1 {
     }
     
     @CrossOrigin
+    @PostMapping("/archiveIdea")
+    public void archiveIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
+      Claims claims = jwtService.decrypt(request);
+      String pidm = (String) claims.get("pidm");
+      if (ideaDB.isAdmin(pidm)){
+        //Flag the idea recording who flagged it and when 
+        ideaDB.archiveIdea(idea);
+      } 
+    }
+
+    @CrossOrigin
     @PostMapping("/submitVote")
     public void submitVote(@ModelAttribute Vote vote, String time, HttpServletRequest request){
       System.out.println("Submitting Vote");

@@ -24,6 +24,7 @@ public class Idea {
     private boolean isFlagged;
     private Timestamp flaggedOn;
     private String flaggedBy;
+    private boolean isArchived;
 
     public Idea(){}
 
@@ -109,7 +110,9 @@ public class Idea {
     }
 
     public String toString(){
-      String bob = title + "\n" + description + "\n";
+      String bob = title + "\n" + description + "\n" + 
+        String.valueOf(approved) + "\n" + createdBy + "\n" +
+        String.valueOf(voteCount) + "\n" + String.valueOf(isArchived);
       return bob;
     }
 }

@@ -131,7 +131,6 @@ public class IdeaDB implements IIdeaDB {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
         String a = getCategoryString(rs.getInt("category"));
-        System.out.println("getAdminIdea");
         return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
             rs.getString("created_by"), rs.getTimestamp("created_at"), a,
             rs.getInt("vote_count"), 0);
@@ -197,8 +196,6 @@ public class IdeaDB implements IIdeaDB {
     params.put("p_pidm", vote.getUserPidm());
     params.put("p_stuff", vote.getVoteValue());
 
-    System.out.println(vote.getUserPidm());
-    System.out.println("Executing stuff");
 
     SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate).withFunctionName("submit_vote");
     SqlParameterSource voteSQL = new MapSqlParameterSource().addValues(params);
@@ -226,6 +223,12 @@ public class IdeaDB implements IIdeaDB {
     jdbcTemplate.update(
         "update idea_post set (is_flagged, flagged_by, flagged_on, approved) = (true, ?, ?, false) where idea_id=?",
         idea.getFlaggedBy(), idea.getFlaggedOn(), idea.getId());
+  }
+
+  public void archiveIdea(Idea idea){
+    jdbcTemplate.update(
+        "update idea_post set (is_archived) = (true, ?) where idea_id=?",
+        idea.getId());
   }
 
 }

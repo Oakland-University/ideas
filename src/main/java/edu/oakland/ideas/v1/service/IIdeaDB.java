@@ -30,4 +30,6 @@ public interface IIdeaDB {
   public List<Idea> getFlaggedIdeas(int ideaNumber);
 
   public void flagIdea(Idea idea);
+
+  public void archiveIdea(Idea idea);
 }
