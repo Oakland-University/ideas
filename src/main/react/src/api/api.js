@@ -179,9 +179,9 @@ export const editIdea = async obj => {
       .join('&')
 
     let url = 'editIdea'
-    if (obj.flagged === true){
+    if (obj.flagged === true) {
       url = 'flagIdea'
-    }else if (obj.is_archived === true){
+    } else if (obj.is_archived === true) {
       url = 'archiveIdea'
     }
 
@@ -213,5 +213,6 @@ export const adminCheck = async token => {
     return blob
   } catch (err) {
     console.error(err)
+    return 'error'
   }
 }

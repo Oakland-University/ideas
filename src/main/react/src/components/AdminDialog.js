@@ -49,13 +49,13 @@ class AdminDialog extends Component {
   }
 
   handleFlag = () => {
-    const payload = Object.assign({}, this.props, {flagged: true})
+    const payload = Object.assign({}, this.props, { flagged: true })
     editIdea(payload)
     this.props.handleClose()
   }
 
   handleArchive = () => {
-    const payload = Object.assign({}, this.props, {is_archived: true})
+    const payload = Object.assign({}, this.props, { is_archived: true })
     editIdea(payload)
     this.props.handleClose()
   }
@@ -69,31 +69,31 @@ class AdminDialog extends Component {
     let approved = this.props.approved
     let category = this.props.category
     const flagged = this.props.flagged
-    switch (category){
-      case "general":
+    switch (category) {
+      case 'general':
         category = 0
-        break;
-      case "issue":
+        break
+      case 'issue':
         category = 10
-        break;
-      case "mobile":
+        break
+      case 'mobile':
         category = 20
-        break;
-      case "design":
+        break
+      case 'design':
         category = 30
-        break;
-      case "navigation":
+        break
+      case 'navigation':
         category = 40
-        break;
-      case "feature":
+        break
+      case 'feature':
         category = 50
-        break;
-      case "archived":
+        break
+      case 'archived':
         category = 60
-        break;
-      case "flagged":
+        break
+      case 'flagged':
         category = 70
-        break;
+        break
     }
 
     const submitter = this.props.submitter
@@ -117,7 +117,6 @@ class AdminDialog extends Component {
 
     const switchColor = '#e0eef6'
 
-
     return (
       <Dialog
         open={this.props.open}
@@ -132,24 +131,24 @@ class AdminDialog extends Component {
           <Card style={{ flex: 1 }}>
             <div style={{ width: '100%' }}>
               <div className={classes.header} style={color}>
-                {flagged === false &&
-                <FormControlLabel
-                  style={{
-                    marginLeft: '12px',
-                    display: 'flex'
-                  }}
-                  control={
-                    <Switch
-                      style={{ color: switchColor }}
-                      checked={approved}
-                      onChange={() =>
-                        this.props.changeParent('d_approved', !approved)
-                      }
-                    />
-                  }
-                  label="Approved"
-                />
-                }
+                {flagged === false && (
+                  <FormControlLabel
+                    style={{
+                      marginLeft: '12px',
+                      display: 'flex'
+                    }}
+                    control={
+                      <Switch
+                        style={{ color: switchColor }}
+                        checked={approved}
+                        onChange={() =>
+                          this.props.changeParent('d_approved', !approved)
+                        }
+                      />
+                    }
+                    label="Approved"
+                  />
+                )}
                 <Typography type="subheading" style={{ padding: 18 }}>
                   Votes: {vote}
                 </Typography>
@@ -201,7 +200,7 @@ class AdminDialog extends Component {
                   rowsMax="4"
                   label="Description"
                   margin="normal"
-                  style={{ width: '100%'}}
+                  style={{ width: '100%' }}
                   value={desc}
                   onChange={this.handleChange('desc')}
                 />
@@ -244,21 +243,21 @@ class AdminDialog extends Component {
                   )}
                 </div>
               </CardContent>
-              {flagged === false &&
-              <CardActions
-                style={{ display: 'flex', justifyContent: 'flex-end' }}
-              >
-                <Button color="accent" onClick={this.handleArchive}>
-                  Archive
-                </Button>
-                <Button color="accent" onClick={this.handleFlag}>
-                  Flag
-                </Button>
-                <Button color="accent" onClick={this.handleSave}>
-                  Save
-                </Button>
-              </CardActions>
-              }
+              {flagged === false && (
+                <CardActions
+                  style={{ display: 'flex', justifyContent: 'flex-end' }}
+                >
+                  <Button color="accent" onClick={this.handleArchive}>
+                    Archive
+                  </Button>
+                  <Button color="accent" onClick={this.handleFlag}>
+                    Flag
+                  </Button>
+                  <Button color="accent" onClick={this.handleSave}>
+                    Save
+                  </Button>
+                </CardActions>
+              )}
             </div>
             <Typography
               component="p"

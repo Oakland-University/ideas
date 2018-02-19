@@ -52,7 +52,9 @@ class IdeaList extends Component {
     const { listItems } = this.state
     console.log('List Items:', ListItem)
     for (let idea of listItems) {
-      iArray.push(<IdeaListItem token={this.props.token} idea={idea} index={index} />)
+      iArray.push(
+        <IdeaListItem token={this.props.token} idea={idea} index={index} />
+      )
       index++
     }
     return iArray
@@ -91,7 +93,8 @@ class IdeaListItem extends Component {
   render() {
     let { idea, index } = this.props
     const createdAt = new Date(idea.createdAt)
-    const date = `${createdAt.getMonth()}/${createdAt.getDate()}/${createdAt.getFullYear()}`
+    const date = `${createdAt.getMonth() +
+      1}/${createdAt.getDate()}/${createdAt.getFullYear()}`
     let arrowStyle = {
       up: { color: 'grey' },
       down: { color: 'grey' }

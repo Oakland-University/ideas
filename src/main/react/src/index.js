@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import IdeaSoffit from './IdeaSoffit'
+import ErrorPage from './components/ErrorPage'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import 'typeface-arimo'
 import AdminIdeas from './AdminIdeas'
@@ -81,7 +82,9 @@ class ParentElement extends Component {
 
   render() {
     const { isAdmin } = this.state
-    if (isAdmin) {
+    if (isAdmin === 'error') {
+      return <ErrorPage />
+    } else if (isAdmin) {
       return <AdminIdeas token={token} />
     } else {
       return <IdeaSoffit token={token} />

@@ -38,20 +38,14 @@ class IdeaEditor extends Component {
       alert('Please fill out all fields')
       return
     }
-    for (let word of badWords) {
-      if (
-        this.state.title.includes(word) ||
-        this.state.description.includes(word)
-      ) {
-        alert('Check yourself, b')
-      }
-    }
+
     submitIdea(
       this.state.title,
       this.state.description,
       this.state.category,
       this.props.token
     )
+
     this.setState({
       description: '',
       title: '',

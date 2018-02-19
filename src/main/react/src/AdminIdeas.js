@@ -45,11 +45,11 @@ class Ideas extends Component {
     mobile: true,
     feature: true,
     tabIndex: 0,
-    archive_list: {},
-    idea_list: {},
-    flagged_list: {},
-    unapproved_list: {},
-    waiting_list: {},
+    archive_list: [],
+    idea_list: [],
+    flagged_list: [],
+    unapproved_list: [],
+    waiting_list: [],
     dialog: false,
     d_title: 'Hello',
     d_approved: true,
@@ -61,7 +61,7 @@ class Ideas extends Component {
     d_start: 0,
     d_end: 0,
     d_id: 0,
-    d_submitter: '00000',
+    d_submitter: '00000'
   }
 
   componentDidMount() {
@@ -113,24 +113,51 @@ class Ideas extends Component {
 
     let month = d.getMonth() + 1
 
-    if (month < 10){
+    if (month < 10) {
       month = '0' + month
     }
 
     //TODO: Add https://github.com/stefanpenner/es6-promise for IE
     Promise.all([a, b, c, f, g]).then(values => {
       this.setState({
-        idea_list: values[0],
-        waiting_list: values[1],
-        unapproved_list: values[2],
-        archive_list: values[3],
-        flagged_list: values[4],
+        idea_list: this.filterCat(values[0]),
+        waiting_list: this.filterCat(values[1]),
+        unapproved_list: this.filterCat(values[2]),
+        archive_list: this.filterCat(values[3]),
+        flagged_list: this.filterCat(values[4])
       })
     })
   }
 
+  filterCat = list => {
+    let selected = []
+    if (this.state.general === true) {
+      selected.push('general')
+    }
+    if (this.state.design === true) {
+      selected.push('design')
+    }
+    if (this.state.issue === true) {
+      selected.push('issue')
+    }
+    if (this.state.navigation === true) {
+      selected.push('navigation')
+    }
+    if (this.state.mobile === true) {
+      selected.push('mobile')
+    }
+    if (this.state.feature === true) {
+      selected.push('feature')
+    }
+
+    const result = list.filter(idea => selected.includes(idea.category))
+    return result
+  }
+
   changeCategory = category => event => {
-    this.setState({ [category]: event.target.checked })
+    this.setState({
+      [category]: event.target.checked
+    })
   }
 
   changeTab = (event, tabIndex) => {
@@ -143,7 +170,20 @@ class Ideas extends Component {
     })
   }
 
-  openDialog = (start, end, isFlagged, isArchived, voteCount, isApproved, title, vote, desc, category, submitter, id) => {
+  openDialog = (
+    start,
+    end,
+    isFlagged,
+    isArchived,
+    voteCount,
+    isApproved,
+    title,
+    vote,
+    desc,
+    category,
+    submitter,
+    id
+  ) => {
     this.setState({
       d_start: start,
       d_end: end,
@@ -257,14 +297,17 @@ class Ideas extends Component {
         </div>
         {tabIndex === 0 && (
           <MainList
-            ideas={this.state.idea_list}
-            unapproved={this.state.unapproved_list}
-            waiting={this.state.waiting_list}
+            ideas={this.filterCat(this.state.idea_list)}
+            unapproved={this.filterCat(this.state.unapproved_list)}
+            waiting={this.filterCat(this.state.waiting_list)}
             openDialog={this.openDialog.bind(this)}
           />
         )}
         {tabIndex === 1 && (
-          <FlaggedList ideas={this.state.flagged_list} openDialog={this.openDialog.bind(this)} />
+          <FlaggedList
+            ideas={this.state.flagged_list}
+            openDialog={this.openDialog.bind(this)}
+          />
         )}
         {tabIndex === 2 && (
           <ArchiveList
@@ -406,28 +449,25 @@ const ideaListItem = (ideas, func) => {
       let tomorrow = e.getDate()
 
       if (today <= 9) {
-        today = '0' + today 
-      } 
-      if (tomorrow <= 9){
+        today = '0' + today
+      }
+      if (tomorrow <= 9) {
         tomorrow = '0' + tomorrow
       }
 
       let month1 = s.getMonth() + 1
       let month2 = e.getMonth() + 1
 
-
-      if (month1 < 10){
+      if (month1 < 10) {
         month1 = '0' + month1
       }
-      if (month2 < 10){
+      if (month2 < 10) {
         month2 = '0' + month2
       }
 
       start = `${s.getFullYear()}-${month1}-${today}`
       end = `${e.getFullYear()}-${month2}-${tomorrow}`
-
-    }else{
-
+    } else {
       var d = new Date()
       var day = d.getDay()
       var tomorrow = d.getDay() + 1
@@ -435,21 +475,19 @@ const ideaListItem = (ideas, func) => {
         day = '0' + day
       }
 
-      if (tomorrow <= 9){
+      if (tomorrow <= 9) {
         tomorrow = '0' + tomorrow
       }
 
       var month = d.getMonth() + 1
 
-      if (month < 10){
+      if (month < 10) {
         month = '0' + month
       }
-      
+
       start = `${d.getFullYear()}-${month}-${day}`
       end = `${d.getFullYear()}-${month}-${tomorrow}`
     }
-
-
 
     ideaArray.push(
       <ListItem
