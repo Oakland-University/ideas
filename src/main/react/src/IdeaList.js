@@ -96,8 +96,8 @@ class IdeaListItem extends Component {
     const date = `${createdAt.getMonth() +
       1}/${createdAt.getDate()}/${createdAt.getFullYear()}`
     let arrowStyle = {
-      up: { color: 'grey' },
-      down: { color: 'grey' }
+      up: { color: 'grey', fontSize: '3rem' },
+      down: { color: 'grey', fontSize: '3rem' }
     }
 
     if (this.state.userVote === 1) {

@@ -7,7 +7,7 @@ import { submitIdea } from '../api/api.js'
 import Toolbar from 'material-ui/Toolbar'
 import IconButton from 'material-ui/IconButton'
 import Typography from 'material-ui/Typography'
-import { ArrowBack } from 'material-ui-icons'
+import { Close } from 'material-ui-icons'
 import TextField from 'material-ui/TextField'
 import Slide from 'material-ui/transitions/Slide'
 import Radio, { RadioGroup } from 'material-ui/Radio'
@@ -18,6 +18,8 @@ class IdeaEditor extends Component {
   state = {
     category: 'general',
     title: '',
+    titleError: false,
+    descError: false,
     description: ''
   }
 
@@ -26,18 +28,32 @@ class IdeaEditor extends Component {
   }
 
   handleTitleChange = event => {
-    this.setState({ title: event.target.value })
+    if (this.state.title.length < 50 || event.target.value.length < this.state.title.length){
+      this.setState({ title: event.target.value, titleError: false })
+    }else{
+      this.setState({ titleError: true})
+    }
   }
 
   handleDescChange = event => {
-    this.setState({ description: event.target.value })
+    if (this.state.description.length < 800 || event.target.value.length < this.state.description.length){
+      this.setState({ description: event.target.value, descError: false })
+    }else{
+      this.setState({descError: true})
+    }
   }
 
   generateForm = () => {
-    if (this.state.title === '' || this.state.description == '') {
-      alert('Please fill out all fields')
+    if (this.state.title === '' || this.state.title.length > 60) {
+      alert('Title')
       return
     }
+
+    if (this.state.description === '' || this.state.description.length > 800){
+      alert('Description')
+      return
+    }
+
 
     submitIdea(
       this.state.title,
@@ -74,14 +90,11 @@ class IdeaEditor extends Component {
               aria-label="Close"
               style={{ marginRight: 24 }}
             >
-              <ArrowBack />
+              <Close />
             </IconButton>
             <Typography type="title" color="inherit" style={{ flex: 1 }}>
               Compose{' '}
             </Typography>
-            <Button color="contrast" onClick={this.props.handleClose}>
-              Submit{' '}
-            </Button>
           </Toolbar>
         </AppBar>
         <DialogContent
@@ -97,7 +110,7 @@ class IdeaEditor extends Component {
             type="subheading"
             style={{ paddingTop: '20px' }}
           >
-            Submit an idea on how to improve MySail.Give it a name, a brief
+            Submit an idea on how to improve MySail. Give it a name, a brief
             description, and a category.{' '}
           </Typography>
           <TextField
@@ -106,6 +119,10 @@ class IdeaEditor extends Component {
             label="Title"
             style={{ width: '50%' }}
             margin="normal"
+            maxLength="50"
+            maxlength="10"
+            value={this.state.title}
+            error={this.state.titleError}
             onChange={this.handleTitleChange}
           />
           <TextField
@@ -115,9 +132,11 @@ class IdeaEditor extends Component {
             multiline
             rows="4"
             maxLength="2"
+            value={this.state.description}
             inputProps={{ maxLength: '650' }}
             style={{ width: '100%' }}
             margin="normal"
+            error={this.state.descError}
             onChange={this.handleDescChange}
           />
           <FormControl style={{ marginTop: 50 }} component="fieldset" required>
