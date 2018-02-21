@@ -186,9 +186,20 @@ public class IdeaDB implements IIdeaDB {
     int cat =
         jdbcTemplate.queryForObject("SELECT category_id from idea_categories where category like ?",
             new Object[] {idea.getCategory()}, Integer.class);
+
+    String title = idea.getTitle();
+    if (title.length() > 50){
+      title = title.substring(0, 50);
+    }
+
+    String description = idea.getDescription();
+    if (description.length() > 800){
+      description = description.substring(0, 800);
+    }
+
     jdbcTemplate.update(
         "insert into idea_post (title, description, created_by, created_at, category) values (?, ?, ?, ?, ?)",
-        idea.getTitle(), idea.getDescription(), idea.getCreatedBy(), idea.getCreatedAt(), cat);
+        title, description, idea.getCreatedBy(), idea.getCreatedAt(), cat);
   }
 
   public void submitVote(Vote vote) {

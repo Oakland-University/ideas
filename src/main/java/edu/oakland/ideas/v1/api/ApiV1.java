@@ -47,14 +47,14 @@ public class ApiV1 {
 
     @CrossOrigin
     @RequestMapping("/getUnapprovedIdeas")
-    public List<Idea> getUnapprovedIdeas(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request){
+    public List<Idea> getUnapprovedIdeas(@RequestParam(value = "i", required = false, defaultValue = "50") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
 
       if (ideaDB.isAdmin(pidm)){
         return ideaDB.getUnapprovedIdeas(i);
       } else {
-        return ideaDB.getIdeaList(i, pidm);
+        return ideaDB.getIdeaList(5, pidm);
       }
 
     }
