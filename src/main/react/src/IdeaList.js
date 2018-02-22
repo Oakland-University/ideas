@@ -77,15 +77,15 @@ class IdeaList extends Component {
 class IdeaListItem extends Component {
   state = {
     voteCount: this.props.idea.voteCount,
-    userVote: this.props.idea.userVote
+    userVote: this.props.idea.userVote,
   }
 
   handleVote = (id, createdAt, vote, index) => {
     submitVote(id, createdAt, vote, this.props.token)
-    if (this.state.userVote === 0) {
+    if (this.state.userVote === 0 ) {
       this.setState({ userVote: vote, voteCount: this.state.voteCount + vote })
     } else if (this.state.userVote != vote) {
-      this.setState({ userVote: 0, voteCount: this.state.voteCount + vote })
+      this.setState({ userVote: vote, voteCount: this.state.voteCount + vote })
     }
     this.forceUpdate()
   }
@@ -100,7 +100,7 @@ class IdeaListItem extends Component {
       down: { color: 'grey', fontSize: '3rem' }
     }
 
-    if (this.state.userVote === 1) {
+    if (this.state.userVote === 1 ) {
       arrowStyle.up.color = 'green'
     } else if (this.state.userVote === -1) {
       arrowStyle.down.color = 'red'
