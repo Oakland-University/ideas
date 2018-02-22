@@ -12,6 +12,8 @@ import TextField from 'material-ui/TextField'
 import Slide from 'material-ui/transitions/Slide'
 import Radio, { RadioGroup } from 'material-ui/Radio'
 import { badWords } from '../utils/badWords'
+import Snackbar from 'material-ui/Snackbar';
+import Slide from 'material-ui/transitions/Slide';
 import { FormLabel, FormControl, FormControlLabel } from 'material-ui/Form'
 
 class IdeaEditor extends Component {
@@ -118,9 +120,8 @@ class IdeaEditor extends Component {
             id="idea-title"
             label="Title"
             style={{ width: '50%' }}
+            inputProps={{maxlength:60}}
             margin="normal"
-            maxLength="50"
-            maxlength="10"
             value={this.state.title}
             error={this.state.titleError}
             onChange={this.handleTitleChange}
@@ -131,9 +132,7 @@ class IdeaEditor extends Component {
             label="Description"
             multiline
             rows="4"
-            maxLength="2"
             value={this.state.description}
-            inputProps={{ maxLength: '650' }}
             style={{ width: '100%' }}
             margin="normal"
             error={this.state.descError}
