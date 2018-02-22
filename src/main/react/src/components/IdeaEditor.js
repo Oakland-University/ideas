@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import ModeEditIcon from 'material-ui-icons/ModeEdit'
 import Button from 'material-ui/Button'
 import Dialog, { DialogContent, DialogActions } from 'material-ui/Dialog'
@@ -13,7 +13,6 @@ import Slide from 'material-ui/transitions/Slide'
 import Radio, { RadioGroup } from 'material-ui/Radio'
 import { badWords } from '../utils/badWords'
 import Snackbar from 'material-ui/Snackbar';
-import Slide from 'material-ui/transitions/Slide';
 import { FormLabel, FormControl, FormControlLabel } from 'material-ui/Form'
 
 class IdeaEditor extends Component {
@@ -22,7 +21,14 @@ class IdeaEditor extends Component {
     title: '',
     titleError: false,
     descError: false,
-    description: ''
+    description: '',
+    snackOpen: false,
+    snackMessage: "An error occured"
+
+  }
+
+  handleSnackClose = () => {
+    this.setState({snackOpen: false})
   }
 
   handleChange = (event, category) => {
@@ -31,7 +37,7 @@ class IdeaEditor extends Component {
 
   handleTitleChange = event => {
     if (this.state.title.length < 50 || event.target.value.length < this.state.title.length){
-      this.setState({ title: event.target.value, titleError: false })
+      this.setState({ title: event.target.value,titleError: false })
     }else{
       this.setState({ titleError: true})
     }
@@ -46,17 +52,22 @@ class IdeaEditor extends Component {
   }
 
   generateForm = () => {
+    let error = false
     if (this.state.title === '' || this.state.title.length > 60) {
-      alert('Title')
-      return
+      this.setState({ titleError: true })
+      error = true
     }
 
     if (this.state.description === '' || this.state.description.length > 800){
-      alert('Description')
+      this.setState({descError: true})
+      error = true
+    }
+
+    if (error) {
       return
     }
 
-
+    console.log("Continuing")
     submitIdea(
       this.state.title,
       this.state.description,
@@ -77,6 +88,7 @@ class IdeaEditor extends Component {
 
   render() {
     return (
+      <div>
       <Dialog
         open={this.props.open}
         role="dialog"
@@ -126,6 +138,7 @@ class IdeaEditor extends Component {
             error={this.state.titleError}
             onChange={this.handleTitleChange}
           />
+            { this.state.titleError &&<Typography>Title field must be filled out and less than 60 characters</Typography>}
           <TextField
             required
             id="idea-description"
@@ -138,6 +151,7 @@ class IdeaEditor extends Component {
             error={this.state.descError}
             onChange={this.handleDescChange}
           />
+          { this.state.descError &&<Typography>Description field must be filled out and less than 800 characters</Typography>}
           <FormControl style={{ marginTop: 50 }} component="fieldset" required>
             <FormLabel component="legend"> Category </FormLabel>
             <RadioGroup
@@ -186,6 +200,16 @@ class IdeaEditor extends Component {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+      open={this.state.snackOpen}
+      onClose={this.handleSnackClose}
+      transition={Slide}
+      SnackbarContentProps={{
+        'aria-describedby': 'message-id',
+      }}
+      message={<span id="message-id">{this.state.snackMessage}</span>}
+    />
+    </div>
     )
   }
 }
