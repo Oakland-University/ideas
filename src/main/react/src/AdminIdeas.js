@@ -6,6 +6,9 @@ import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 import IconButton from 'material-ui/IconButton'
 import SearchIcon from 'material-ui-icons/Search'
+import Down from 'material-ui-icons/KeyboardArrowDown'
+import Forward from 'material-ui-icons/ArrowForward'
+import Backward from 'material-ui-icons/ArrowBack'
 import { FormControlLabel } from 'material-ui/Form'
 import Checkbox from 'material-ui/Checkbox'
 import Tabs, { Tab } from 'material-ui/Tabs'
@@ -45,14 +48,16 @@ class Ideas extends Component {
     mobile: true,
     feature: true,
     tabIndex: 0,
-    archive_list: {},
-    idea_list: {},
-    flagged_list: {},
-    unapproved_list: {},
-    waiting_list: {},
+    archive_list: [],
+    idea_list: [],
+    flagged_list: [],
+    unapproved_list: [],
+    waiting_list: [],
     dialog: false,
     d_title: 'Hello',
     d_approved: true,
+    d_archived: false,
+    d_flagged: false,
     d_desc: 'stuff and things',
     d_vote: 0,
     d_category: 0,
@@ -70,7 +75,6 @@ class Ideas extends Component {
       credentialsNeeded: false
     }).then(ideas => {
       return ideas
-      console.log('1')
     })
     var b = getAdminData({
       token: this.props.token,
@@ -78,7 +82,6 @@ class Ideas extends Component {
       credentialsNeeded: false
     }).then(ideas => {
       return ideas
-      console.log('2')
     })
     var c = getAdminData({
       token: this.props.token,
@@ -86,7 +89,6 @@ class Ideas extends Component {
       credentialsNeeded: false
     }).then(ideas => {
       return ideas
-      console.log('3')
     })
     var f = getAdminData({
       token: this.props.token,
@@ -94,7 +96,13 @@ class Ideas extends Component {
       credentialsNeeded: false
     }).then(ideas => {
       return ideas
-      console.log('4')
+    })
+    var g = getAdminData({
+      token: this.props.token,
+      url: 'getFlagged',
+      credentialsNeeded: false
+    }).then(ideas => {
+      return ideas
     })
     const d = new Date()
     let day = d.getDay()
@@ -105,24 +113,54 @@ class Ideas extends Component {
     } else if (day === 9) {
       day = '0' + day
     }
-    const start = `${d.getFullYear()}-${d.getMonth()}-${day}`
-    const end = `${d.getFullYear()}-${d.getMonth()}-${tomorrow}`
+
+    let month = d.getMonth() + 1
+
+    if (month < 10) {
+      month = '0' + month
+    }
 
     //TODO: Add https://github.com/stefanpenner/es6-promise for IE
-    Promise.all([a, b, c, f]).then(values => {
+    Promise.all([a, b, c, f, g]).then(values => {
       this.setState({
-        idea_list: values[0],
-        waiting_list: values[1],
-        unapproved_list: values[2],
-        archive_list: values[3],
-        d_start: start,
-        d_end: end
+        idea_list: this.filterCat(values[0]),
+        waiting_list: this.filterCat(values[1]),
+        unapproved_list: this.filterCat(values[2]),
+        archive_list: this.filterCat(values[3]),
+        flagged_list: this.filterCat(values[4])
       })
     })
   }
 
+  filterCat = list => {
+    let selected = []
+    if (this.state.general === true) {
+      selected.push('general')
+    }
+    if (this.state.design === true) {
+      selected.push('design')
+    }
+    if (this.state.issue === true) {
+      selected.push('issue')
+    }
+    if (this.state.navigation === true) {
+      selected.push('navigation')
+    }
+    if (this.state.mobile === true) {
+      selected.push('mobile')
+    }
+    if (this.state.feature === true) {
+      selected.push('feature')
+    }
+
+    const result = list.filter(idea => selected.includes(idea.category))
+    return result
+  }
+
   changeCategory = category => event => {
-    this.setState({ [category]: event.target.checked })
+    this.setState({
+      [category]: event.target.checked
+    })
   }
 
   changeTab = (event, tabIndex) => {
@@ -130,17 +168,33 @@ class Ideas extends Component {
   }
 
   handleDialogChange = (name, variable) => {
-    console.log(name, variable)
     this.setState({
       [name]: variable
     })
   }
 
-  openDialog = (isApproved, title, vote, desc, category, submitter, id) => {
+  openDialog = (
+    start,
+    end,
+    isFlagged,
+    isArchived,
+    voteCount,
+    isApproved,
+    title,
+    vote,
+    desc,
+    category,
+    submitter,
+    id
+  ) => {
     this.setState({
+      d_start: start,
+      d_end: end,
+      d_flagged: isFlagged,
+      d_archived: isArchived,
       d_approved: isApproved,
       d_title: title,
-      d_vote: vote,
+      d_vote: voteCount,
       d_desc: desc,
       d_category: category,
       d_submitter: submitter,
@@ -246,17 +300,23 @@ class Ideas extends Component {
         </div>
         {tabIndex === 0 && (
           <MainList
-            ideas={this.state.idea_list}
-            unapproved={this.state.unapproved_list}
-            waiting={this.state.waiting_list}
+            ideas={this.filterCat(this.state.idea_list)}
+            unapproved={this.filterCat(this.state.unapproved_list)}
+            waiting={this.filterCat(this.state.waiting_list)}
             openDialog={this.openDialog.bind(this)}
           />
         )}
         {tabIndex === 1 && (
-          <FlaggedList openDialog={this.openDialog.bind(this)} />
+          <FlaggedList
+            ideas={this.state.flagged_list}
+            openDialog={this.openDialog.bind(this)}
+          />
         )}
         {tabIndex === 2 && (
-          <ArchiveList openDialog={this.openDialog.bind(this)} />
+          <ArchiveList
+            ideas={this.state.archive_list}
+            openDialog={this.openDialog.bind(this)}
+          />
         )}
         <AdminDialog
           open={this.state.dialog}
@@ -273,6 +333,7 @@ class Ideas extends Component {
           id={this.state.d_id}
           submitter={this.state.d_submitter}
           token={this.props.token}
+          flagged={this.state.d_flagged}
         />
       </div>
     )
@@ -294,7 +355,6 @@ class MainList extends Component {
         >
           <List disablePadding>
             {ideaListItem(this.props.ideas, this.props.openDialog)}
-            {console.log(this.props.ideas)}
           </List>
         </Collapse>
         <ListItem style={{ borderBottom: '5px solid lightblue' }}>
@@ -308,7 +368,6 @@ class MainList extends Component {
         >
           <List disablePadding>
             {ideaListItem(this.props.waiting, this.props.openDialog)}
-            {console.log(this.props.waiting)}
           </List>
         </Collapse>
         <ListItem style={{ borderBottom: '5px solid #9575CD' }}>
@@ -320,15 +379,48 @@ class MainList extends Component {
           transitionDuration="auto"
           unmountOnExit
         >
-          <List disablePadding>
-            {ideaListItem(this.props.unapproved, this.props.openDialog)}
-            {console.log(this.props.unapproved)}
-          </List>
+          <Pagination 
+            list={this.props.unapproved}
+            openFunc={this.props.openDialog}
+          />
         </Collapse>
       </List>
     )
   }
 }
+
+class Pagination extends Component{
+  state = {start: 0, end: 5, page: 1}
+
+  page = (direction) => {
+    console.log('click')
+    if (direction === 'back' && this.state.start !== 0){
+      this.setState({start: this.state.start - 5, end: this.state.end - 5, page: this.state.page - 1})
+    }else if (direction === 'forward' && this.state.end < this.props.list.length){
+      this.setState({start: this.state.start + 5, end: this.state.end + 5, page: this.state.page + 1})
+    }
+  }
+
+  render() {
+    return (
+      <List disablePadding>
+        {ideaListItem(this.props.list.slice(this.state.start, this.state.end), this.props.openFunc)}
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <IconButton color="secondary"  aria-label="Paginate backward" onClick={() => this.page('back')}>
+           <Backward/>
+        </IconButton>
+        <Typography>
+          {this.state.page} of {Math.ceil(this.props.list.length / 5)}
+        </Typography>
+        <IconButton color="secondary"  aria-label="Paginate forward" onClick={() => this.page('forward')}>
+           <Forward/>
+        </IconButton>
+      </div>
+      </List>
+    )
+  }
+}
+  
 
 class FlaggedList extends Component {
   render() {
@@ -343,7 +435,9 @@ class FlaggedList extends Component {
           transitionDuration="auto"
           unmountOnExit
         >
-          <List disablePadding />
+          <List disablePadding>
+            {ideaListItem(this.props.ideas, this.props.openDialog)}
+          </List>
         </Collapse>
       </List>
     )
@@ -363,6 +457,9 @@ class ArchiveList extends Component {
           transitionDuration="auto"
           unmountOnExit
         >
+          <List disablePadding>
+            {ideaListItem(this.props.ideas, this.props.openDialog)}
+          </List>
           <List disablePadding />
         </Collapse>
       </List>
@@ -376,15 +473,70 @@ const ideaListItem = (ideas, func) => {
   }
 
   let ideaArray = []
-
   for (let value in ideas) {
     const idea = ideas[value]
+    let start
+    let end
+    let s, e
+    if (idea.startVoteDate !== null && idea.startVoteDate !== undefined) {
+      s = new Date(idea.startVoteDate)
+      e = new Date(idea.endVoteDate)
+
+      let today = s.getDate()
+      let tomorrow = e.getDate()
+
+      if (today <= 9) {
+        today = '0' + today
+      }
+      if (tomorrow <= 9) {
+        tomorrow = '0' + tomorrow
+      }
+
+      let month1 = s.getMonth() + 1
+      let month2 = e.getMonth() + 1
+
+      if (month1 < 10) {
+        month1 = '0' + month1
+      }
+      if (month2 < 10) {
+        month2 = '0' + month2
+      }
+
+      start = `${s.getFullYear()}-${month1}-${today}`
+      end = `${e.getFullYear()}-${month2}-${tomorrow}`
+    } else {
+      var d = new Date()
+      var day = d.getDay()
+      var tomorrow = d.getDay() + 1
+      if (day <= 9) {
+        day = '0' + day
+      }
+
+      if (tomorrow <= 9) {
+        tomorrow = '0' + tomorrow
+      }
+
+      var month = d.getMonth() + 1
+
+      if (month < 10) {
+        month = '0' + month
+      }
+
+      start = `${d.getFullYear()}-${month}-${day}`
+      end = `${d.getFullYear()}-${month}-${tomorrow}`
+    }
+
     ideaArray.push(
       <ListItem
         button
         style={{ backgroundColor: 'white' }}
         onClick={() =>
           func(
+            start,
+            end,
+            idea.flagged,
+            idea.archived,
+            idea.voteCount,
             idea.approved,
             idea.title,
             idea.userVote,
@@ -396,7 +548,7 @@ const ideaListItem = (ideas, func) => {
         }
       >
         <ListItemText inset primary={idea.title} />
-        <Typography>{idea.vote}</Typography>
+        <Typography>{idea.voteCount}</Typography>
       </ListItem>
     )
   }

@@ -77,7 +77,6 @@ export const getAdminDemo = async obj => {
 }
 
 export const submitIdea = async (title, desc, cat, token) => {
-  console.log('Submitting Idea')
   try {
     let response
     let data = {
@@ -85,13 +84,12 @@ export const submitIdea = async (title, desc, cat, token) => {
       description: desc,
       category: cat
     }
-    console.log(data)
 
     const formBody = Object.keys(data)
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
       .join('&')
 
-    response = await fetch('http://localhost:8080/ideas/api/v1/submitIdea', {
+    response = await fetch('http://141.210.186.163:8080/ideas/api/v1/submitIdea', {
       body: formBody,
       credentials: 'include',
       headers: {
@@ -120,7 +118,7 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
       .join('&')
 
-    response = await fetch('http://localhost:8080/ideas/api/v1/submitVote', {
+    response = await fetch('http://141.210.186.163:8080/ideas/api/v1/submitVote', {
       body: formBody,
       credentials: 'include',
       headers: {
@@ -131,7 +129,6 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
       method: 'POST'
     })
     let blob = await response.json()
-    console.log(blob)
   } catch (err) {
     console.log(err)
   }
@@ -139,7 +136,7 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
 
 export const getList = async obj => {
   try {
-    let response = await fetch('http://localhost:8080/ideas/api/v1/getList', {
+    let response = await fetch('http://141.210.186.163:8080/ideas/api/v1/getList', {
       credentials: 'include',
       headers: { Authorization: 'Bearer ' + obj.token }
     })
@@ -152,7 +149,7 @@ export const getList = async obj => {
 
 export const getAdminData = async obj => {
   try {
-    const url = 'http://localhost:8080/ideas/api/v1/' + obj.url
+    const url = 'http://141.210.186.163:8080/ideas/api/v1/' + obj.url
     let response = await fetch(url, {
       credentials: 'include',
       headers: { Authorization: 'Bearer ' + obj.token }
@@ -166,7 +163,6 @@ export const getAdminData = async obj => {
 
 export const editIdea = async obj => {
   try {
-    console.log(obj)
     let response
     let data = {
       id: obj.id,
@@ -182,7 +178,14 @@ export const editIdea = async obj => {
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
       .join('&')
 
-    response = await fetch('http://localhost:8080/ideas/api/v1/editIdea', {
+    let url = 'editIdea'
+    if (obj.flagged === true) {
+      url = 'flagIdea'
+    } else if (obj.is_archived === true) {
+      url = 'archiveIdea'
+    }
+
+    response = await fetch('http://141.210.186.163:8080/ideas/api/v1/' + url, {
       body: formBody,
       credentials: 'include',
       headers: {
@@ -192,6 +195,7 @@ export const editIdea = async obj => {
       },
       method: 'POST'
     })
+
     let blob = await response.json()
   } catch (err) {
     console.log(err)
@@ -200,15 +204,15 @@ export const editIdea = async obj => {
 
 export const adminCheck = async token => {
   try {
-    const url = 'http://localhost:8080/ideas/api/v1/adminCheck'
+    const url = 'http://141.210.186.163:8080/ideas/api/v1/adminCheck'
     let response = await fetch(url, {
       credentials: 'include',
       headers: { Authorization: 'Bearer ' + token }
     })
     let blob = await response.json()
-    console.log('API', blob)
     return blob
   } catch (err) {
     console.error(err)
+    return 'error'
   }
 }

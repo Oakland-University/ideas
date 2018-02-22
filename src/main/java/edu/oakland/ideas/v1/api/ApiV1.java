@@ -33,6 +33,7 @@ public class ApiV1 {
 
     @Autowired IJwtService jwtService;
 
+    @CrossOrigin
     @RequestMapping("/getList")
     public List<Idea> idea(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
@@ -44,19 +45,21 @@ public class ApiV1 {
       return ideaDB.getIdeaList(i, pidm); 
     }
 
+    @CrossOrigin
     @RequestMapping("/getUnapprovedIdeas")
-    public List<Idea> getUnapprovedIdeas(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request){
+    public List<Idea> getUnapprovedIdeas(@RequestParam(value = "i", required = false, defaultValue = "50") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
 
       if (ideaDB.isAdmin(pidm)){
         return ideaDB.getUnapprovedIdeas(i);
       } else {
-        return ideaDB.getIdeaList(i, pidm);
+        return ideaDB.getIdeaList(5, pidm);
       }
 
     }
 
+    @CrossOrigin
     @RequestMapping("/getWaitingIdeas")
     public List<Idea> getWaitingIdeas(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
@@ -71,51 +74,40 @@ public class ApiV1 {
 
     }
 
+    @CrossOrigin
     @RequestMapping("/getArchive")
     public List<Idea> getArchive(@RequestParam(value = "i", required = false, defaultValue = "10") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
 
       if (ideaDB.isAdmin(pidm)){
-        return ideaDB.getAdminIdeas(7, i);
+        return ideaDB.getArchiveIdeas(i);
       } else {
         return ideaDB.getIdeaList(i, pidm);
       }
-
     }
 
+    @CrossOrigin
     @RequestMapping("/getFlagged")
     public List<Idea> getFlagged(@RequestParam(value = "i", required = false, defaultValue = "10") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
 
       if (ideaDB.isAdmin(pidm)){
-        return ideaDB.getAdminIdeas(8, i);
+        return ideaDB.getFlaggedIdeas(i);
       } else {
         return ideaDB.getIdeaList(i, pidm);
       }
-
     }
 
-    @RequestMapping("/getAdminIdeas")
-    public List<Idea> getUnapprovedIdeas(@RequestParam Map<String, Integer> requestParams, HttpServletRequest request){
-      Claims claims = jwtService.decrypt(request);
-      String pidm = (String) claims.get("pidm");
-
-      if (ideaDB.isAdmin(pidm)){
-        return ideaDB.getAdminIdeas(requestParams.get("stuff"),requestParams.get("stuff"));
-      } else {
-        return ideaDB.getIdeaList(requestParams.get("stuff"), pidm);
-      }
-
-    }
-
+    @CrossOrigin
     @PostMapping("/editIdea")
     public void editIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
       ideaDB.editIdea(idea);
     }
 
+    @CrossOrigin
     @RequestMapping("/adminCheck")
     public boolean adminCheck(HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
@@ -123,6 +115,7 @@ public class ApiV1 {
       return ideaDB.isAdmin(pidm);
     }
 
+    @CrossOrigin
     @PostMapping("/submitIdea")
     public void putIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
@@ -130,13 +123,41 @@ public class ApiV1 {
       idea.setCreatedBy((String)claims.get("pidm"));
       ideaDB.addIdea(idea);
     }
+
+    @CrossOrigin
+    @PostMapping("/flagIdea")
+    public void flagIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
+      Claims claims = jwtService.decrypt(request);
+      String pidm = (String) claims.get("pidm");
+      if (ideaDB.isAdmin(pidm)){
+        //Flag the idea recording who flagged it and when 
+        idea.setFlaggedBy(pidm);
+        idea.setFlaggedOn(new Timestamp(System.currentTimeMillis()));
+        ideaDB.flagIdea(idea);
+      } 
+    }
     
+    @CrossOrigin
+    @PostMapping("/archiveIdea")
+    public void archiveIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
+      Claims claims = jwtService.decrypt(request);
+      String pidm = (String) claims.get("pidm");
+      if (ideaDB.isAdmin(pidm)){
+        //Flag the idea recording who flagged it and when 
+        ideaDB.archiveIdea(idea);
+      } 
+    }
+
     @CrossOrigin
     @PostMapping("/submitVote")
     public void submitVote(@ModelAttribute Vote vote, String time, HttpServletRequest request){
+      System.out.println("Submitting Vote");
+      System.out.println(Integer.valueOf(vote.getVoteValue()));
       if (vote.getVoteValue() > 1){
+        System.out.println("Vote > 1");
         vote.setVoteValue(1);
       }else if (vote.getVoteValue() < -1 ){
+        System.out.println("Vote < 1");
         vote.setVoteValue(-1);
       }
       Claims claims = jwtService.decrypt(request);      

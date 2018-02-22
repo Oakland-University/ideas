@@ -25,5 +25,11 @@ public interface IIdeaDB {
 
   public void editIdea(Idea idea); 
 
-}
+  public List<Idea> getArchiveIdeas(int ideaNumber); 
 
+  public List<Idea> getFlaggedIdeas(int ideaNumber);
+
+  public void flagIdea(Idea idea);
+
+  public void archiveIdea(Idea idea);
+}
