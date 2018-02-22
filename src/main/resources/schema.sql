@@ -25,7 +25,7 @@ CREATE TABLE if not exists idea_post
     created_at TIMESTAMP,
     start_vote_date TIMESTAMP,
     end_vote_date TIMESTAMP,
-    vote_count INTEGER,
+    vote_count INTEGER DEFAULT 0,
     is_archived BOOLEAN DEFAULT false,
     is_flagged BOOLEAN DEFAULT false,
     flagged_by TEXT,
