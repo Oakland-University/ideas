@@ -7,24 +7,23 @@ import ErrorPage from './components/ErrorPage'
 import IconButton from 'material-ui/IconButton'
 import List, { ListItem } from 'material-ui/List'
 import Typography from 'material-ui/Typography'
-import { withStyles } from "material-ui/styles"
+import { withStyles } from 'material-ui/styles'
 
 import { getList, getListDemo, submitVote } from './api/api.js'
-
 
 const styles = theme => ({
   listRoot: {
     alignItems: 'flex-start',
-    width: '100%' 
+    width: '100%'
   },
   editButton: {
     marginTop: '-37px',
     marginRight: '28px'
   },
   listItem: {
-    paddingTop: 0, 
-    paddingBottom: 0, 
-    width: '100%'    
+    paddingTop: 0,
+    paddingBottom: 0,
+    width: '100%'
   }
 })
 
@@ -49,7 +48,7 @@ class IdeaList extends Component {
       })
     } else {
       getList({
-        token: this.props.token,
+        token: this.props.token
       }).then(ideas => {
         this.setState({
           category: 'blob',
@@ -64,49 +63,52 @@ class IdeaList extends Component {
   generateList = () => {
     let iArray = []
     const { listItems } = this.state
-    for (let i = 0; i < listItems.length; i++){
-      iArray.push(
-        <IdeaListItem token={this.props.token} idea={listItems[i]} />
-      )
+    for (let i = 0; i < listItems.length; i++) {
+      iArray.push(<IdeaListItem token={this.props.token} idea={listItems[i]} />)
     }
     return iArray
   }
 
   render() {
     //Classes gives CSS classnames
-    const {classes} = this.props
+    const { classes } = this.props
 
     if (this.state.loading === true) {
       return <div>Loading...</div>
     } else if (Object.is(this.state.listItems, null)) {
       return <ErrorPage />
     }
-    return (
-      <List className={classes.listRoot}>
-        {this.generateList()}
-      </List>
-    )
+    return <List className={classes.listRoot}>{this.generateList()}</List>
   }
 }
 
-const ListItemStyles = ({
+const ListItemStyles = {
   listItem: {
-    paddingTop: 0, 
-    paddingBottom: 0, 
-    width: '100%'    
-  }, 
+    paddingTop: 0,
+    paddingBottom: 0,
+    width: '100%'
+  },
   card: {
     display: 'flex',
     flex: 1
   },
   cardContent: {
     paddingLeft: '18px'
-  }, 
+  },
+  voteSection: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  voteButtons: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
   voteCount: {
     marginRight: 20,
     fontSize: '24px'
   }
-})
+}
 
 class IdeaListItem extends Component {
   state = {
@@ -118,7 +120,7 @@ class IdeaListItem extends Component {
     submitVote(id, createdAt, vote, this.props.token)
     if (this.state.userVote === 0) {
       this.setState({ userVote: vote, voteCount: this.state.voteCount + vote })
-    } else if (this.state.userVote != vote) {
+    } else if (this.state.userVote !== vote) {
       this.setState({ userVote: vote, voteCount: this.state.voteCount + vote })
     }
   }
@@ -127,8 +129,8 @@ class IdeaListItem extends Component {
     let { idea } = this.props
     let style = ListItemStyles
     const createdAt = new Date(idea.createdAt)
-    const date = 
-    `${createdAt.getMonth() + 1}/${createdAt.getDate()}/${createdAt.getFullYear()}`
+    const date = `${createdAt.getMonth() +
+      1}/${createdAt.getDate()}/${createdAt.getFullYear()}`
 
     let arrowStyle = {
       up: { color: 'grey', fontSize: '3rem' },
@@ -142,20 +144,15 @@ class IdeaListItem extends Component {
     }
 
     return (
-      <ListItem
-        style={style.listItem}
-        key={idea.id}
-      >
+      <ListItem style={style.listItem} key={idea.id}>
         <Card style={style.card}>
-          <div style={{width: '100%'}}>
+          <div style={{ width: '100%' }}>
             <CardHeader
               avatar={<Avatar aria-label={idea.category}>{idea.avatar}</Avatar>}
               title={idea.title}
               subheader={date}
             />
-            <CardContent
-              style={style.cardContent}
-            >
+            <CardContent style={style.cardContent}>
               <Typography
                 style={{
                   hyphens: 'auto'
@@ -166,33 +163,20 @@ class IdeaListItem extends Component {
               </Typography>
             </CardContent>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center'
-              }}
-            >
+          <div style={style.voteSection}>
+            <div style={style.voteButtons}>
               <IconButton
-                onClick={() =>
-                  this.handleVote(idea.id, idea.createdAt, 1)
-                }
+                onClick={() => this.handleVote(idea.id, idea.createdAt, 1)}
               >
                 <ArrowDropUp style={arrowStyle.up} />
               </IconButton>
               <IconButton
-                onClick={() =>
-                  this.handleVote(idea.id, idea.createdAt, -1)
-                }
+                onClick={() => this.handleVote(idea.id, idea.createdAt, -1)}
               >
                 <ArrowDropDown style={arrowStyle.down} />
               </IconButton>
             </div>
-            <Typography
-              component="p"
-              style={style.voteCount}
-            >
+            <Typography component="p" style={style.voteCount}>
               {this.state.voteCount}
             </Typography>
           </div>

@@ -6,7 +6,6 @@ import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 import IconButton from 'material-ui/IconButton'
 import SearchIcon from 'material-ui-icons/Search'
-import Down from 'material-ui-icons/KeyboardArrowDown'
 import Forward from 'material-ui-icons/ArrowForward'
 import Backward from 'material-ui-icons/ArrowBack'
 import { FormControlLabel } from 'material-ui/Form'
@@ -68,7 +67,6 @@ class Ideas extends Component {
   }
 
   componentDidMount() {
-    let idea_list, waiting, unapproved, archive
     var a = getList({
       token: this.props.token,
       url: './api/example.json',
@@ -379,7 +377,7 @@ class MainList extends Component {
           transitionDuration="auto"
           unmountOnExit
         >
-          <Pagination 
+          <Pagination
             list={this.props.unapproved}
             openFunc={this.props.openDialog}
           />
@@ -389,38 +387,65 @@ class MainList extends Component {
   }
 }
 
-class Pagination extends Component{
-  state = {start: 0, end: 5, page: 1}
+class Pagination extends Component {
+  state = { start: 0, end: 5, page: 1 }
 
-  page = (direction) => {
+  page = direction => {
     console.log('click')
-    if (direction === 'back' && this.state.start !== 0){
-      this.setState({start: this.state.start - 5, end: this.state.end - 5, page: this.state.page - 1})
-    }else if (direction === 'forward' && this.state.end < this.props.list.length){
-      this.setState({start: this.state.start + 5, end: this.state.end + 5, page: this.state.page + 1})
+    if (direction === 'back' && this.state.start !== 0) {
+      this.setState({
+        start: this.state.start - 5,
+        end: this.state.end - 5,
+        page: this.state.page - 1
+      })
+    } else if (
+      direction === 'forward' &&
+      this.state.end < this.props.list.length
+    ) {
+      this.setState({
+        start: this.state.start + 5,
+        end: this.state.end + 5,
+        page: this.state.page + 1
+      })
     }
   }
 
   render() {
     return (
       <List disablePadding>
-        {ideaListItem(this.props.list.slice(this.state.start, this.state.end), this.props.openFunc)}
-      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-        <IconButton color="secondary"  aria-label="Paginate backward" onClick={() => this.page('back')}>
-           <Backward/>
-        </IconButton>
-        <Typography>
-          {this.state.page} of {Math.ceil(this.props.list.length / 5)}
-        </Typography>
-        <IconButton color="secondary"  aria-label="Paginate forward" onClick={() => this.page('forward')}>
-           <Forward/>
-        </IconButton>
-      </div>
+        {ideaListItem(
+          this.props.list.slice(this.state.start, this.state.end),
+          this.props.openFunc
+        )}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <IconButton
+            color="secondary"
+            aria-label="Paginate backward"
+            onClick={() => this.page('back')}
+          >
+            <Backward />
+          </IconButton>
+          <Typography>
+            {this.state.page} of {Math.ceil(this.props.list.length / 5)}
+          </Typography>
+          <IconButton
+            color="secondary"
+            aria-label="Paginate forward"
+            onClick={() => this.page('forward')}
+          >
+            <Forward />
+          </IconButton>
+        </div>
       </List>
     )
   }
 }
-  
 
 class FlaggedList extends Component {
   render() {

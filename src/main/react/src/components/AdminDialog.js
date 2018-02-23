@@ -62,7 +62,6 @@ class AdminDialog extends Component {
 
   render() {
     const { classes } = this.props
-    const d = new Date()
     let title = this.props.title
     let desc = this.props.description
     let vote = this.props.vote
@@ -93,6 +92,9 @@ class AdminDialog extends Component {
         break
       case 'flagged':
         category = 70
+        break
+      default:
+        category = 0
         break
     }
 

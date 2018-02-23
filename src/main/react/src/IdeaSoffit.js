@@ -3,7 +3,7 @@ import Button from 'material-ui/Button'
 import IdeaEditor from './components/IdeaEditor'
 import IdeaList from './IdeaList'
 import ModeEditIcon from 'material-ui-icons/ModeEdit'
-import { withStyles } from "material-ui/styles"
+import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
   root: {
@@ -16,7 +16,6 @@ const styles = theme => ({
     marginRight: '28px'
   }
 })
-
 
 class IdeaSoffit extends Component {
   state = { open: false }
@@ -33,7 +32,7 @@ class IdeaSoffit extends Component {
     //This token contains personal info. If null, then load demo ideas
     const token = Object.is(this.props.token, null) ? 'demo' : this.props.token
     //Classes gives CSS classnames
-    const {classes} = this.props
+    const { classes } = this.props
 
     return (
       <div className={classes.root}>
