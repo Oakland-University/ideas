@@ -1,13 +1,32 @@
+import React, { Component } from 'react'
 import ArrowDropDown from 'material-ui-icons/ArrowDropDown'
 import ArrowDropUp from 'material-ui-icons/ArrowDropUp'
 import Avatar from 'material-ui/Avatar'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
+import ErrorPage from './components/ErrorPage'
 import IconButton from 'material-ui/IconButton'
 import List, { ListItem } from 'material-ui/List'
 import Typography from 'material-ui/Typography'
-import React, { Component } from 'react'
+import { withStyles } from "material-ui/styles"
 
 import { getList, getListDemo, submitVote } from './api/api.js'
+
+
+const styles = theme => ({
+  listRoot: {
+    alignItems: 'flex-start',
+    width: '100%' 
+  },
+  editButton: {
+    marginTop: '-37px',
+    marginRight: '28px'
+  },
+  listItem: {
+    paddingTop: 0, 
+    paddingBottom: 0, 
+    width: '100%'    
+  }
+})
 
 class IdeaList extends Component {
   state = {
@@ -19,9 +38,8 @@ class IdeaList extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.token)
     if (this.props.token === 'demo') {
-      var bob = getListDemo().then(ideas => {
+      getListDemo().then(ideas => {
         this.setState({
           category: ideas.category,
           amount: 5,
@@ -32,8 +50,6 @@ class IdeaList extends Component {
     } else {
       getList({
         token: this.props.token,
-        url: this.props.url,
-        credentialsNeeded: false
       }).then(ideas => {
         this.setState({
           category: 'blob',
@@ -43,93 +59,102 @@ class IdeaList extends Component {
         })
       })
     }
-    console.log(bob)
   }
 
   generateList = () => {
     let iArray = []
-    let index = 0
     const { listItems } = this.state
-    console.log('List Items:', ListItem)
-    for (let idea of listItems) {
+    for (let i = 0; i < listItems.length; i++){
       iArray.push(
-        <IdeaListItem token={this.props.token} idea={idea} index={index} />
+        <IdeaListItem token={this.props.token} idea={listItems[i]} />
       )
-      index++
     }
     return iArray
   }
 
   render() {
+    //Classes gives CSS classnames
+    const {classes} = this.props
+
     if (this.state.loading === true) {
-      return <div>Loading stuff</div>
+      return <div>Loading...</div>
     } else if (Object.is(this.state.listItems, null)) {
-      return <div>Error state</div>
+      return <ErrorPage />
     }
     return (
-      <List style={{ alignItems: 'flex-start', width: '100%' }}>
+      <List className={classes.listRoot}>
         {this.generateList()}
       </List>
     )
   }
 }
 
+const ListItemStyles = ({
+  listItem: {
+    paddingTop: 0, 
+    paddingBottom: 0, 
+    width: '100%'    
+  }, 
+  card: {
+    display: 'flex',
+    flex: 1
+  },
+  cardContent: {
+    paddingLeft: '18px'
+  }, 
+  voteCount: {
+    marginRight: 20,
+    fontSize: '24px'
+  }
+})
+
 class IdeaListItem extends Component {
   state = {
     voteCount: this.props.idea.voteCount,
-    userVote: this.props.idea.userVote,
+    userVote: this.props.idea.userVote
   }
 
-  handleVote = (id, createdAt, vote, index) => {
+  handleVote = (id, createdAt, vote) => {
     submitVote(id, createdAt, vote, this.props.token)
-    if (this.state.userVote === 0 ) {
+    if (this.state.userVote === 0) {
       this.setState({ userVote: vote, voteCount: this.state.voteCount + vote })
     } else if (this.state.userVote != vote) {
       this.setState({ userVote: vote, voteCount: this.state.voteCount + vote })
     }
-    this.forceUpdate()
   }
 
   render() {
-    let { idea, index } = this.props
+    let { idea } = this.props
+    let style = ListItemStyles
     const createdAt = new Date(idea.createdAt)
-    const date = `${createdAt.getMonth() +
-      1}/${createdAt.getDate()}/${createdAt.getFullYear()}`
+    const date = 
+    `${createdAt.getMonth() + 1}/${createdAt.getDate()}/${createdAt.getFullYear()}`
+
     let arrowStyle = {
       up: { color: 'grey', fontSize: '3rem' },
       down: { color: 'grey', fontSize: '3rem' }
     }
 
-    if (this.state.userVote === 1 ) {
+    if (this.state.userVote === 1) {
       arrowStyle.up.color = 'green'
     } else if (this.state.userVote === -1) {
       arrowStyle.down.color = 'red'
     }
+
     return (
       <ListItem
-        style={{ paddingTop: 0, paddingBottom: 0, width: '100%' }}
-        key={index++}
+        style={style.listItem}
+        key={idea.id}
       >
-        <Card
-          style={{
-            display: 'flex',
-            flex: 1
-          }}
-        >
-          <div
-            style={{
-              width: '100%'
-            }}
-          >
+        <Card style={style.card}>
+          <div style={{width: '100%'}}>
             <CardHeader
               avatar={<Avatar aria-label={idea.category}>{idea.avatar}</Avatar>}
               title={idea.title}
               subheader={date}
             />
             <CardContent
-              style={{
-                paddingLeft: '18px'
-              }}
+              style={style.cardContent}
             >
               <Typography
                 style={{
@@ -151,14 +176,14 @@ class IdeaListItem extends Component {
             >
               <IconButton
                 onClick={() =>
-                  this.handleVote(idea.id, idea.createdAt, 1, index)
+                  this.handleVote(idea.id, idea.createdAt, 1)
                 }
               >
                 <ArrowDropUp style={arrowStyle.up} />
               </IconButton>
               <IconButton
                 onClick={() =>
-                  this.handleVote(idea.id, idea.createdAt, -1, index)
+                  this.handleVote(idea.id, idea.createdAt, -1)
                 }
               >
                 <ArrowDropDown style={arrowStyle.down} />
@@ -166,10 +191,7 @@ class IdeaListItem extends Component {
             </div>
             <Typography
               component="p"
-              style={{
-                marginRight: 20,
-                fontSize: '24px'
-              }}
+              style={style.voteCount}
             >
               {this.state.voteCount}
             </Typography>
@@ -180,4 +202,4 @@ class IdeaListItem extends Component {
   }
 }
 
-export default IdeaList
+export default withStyles(styles)(IdeaList)

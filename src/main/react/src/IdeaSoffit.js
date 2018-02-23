@@ -1,17 +1,25 @@
-import ModeEditIcon from 'material-ui-icons/ModeEdit'
-import Button from 'material-ui/Button'
 import React, { Component } from 'react'
-
+import Button from 'material-ui/Button'
 import IdeaEditor from './components/IdeaEditor'
 import IdeaList from './IdeaList'
+import ModeEditIcon from 'material-ui-icons/ModeEdit'
+import { withStyles } from "material-ui/styles"
 
-const buttonStyle = {
-  marginTop: '-37px',
-  marginRight: '28px'
-}
+const styles = theme => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end'
+  },
+  editButton: {
+    marginTop: '-37px',
+    marginRight: '28px'
+  }
+})
+
 
 class IdeaSoffit extends Component {
-  state = { open: false, value: 'general', title: '', description: '' }
+  state = { open: false }
 
   handleRequestClose = () => {
     this.setState({ open: false })
@@ -22,23 +30,18 @@ class IdeaSoffit extends Component {
   }
 
   render() {
+    //This token contains personal info. If null, then load demo ideas
     const token = Object.is(this.props.token, null) ? 'demo' : this.props.token
+    //Classes gives CSS classnames
+    const {classes} = this.props
 
     return (
-      <div
-        className="idea-soffit-root"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end'
-        }}
-      >
-        {' '}
+      <div className={classes.root}>
         <IdeaList url="./api/example.json" token={token} />
         <Button
           fab
           color="accent"
-          style={buttonStyle}
+          className={classes.editButton}
           onClick={this.handleOpen}
         >
           <ModeEditIcon />
@@ -53,4 +56,4 @@ class IdeaSoffit extends Component {
   }
 }
 
-export default IdeaSoffit
+export default withStyles(styles)(IdeaSoffit)
