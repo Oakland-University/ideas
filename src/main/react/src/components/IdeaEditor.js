@@ -1,3 +1,4 @@
+//TODO Continue code refactor from this file
 import React, { Component } from 'react'
 import AppBar from 'material-ui/AppBar'
 import Button from 'material-ui/Button'
