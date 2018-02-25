@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
-import { ListItem } from 'material-ui/List'
-import Slide from 'material-ui/transitions/Slide'
-import Typography from 'material-ui/Typography'
-import Switch from 'material-ui/Switch'
-import { FormControl, FormControlLabel } from 'material-ui/Form'
-import { MenuItem } from 'material-ui/Menu'
 import Button from 'material-ui/Button'
 import Card, { CardContent, CardActions } from 'material-ui/Card'
-import TextField from 'material-ui/TextField'
-import PropTypes from 'prop-types'
-import Input, { InputLabel } from 'material-ui/Input'
-import Select from 'material-ui/Select'
 import Dialog from 'material-ui/Dialog'
 import { editIdea } from '../api/api.js'
+import { FormControl, FormControlLabel } from 'material-ui/Form'
+import Input, { InputLabel } from 'material-ui/Input'
+import { ListItem } from 'material-ui/List'
+import { MenuItem } from 'material-ui/Menu'
+import PropTypes from 'prop-types'
+import Slide from 'material-ui/transitions/Slide'
+import Switch from 'material-ui/Switch'
+import Select from 'material-ui/Select'
+import Typography from 'material-ui/Typography'
+import TextField from 'material-ui/TextField'
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
@@ -60,45 +60,24 @@ class AdminDialog extends Component {
     this.props.handleClose()
   }
 
+  generateMenuItem = () => {
+    const categoryLabels = ["General", "Design", "Issue", "Navigation", "Mobile Apps", "New Feature"]
+    let menuArray = []
+    for (let i = 0; i < categoryLabels.length; i+=10){
+      menuArray.push(
+        <MenuItem value={i}>{categoryLabels[i/10]}</MenuItem>
+      )
+    }
+    return menuArray
+  }
+
   render() {
     const { classes } = this.props
-    let title = this.props.title
-    let desc = this.props.description
-    let vote = this.props.vote
-    let approved = this.props.approved
-    let category = this.props.category
-    const flagged = this.props.flagged
-    switch (category) {
-      case 'general':
-        category = 0
-        break
-      case 'issue':
-        category = 10
-        break
-      case 'mobile':
-        category = 20
-        break
-      case 'design':
-        category = 30
-        break
-      case 'navigation':
-        category = 40
-        break
-      case 'feature':
-        category = 50
-        break
-      case 'archived':
-        category = 60
-        break
-      case 'flagged':
-        category = 70
-        break
-      default:
-        category = 0
-        break
-    }
+    let {title, desc, vote, approved, category, flagged, submitter} = this.props
 
-    const submitter = this.props.submitter
+    const categoryValues = ["general", "design", "issue", "navigation", "mobile", "feature"]
+
+    category = categoryValues.indexOf(category) * 10
 
     if (title === null || title === undefined) {
       title = 'null'
@@ -185,14 +164,7 @@ class AdminDialog extends Component {
                     onChange={this.handleChange('category')}
                     input={<Input id="category-select" />}
                   >
-                    <MenuItem value={0}>General</MenuItem>
-                    <MenuItem value={10}>Issue</MenuItem>
-                    <MenuItem value={20}>Mobile Apps</MenuItem>
-                    <MenuItem value={30}>Design</MenuItem>
-                    <MenuItem value={40}>Navigation</MenuItem>
-                    <MenuItem value={50}>New Feature</MenuItem>
-                    <MenuItem value={60}>Archived</MenuItem>
-                    <MenuItem value={70}>Flagged</MenuItem>
+                    {this.generateMenuItem()}
                   </Select>
                 </FormControl>
               </div>

@@ -1,20 +1,20 @@
 import React, { Component } from 'react'
-import List, { ListItem, ListItemText } from 'material-ui/List'
-import Collapse from 'material-ui/transitions/Collapse'
+import AdminDialog from './components/AdminDialog.js'
 import AppBar from 'material-ui/AppBar'
+import Backward from 'material-ui-icons/ArrowBack'
+import Collapse from 'material-ui/transitions/Collapse'
+import Checkbox from 'material-ui/Checkbox'
+import Forward from 'material-ui-icons/ArrowForward'
+import { FormControlLabel } from 'material-ui/Form'
+import { getList, getAdminData } from './api/api.js'
+import IconButton from 'material-ui/IconButton'
+import List, { ListItem, ListItemText } from 'material-ui/List'
+import PropTypes from 'prop-types'
+import SearchIcon from 'material-ui-icons/Search'
 import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
-import IconButton from 'material-ui/IconButton'
-import SearchIcon from 'material-ui-icons/Search'
-import Forward from 'material-ui-icons/ArrowForward'
-import Backward from 'material-ui-icons/ArrowBack'
-import { FormControlLabel } from 'material-ui/Form'
-import Checkbox from 'material-ui/Checkbox'
 import Tabs, { Tab } from 'material-ui/Tabs'
-import PropTypes from 'prop-types'
-import AdminDialog from './components/AdminDialog.js'
 import { withStyles } from 'material-ui/styles'
-import { getList, getAdminData } from './api/api.js'
 
 const styles = theme => ({
   root: {
@@ -102,21 +102,6 @@ class Ideas extends Component {
     }).then(ideas => {
       return ideas
     })
-    const d = new Date()
-    let day = d.getDay()
-    let tomorrow = d.getDay() + 1
-    if (day < 9) {
-      day = '0' + day
-      tomorrow = '0' + tomorrow
-    } else if (day === 9) {
-      day = '0' + day
-    }
-
-    let month = d.getMonth() + 1
-
-    if (month < 10) {
-      month = '0' + month
-    }
 
     //TODO: Add https://github.com/stefanpenner/es6-promise for IE
     Promise.all([a, b, c, f, g]).then(values => {

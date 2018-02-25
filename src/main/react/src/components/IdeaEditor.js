@@ -13,6 +13,29 @@ import { submitIdea } from '../api/api.js'
 import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 import TextField from 'material-ui/TextField'
+import { withStyles } from 'material-ui/styles'
+
+const styles = theme => ({
+  closeButton: {
+    marginRight: 24
+  },
+  dialogContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '85%',
+    alignSelf: 'center'
+  },
+  instructions: {
+    paddingTop: '20px' 
+  },
+  titleText: {
+    width: '50%' 
+  },
+  descText: {
+    width: '100%'
+  }
+
+})
 
 class IdeaEditor extends Component {
   state = {
@@ -89,7 +112,26 @@ class IdeaEditor extends Component {
     //TODO: write function to call parent onClose
   }
 
+  generateRadioGroup = () => {
+    const categoryValues = ["general", "design", "issue", "navigation", "mobile", "feature"]
+    const categoryLabels = ["General", "Design", "Issue", "Navigation", "Mobile Apps", "New Feature"]
+
+    let group = []
+
+    for (let i = 0; i < categoryValues.length; i++){
+      group.push(
+        <FormControlLabel
+          value={categoryValues[i]}
+          control={<Radio />}
+          label={categoryLabels[i]}
+        />
+      )      
+    }
+    return group
+  }
+
   render() {
+    const { classes } = this.props
     return (
       <div>
         <Dialog
@@ -105,27 +147,22 @@ class IdeaEditor extends Component {
                 color="contrast"
                 onClick={this.props.handleClose}
                 aria-label="Close"
-                style={{ marginRight: 24 }}
+                className={classes.closeButton}
               >
                 <Close />
               </IconButton>
-              <Typography type="title" color="inherit" style={{ flex: 1 }}>
+              <Typography type="title" color="inherit">
                 Compose{' '}
               </Typography>
             </Toolbar>
           </AppBar>
           <DialogContent
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '85%',
-              alignSelf: 'center'
-            }}
+            className={classes.dialogContent}
           >
             <Typography
               align="center"
               type="subheading"
-              style={{ paddingTop: '20px' }}
+              className={classes.instructions}
             >
               Submit an idea on how to improve MySail. Give it a name, a brief
               description, and a category.{' '}
@@ -134,7 +171,7 @@ class IdeaEditor extends Component {
               required
               id="idea-title"
               label="Title"
-              style={{ width: '50%' }}
+              className={classes.titleText}
               inputProps={{ maxlength: 60 }}
               margin="normal"
               value={this.state.title}
@@ -153,7 +190,7 @@ class IdeaEditor extends Component {
               multiline
               rows="4"
               value={this.state.description}
-              style={{ width: '100%' }}
+              className={classes.descText}
               margin="normal"
               error={this.state.descError}
               onChange={this.handleDescChange}
@@ -177,36 +214,7 @@ class IdeaEditor extends Component {
                 onChange={this.handleRadioChange}
                 style={{ height: '125px' }}
               >
-                <FormControlLabel
-                  value="general"
-                  control={<Radio />}
-                  label="General"
-                />
-                <FormControlLabel
-                  value="design"
-                  control={<Radio />}
-                  label="Design"
-                />
-                <FormControlLabel
-                  value="issue"
-                  control={<Radio />}
-                  label="Issue"
-                />
-                <FormControlLabel
-                  value="navigation"
-                  control={<Radio />}
-                  label="Navigation"
-                />
-                <FormControlLabel
-                  value="mobile"
-                  control={<Radio />}
-                  label="Mobile Apps"
-                />
-                <FormControlLabel
-                  value="feature"
-                  control={<Radio />}
-                  label="New Feature"
-                />
+                {this.generateRadioGroup()}
               </RadioGroup>
             </FormControl>
           </DialogContent>
@@ -230,4 +238,4 @@ class IdeaEditor extends Component {
   }
 }
 
-export default IdeaEditor
+export default withStyles(styles)(IdeaEditor)
