@@ -76,6 +76,25 @@ export const getAdminDemo = async obj => {
   }
 }
 
+export const categoryValues = [
+  'general',
+  'design',
+  'issue',
+  'navigation',
+  'mobile',
+  'feature'
+]
+export const categoryLabels = [
+  'General',
+  'Design',
+  'Issue',
+  'Navigation',
+  'Mobile Apps',
+  'New Feature'
+]
+export const titleMax = 60
+export const descriptionMax = 800
+
 export const submitIdea = async (title, desc, cat, token) => {
   try {
     let response

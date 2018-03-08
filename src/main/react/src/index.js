@@ -9,7 +9,6 @@ import { red } from 'material-ui/colors'
 import { adminCheck } from './api/api'
 
 /* global token */
-var token = null
 
 const oakland = {
   50: '#f1eee9',
@@ -76,9 +75,9 @@ class ParentElement extends Component {
   }
 
   componentDidMount() {
-    //adminCheck(token).then(isAdmin => {
-    //  this.setState({ isAdmin })
-    //})
+    adminCheck(token).then(isAdmin => {
+      this.setState({ isAdmin })
+    })
   }
 
   render() {

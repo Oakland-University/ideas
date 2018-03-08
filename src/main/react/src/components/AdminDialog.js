@@ -61,21 +61,41 @@ class AdminDialog extends Component {
   }
 
   generateMenuItem = () => {
-    const categoryLabels = ["General", "Design", "Issue", "Navigation", "Mobile Apps", "New Feature"]
+    const categoryLabels = [
+      'General',
+      'Design',
+      'Issue',
+      'Navigation',
+      'Mobile Apps',
+      'New Feature'
+    ]
     let menuArray = []
-    for (let i = 0; i < categoryLabels.length; i+=10){
-      menuArray.push(
-        <MenuItem value={i}>{categoryLabels[i/10]}</MenuItem>
-      )
+    for (let i = 0; i < categoryLabels.length; i += 10) {
+      menuArray.push(<MenuItem value={i}>{categoryLabels[i / 10]}</MenuItem>)
     }
     return menuArray
   }
 
   render() {
     const { classes } = this.props
-    let {title, desc, vote, approved, category, flagged, submitter} = this.props
+    let {
+      title,
+      desc,
+      vote,
+      approved,
+      category,
+      flagged,
+      submitter
+    } = this.props
 
-    const categoryValues = ["general", "design", "issue", "navigation", "mobile", "feature"]
+    const categoryValues = [
+      'general',
+      'design',
+      'issue',
+      'navigation',
+      'mobile',
+      'feature'
+    ]
 
     category = categoryValues.indexOf(category) * 10
 

@@ -1,4 +1,3 @@
-//TODO Continue code refactor from this file
 import React, { Component } from 'react'
 import AppBar from 'material-ui/AppBar'
 import Button from 'material-ui/Button'
@@ -9,7 +8,13 @@ import IconButton from 'material-ui/IconButton'
 import Radio, { RadioGroup } from 'material-ui/Radio'
 import Slide from 'material-ui/transitions/Slide'
 import Snackbar from 'material-ui/Snackbar'
-import { submitIdea } from '../api/api.js'
+import {
+  submitIdea,
+  categoryLabels,
+  categoryValues,
+  titleMax,
+  descriptionMax
+} from '../api/api.js'
 import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 import TextField from 'material-ui/TextField'
@@ -26,15 +31,14 @@ const styles = theme => ({
     alignSelf: 'center'
   },
   instructions: {
-    paddingTop: '20px' 
+    paddingTop: '20px'
   },
   titleText: {
-    width: '50%' 
+    width: '50%'
   },
   descText: {
     width: '100%'
   }
-
 })
 
 class IdeaEditor extends Component {
@@ -58,7 +62,7 @@ class IdeaEditor extends Component {
 
   handleTitleChange = event => {
     if (
-      this.state.title.length < 50 ||
+      this.state.title.length < titleMax ||
       event.target.value.length < this.state.title.length
     ) {
       this.setState({ title: event.target.value, titleError: false })
@@ -69,7 +73,7 @@ class IdeaEditor extends Component {
 
   handleDescChange = event => {
     if (
-      this.state.description.length < 800 ||
+      this.state.description.length < descriptionMax ||
       event.target.value.length < this.state.description.length
     ) {
       this.setState({ description: event.target.value, descError: false })
@@ -80,20 +84,26 @@ class IdeaEditor extends Component {
 
   generateForm = () => {
     let error = false
-    if (this.state.title === '' || this.state.title.length > 60) {
+    if (this.state.title === '' || this.state.title.length > titleMax) {
       this.setState({ titleError: true })
       error = true
     }
 
-    if (this.state.description === '' || this.state.description.length > 800) {
+    if (
+      this.state.description === '' ||
+      this.state.description.length > descriptionMax
+    ) {
       this.setState({ descError: true })
       error = true
     }
 
+    //This local variable (and not state) is used because state sometimes doesn't update
+    //quickly enough for this check
     if (error) {
       return
     }
 
+    //Submits form to backend
     submitIdea(
       this.state.title,
       this.state.description,
@@ -101,31 +111,29 @@ class IdeaEditor extends Component {
       this.props.token
     )
 
+    //Clears this dialog for next time
     this.setState({
       description: '',
       title: '',
       category: 'general'
     })
 
+    //Closes dialog
     this.props.handleClose()
-
-    //TODO: write function to call parent onClose
   }
 
+  //Returns a list of radio buttons the same length as number of categories
   generateRadioGroup = () => {
-    const categoryValues = ["general", "design", "issue", "navigation", "mobile", "feature"]
-    const categoryLabels = ["General", "Design", "Issue", "Navigation", "Mobile Apps", "New Feature"]
-
     let group = []
 
-    for (let i = 0; i < categoryValues.length; i++){
+    for (let i = 0; i < categoryValues.length; i++) {
       group.push(
         <FormControlLabel
           value={categoryValues[i]}
           control={<Radio />}
           label={categoryLabels[i]}
         />
-      )      
+      )
     }
     return group
   }
@@ -156,9 +164,7 @@ class IdeaEditor extends Component {
               </Typography>
             </Toolbar>
           </AppBar>
-          <DialogContent
-            className={classes.dialogContent}
-          >
+          <DialogContent className={classes.dialogContent}>
             <Typography
               align="center"
               type="subheading"
