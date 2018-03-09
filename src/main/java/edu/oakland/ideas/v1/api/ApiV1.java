@@ -150,14 +150,10 @@ public class ApiV1 {
 
     @CrossOrigin
     @PostMapping("/submitVote")
-    public void submitVote(@ModelAttribute Vote vote, String time, HttpServletRequest request){
-      System.out.println("Submitting Vote");
-      System.out.println(Integer.valueOf(vote.getVoteValue()));
+    public void submitVote(@ModelAttribute Vote vote, HttpServletRequest request){
       if (vote.getVoteValue() > 1){
-        System.out.println("Vote > 1");
         vote.setVoteValue(1);
       }else if (vote.getVoteValue() < -1 ){
-        System.out.println("Vote < 1");
         vote.setVoteValue(-1);
       }
       Claims claims = jwtService.decrypt(request);      

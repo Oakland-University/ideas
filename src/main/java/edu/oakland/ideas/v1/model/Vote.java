@@ -1,4 +1,5 @@
 package edu.oakland.ideas.v1.model;
+
 import java.sql.Timestamp;
 import lombok.Data;
 
@@ -10,7 +11,6 @@ public class Vote {
     private Timestamp votedAt;
 
     public Vote(){
-
     }
 
     public Vote(int ideaID, String userPidm, int voteValue, Timestamp votedAt) {
@@ -25,8 +25,9 @@ public class Vote {
         this.voteValue = voteValue;
     }
 
-    public String toString(){
-        return("idea_id: " + ideaID + "\nuser_pidm: " + userPidm + "\nvote_value: " + voteValue + "\nvote_timestamp: " + votedAt);
+    public String toString() {
+        return ("idea_id: " + ideaID + "\nuser_pidm: " + userPidm + "\nvote_value: " + voteValue + "\nvote_timestamp: "
+                + votedAt);
     }
 
 }

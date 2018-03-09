@@ -1,4 +1,5 @@
 package edu.oakland.ideas.v1.model;
+
 import lombok.Data;
 
 @Data
