@@ -80,7 +80,7 @@ class AdminDialog extends Component {
     const { classes } = this.props
     let {
       title,
-      desc,
+      description,
       vote,
       approved,
       category,
@@ -102,8 +102,8 @@ class AdminDialog extends Component {
     if (title === null || title === undefined) {
       title = 'null'
     }
-    if (desc === null || desc === undefined) {
-      desc = 'null'
+    if (description === null || description === undefined) {
+      description = 'null'
     }
     if (approved === null || approved === undefined) {
       approved = false
@@ -195,7 +195,7 @@ class AdminDialog extends Component {
                   label="Description"
                   margin="normal"
                   style={{ width: '100%' }}
-                  value={desc}
+                  value={description}
                   onChange={this.handleChange('desc')}
                 />
                 <div

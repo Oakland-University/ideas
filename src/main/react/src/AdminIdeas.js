@@ -252,7 +252,6 @@ class Ideas extends Component {
           end={this.state.d_end}
           id={this.state.d_id}
           submitter={this.state.d_submitter}
-          token={this.props.token}
           flagged={this.state.d_flagged}
         />
       </div>
