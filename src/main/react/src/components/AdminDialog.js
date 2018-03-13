@@ -70,8 +70,8 @@ class AdminDialog extends Component {
       'New Feature'
     ]
     let menuArray = []
-    for (let i = 0; i < categoryLabels.length; i += 10) {
-      menuArray.push(<MenuItem value={i}>{categoryLabels[i / 10]}</MenuItem>)
+    for (let i = 0; i < categoryLabels.length; i++) {
+      menuArray.push(<MenuItem value={i}>{categoryLabels[i]}</MenuItem>)
     }
     return menuArray
   }
@@ -97,7 +97,7 @@ class AdminDialog extends Component {
       'feature'
     ]
 
-    category = categoryValues.indexOf(category) * 10
+    category = categoryValues.indexOf(category)
 
     if (title === null || title === undefined) {
       title = 'null'

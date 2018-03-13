@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Button from 'material-ui/Button'
 import IdeaEditor from './components/IdeaEditor'
 import IdeaList from './IdeaList'
-import ModeEditIcon from 'material-ui-icons/ModeEdit'
+import AddIcon from 'material-ui-icons/Add'
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
@@ -43,7 +43,7 @@ class IdeaSoffit extends Component {
           className={classes.editButton}
           onClick={this.handleOpen}
         >
-          <ModeEditIcon />
+          <AddIcon />
         </Button>
         <IdeaEditor
           handleClose={this.handleRequestClose}

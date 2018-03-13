@@ -151,7 +151,7 @@ class Ideas extends Component {
     for (let i = 0; i < categoryValues.length; i++) {
       checkBoxArray.push(
         <FormControlLabel
-          checked={this.state.general}
+          checked={this.state[categoryValues[i]]}
           control={
             <Checkbox
               value={categoryValues[i]}
@@ -171,10 +171,10 @@ class Ideas extends Component {
     d_end,
     d_flagged,
     d_archived,
-    d_voteCount,
+    d_vote,
     d_approved,
     d_title,
-    d_vote,
+    d_userVote,
     d_desc,
     d_category,
     d_submitter,
