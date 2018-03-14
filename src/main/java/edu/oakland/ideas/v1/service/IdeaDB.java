@@ -153,7 +153,7 @@ public class IdeaDB implements IIdeaDB {
     };
 
     // TODO: Add a check for dates
-    List<Idea> list = jdbcTemplate.query("SELECT * from idea_post where is_archived=true ORDER BY created_at ",
+    List<Idea> list = jdbcTemplate.query("SELECT * from idea_post where is_archived=true or end_vote_date < now() ORDER BY created_at ",
         rowMapper);
     return list;
   }

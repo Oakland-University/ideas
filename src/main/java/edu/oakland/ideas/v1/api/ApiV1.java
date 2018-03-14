@@ -36,13 +36,12 @@ public class ApiV1 {
     @CrossOrigin
     @RequestMapping("/getList")
     public List<Idea> idea(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request) {
-      Claims claims = jwtService.decrypt(request);
-      String pidm = (String) claims.get("pidm");
-      
-      if (i < 1) {
-        return ideaDB.getIdeaList(5, pidm);
-      }
-      return ideaDB.getIdeaList(i, pidm); 
+        Claims claims = jwtService.decrypt(request);
+        String pidm = (String) claims.get("pidm");
+        if (i < 1) {
+          return ideaDB.getIdeaList(5, pidm);
+        }
+        return ideaDB.getIdeaList(i, pidm); 
     }
 
     @CrossOrigin
