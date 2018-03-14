@@ -207,9 +207,6 @@ class Ideas extends Component {
             <Typography type="title" color="inherit">
               Admin Ideas
             </Typography>
-            <IconButton color="contrast" aria-label="Search">
-              <SearchIcon />
-            </IconButton>
           </Toolbar>
           <Tabs value={tabIndex} onChange={this.changeTab}>
             <Tab label="Main" />
@@ -253,6 +250,7 @@ class Ideas extends Component {
           id={this.state.d_id}
           submitter={this.state.d_submitter}
           flagged={this.state.d_flagged}
+          token={this.props.token}
         />
       </div>
     )
