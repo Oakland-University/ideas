@@ -25,7 +25,6 @@ class Pagination extends Component {
   state = { start: 0, end: 5, page: 1 }
 
   page = direction => {
-    console.log('click')
     if (direction === 'back' && this.state.start !== 0) {
       this.setState({
         start: this.state.start - 5,
