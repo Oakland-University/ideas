@@ -33,7 +33,6 @@ public class ApiV1 {
 
     @Autowired IJwtService jwtService;
 
-    @CrossOrigin
     @RequestMapping("/getList")
     public List<Idea> idea(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request) {
         Claims claims = jwtService.decrypt(request);
@@ -44,7 +43,6 @@ public class ApiV1 {
         return ideaDB.getIdeaList(i, pidm); 
     }
 
-    @CrossOrigin
     @RequestMapping("/getUnapprovedIdeas")
     public List<Idea> getUnapprovedIdeas(@RequestParam(value = "i", required = false, defaultValue = "50") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
@@ -58,7 +56,6 @@ public class ApiV1 {
 
     }
 
-    @CrossOrigin
     @RequestMapping("/getWaitingIdeas")
     public List<Idea> getWaitingIdeas(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
@@ -73,7 +70,6 @@ public class ApiV1 {
 
     }
 
-    @CrossOrigin
     @RequestMapping("/getArchive")
     public List<Idea> getArchive(@RequestParam(value = "i", required = false, defaultValue = "10") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
@@ -86,7 +82,6 @@ public class ApiV1 {
       }
     }
 
-    @CrossOrigin
     @RequestMapping("/getFlagged")
     public List<Idea> getFlagged(@RequestParam(value = "i", required = false, defaultValue = "10") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
@@ -99,14 +94,12 @@ public class ApiV1 {
       }
     }
 
-    @CrossOrigin
     @PostMapping("/editIdea")
     public void editIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
       ideaDB.editIdea(idea);
     }
 
-    @CrossOrigin
     @RequestMapping("/adminCheck")
     public boolean adminCheck(HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
@@ -114,7 +107,6 @@ public class ApiV1 {
       return ideaDB.isAdmin(pidm);
     }
 
-    @CrossOrigin
     @PostMapping("/submitIdea")
     public void putIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
@@ -123,7 +115,6 @@ public class ApiV1 {
       ideaDB.addIdea(idea);
     }
 
-    @CrossOrigin
     @PostMapping("/flagIdea")
     public void flagIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
@@ -136,7 +127,6 @@ public class ApiV1 {
       } 
     }
     
-    @CrossOrigin
     @PostMapping("/archiveIdea")
     public void archiveIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
@@ -147,7 +137,6 @@ public class ApiV1 {
       } 
     }
 
-    @CrossOrigin
     @PostMapping("/submitVote")
     public void submitVote(@ModelAttribute Vote vote, HttpServletRequest request){
       if (vote.getVoteValue() > 1){
@@ -161,7 +150,6 @@ public class ApiV1 {
       ideaDB.submitVote(vote);
     }
 
-    @CrossOrigin
     @RequestMapping("/isListEmpty")
     public boolean isListEmpty(){
       return ideaDB.isListEmpty();

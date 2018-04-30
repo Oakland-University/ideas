@@ -212,7 +212,6 @@ export const editIdea = async obj => {
       },
       method: 'POST'
     })
-
   } catch (err) {
     console.log(err)
   }
@@ -235,15 +234,15 @@ export const adminCheck = async token => {
 }
 
 export const isListEmpty = async () => {
-  try{
+  try {
     const url = 'http://localhost:8080/ideas/api/v1/isListEmpty'
     let response = await fetch(url, {
       method: 'POST',
-      credentials: 'include',
+      credentials: 'include'
     })
     let blob = await response.json()
     return blob
-  } catch(err) {
+  } catch (err) {
     console.error(err)
     return 'error'
   }
