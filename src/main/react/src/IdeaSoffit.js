@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Button from 'material-ui/Button'
 import IdeaEditor from './components/IdeaEditor'
+import EmptyCard from './components/EmptyCard'
 import IdeaList from './IdeaList'
 import AddIcon from 'material-ui-icons/Add'
 import { withStyles } from 'material-ui/styles'
@@ -34,9 +35,15 @@ class IdeaSoffit extends Component {
     //Classes gives CSS classnames
     const { classes } = this.props
 
+    const mainList = this.props.isEmpty ? (
+      <EmptyCard/>
+    ) : (
+      <IdeaList url="./api/example.json" token={token}/>
+    )
+
     return (
       <div className={classes.root}>
-        <IdeaList url="./api/example.json" token={token} />
+        {mainList}
         <Button
           fab
           color="accent"

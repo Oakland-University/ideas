@@ -161,4 +161,9 @@ public class ApiV1 {
       ideaDB.submitVote(vote);
     }
 
+    @CrossOrigin
+    @RequestMapping("/isListEmpty")
+    public boolean isListEmpty(){
+      return ideaDB.isListEmpty();
+    }
 }

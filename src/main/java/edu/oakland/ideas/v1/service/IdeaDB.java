@@ -233,4 +233,14 @@ public class IdeaDB implements IIdeaDB {
     jdbcTemplate.update("update idea_post set (is_archived) = (true, ?) where idea_id=?", idea.getId());
   }
 
+
+  public boolean isListEmpty(){
+    String sql = "SELECT COUNT(*) from idea_post where approved=true and start_vote_date <= now() and end_vote_date >= now()";
+    int count = jdbcTemplate.queryForObject(sql, Integer.class);
+
+    if (count > 0){
+      return false;
+    }    
+    return true;
+  }
 }

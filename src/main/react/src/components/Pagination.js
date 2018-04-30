@@ -1,25 +1,9 @@
 import React, { Component } from 'react'
-import AdminDialog from './AdminDialog.js'
-import AppBar from 'material-ui/AppBar'
 import Backward from 'material-ui-icons/ArrowBack'
-import Collapse from 'material-ui/transitions/Collapse'
-import Checkbox from 'material-ui/Checkbox'
 import Forward from 'material-ui-icons/ArrowForward'
-import { FormControlLabel } from 'material-ui/Form'
-import {
-  getList,
-  getAdminData,
-  categoryValues,
-  categoryLabels
-} from '../api/api'
 import IconButton from 'material-ui/IconButton'
 import List, { ListItem, ListItemText } from 'material-ui/List'
-import PropTypes from 'prop-types'
-import SearchIcon from 'material-ui-icons/Search'
-import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
-import Tabs, { Tab } from 'material-ui/Tabs'
-import { withStyles } from 'material-ui/styles'
 
 class Pagination extends Component {
   state = { start: 0, end: 5, page: 1 }
