@@ -35,6 +35,12 @@ CREATE TABLE if not exists idea_post
     approved_by integer references idea_approvers(approver_id)
 );
 
+INSERT INTO idea_categories (category_id, category)
+VALUES (1, 'general'), (2, 'issue'), (3, 'mobile'), (4, 'design'), (5, 'navigation'), (6, 'feature')
+ON CONFLICT (category_id)
+  DO NOTHING;
+
+
 
 CREATE TABLE if not exists idea_vote
 (
