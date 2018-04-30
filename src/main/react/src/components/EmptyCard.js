@@ -17,8 +17,7 @@ const styles = theme => ({
 
   content: {
     paddingTop: 0
-  },
-
+  }
 })
 
 class EmptyCard extends Component {
@@ -30,7 +29,10 @@ class EmptyCard extends Component {
           <div>
             <CardHeader title="Looks like there are no ideas currently" />
             <CardContent className={classes.content}>
-              <Typography type="subheading">If you have an idea to improve MySail, press the button to the bottom right and fill out the form.</Typography>
+              <Typography type="subheading">
+                If you have an idea to improve MySail, press the button to the
+                bottom right and fill out the form.
+              </Typography>
             </CardContent>
           </div>
         </Card>

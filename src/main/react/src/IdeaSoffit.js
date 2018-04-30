@@ -36,9 +36,9 @@ class IdeaSoffit extends Component {
     const { classes } = this.props
 
     const mainList = this.props.isEmpty ? (
-      <EmptyCard/>
+      <EmptyCard />
     ) : (
-      <IdeaList url="./api/example.json" token={token}/>
+      <IdeaList url="./api/example.json" token={token} />
     )
 
     return (

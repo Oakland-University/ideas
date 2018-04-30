@@ -80,9 +80,8 @@ class ParentElement extends Component {
       this.setState({ isAdmin })
     })
     isListEmpty().then(isEmpty => {
-      this.setState({isEmpty})
+      this.setState({ isEmpty })
     })
-
   }
 
   render() {

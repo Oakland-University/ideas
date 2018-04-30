@@ -121,7 +121,10 @@ class IdeaListItem extends Component {
     if (this.state.userVote === 0) {
       this.setState({ userVote: vote, voteCount: this.state.voteCount + vote })
     } else if (this.state.userVote !== vote) {
-      this.setState({ userVote: vote, voteCount: this.state.voteCount + vote * 2 })
+      this.setState({
+        userVote: vote,
+        voteCount: this.state.voteCount + vote * 2
+      })
     }
   }
 
