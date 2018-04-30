@@ -118,7 +118,6 @@ export const submitIdea = async (title, desc, cat, token) => {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     })
-    let blob = await response.json()
   } catch (err) {
     console.log(err)
   }
@@ -147,7 +146,6 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
       },
       method: 'POST'
     })
-    let blob = await response.json()
   } catch (err) {
     console.log(err)
   }
@@ -215,7 +213,6 @@ export const editIdea = async obj => {
       method: 'POST'
     })
 
-    let blob = await response.json()
   } catch (err) {
     console.log(err)
   }
