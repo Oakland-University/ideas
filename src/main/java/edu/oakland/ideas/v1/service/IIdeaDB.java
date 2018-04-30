@@ -32,4 +32,6 @@ public interface IIdeaDB {
   public void flagIdea(Idea idea);
 
   public void archiveIdea(Idea idea);
+
+  public boolean isListEmpty();
 }
