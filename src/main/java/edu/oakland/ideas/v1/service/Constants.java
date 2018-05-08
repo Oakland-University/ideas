@@ -27,4 +27,49 @@ public class Constants{
    "SELECT * from idea_post where " +
    "  category=? ORDER BY created_at ";
 
+   public static final String GET_ARCHIVE_IDEAS = 
+   " SELECT * " +
+   " FROM idea_post " +
+   " WHERE is_archived = TRUE OR end_vote_date < now() " +
+   " ORDER BY created_at";
+
+   public static final String IS_ADMIN = 
+   " SELECT exists(SELECT 1 " +
+   "  FROM idea_approvers " +
+   "  WHERE pidm = ?) " ;
+
+   public static final String EDIT_IDEA = 
+   " UPDATE idea_post " +
+   " SET (title, description, category, approved, start_vote_date, end_vote_date) = " +
+   "      (?, ?, (SELECT category_id FROM idea_categories WHERE category =?), ?, ?, ?) " +
+   " WHERE idea_id =? " ;
+
+   public static final String ADD_IDEA = 
+   " insert into idea_post (title, description, created_by, created_at, category) values (?, ?, ?, ?, ?)";
+
+   public static final String CATEGORY_INT = 
+   " SELECT category_id " +
+   " FROM idea_categories " +
+   " WHERE category = ? ";
+
+   public static final String CATEGORY_STRING = 
+   " SELECT category " +
+   " FROM idea_categories " +
+   " WHERE category_id = ? ";
+
+   public static final String FLAG_IDEA = 
+   " UPDATE idea_post " +
+   " SET (is_flagged, flagged_by, flagged_on, approved) = (TRUE, ?, ?, FALSE) " +
+   " WHERE idea_id =?; ";
+   
+   public static final String ARCHIVE_IDEA = 
+   "update idea_post set (is_archived) = (true, ?) where idea_id=?";
+
+   public static final String IS_LIST_EMPTY = 
+   " SELECT count(*) " + 
+   " FROM (SELECT 1 " + 
+   "       FROM idea_post " + 
+   "       WHERE approved = TRUE AND start_vote_date <= now() AND end_vote_date >= now() " + 
+   "       LIMIT 1) AS t "; 
+
 }
