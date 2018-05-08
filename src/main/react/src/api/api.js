@@ -108,16 +108,19 @@ export const submitIdea = async (title, desc, cat, token) => {
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
       .join('&')
 
-    response = await fetch('http://localhost:8080/ideas/api/v1/submitIdea', {
-      method: 'POST',
-      body: formBody,
-      credentials: 'include',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
+    response = await fetch(
+      'http://localhost:8080/ideas/api/v1/submitIdea',
+      {
+        method: 'POST',
+        body: formBody,
+        credentials: 'include',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          Accept: 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       }
-    })
+    )
   } catch (err) {
     console.log(err)
   }
@@ -136,16 +139,19 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
       .join('&')
 
-    response = await fetch('http://localhost:8080/ideas/api/v1/submitVote', {
-      body: formBody,
-      credentials: 'include',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      method: 'POST'
-    })
+    response = await fetch(
+      'http://localhost:8080/ideas/api/v1/submitVote',
+      {
+        body: formBody,
+        credentials: 'include',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          Accept: 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        method: 'POST'
+      }
+    )
   } catch (err) {
     console.log(err)
   }
@@ -153,10 +159,13 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
 
 export const getList = async obj => {
   try {
-    let response = await fetch('http://localhost:8080/ideas/api/v1/getList', {
-      credentials: 'include',
-      headers: { Authorization: 'Bearer ' + obj.token }
-    })
+    let response = await fetch(
+      'http://localhost:8080/ideas/api/v1/getList',
+      {
+        credentials: 'include',
+        headers: { Authorization: 'Bearer ' + obj.token }
+      }
+    )
     let blob = await response.json()
     return blob
   } catch (err) {
