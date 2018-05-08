@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +25,19 @@ public class IdeaDB implements IIdeaDB {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
+  
+  protected final Log logger = LogFactory.getLog(getClass());
 
   public List<Idea> getIdeaList(int ideaNumber, String pidm) {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
         int vote = 0;
+        //Vote will be updated from the database. If error occurs, it will remain 0
         try {
           vote = jdbcTemplate.queryForObject("SELECT vote_value from idea_vote where pidm like ? and idea_id = ?",
               new Object[] { pidm, rs.getInt("idea_id") }, Integer.class);
         } catch (Exception e) {
-          System.out.println(e);
+          logger.error(e);
         }
         String category = getCategoryString(rs.getInt("category"));
         Idea idea = new Idea(rs.getInt("idea_id"), rs.getBoolean("approved"), rs.getString("title"),
@@ -46,12 +51,10 @@ public class IdeaDB implements IIdeaDB {
       }
     };
 
-    String sql = "SELECT * from idea_post where approved=true and start_vote_date <= now() and end_vote_date >= now() ORDER BY vote_count DESC limit ?";
     try{
-      List<Idea> list = jdbcTemplate.query(sql, rowMapper, ideaNumber);
-      return list;
+      return jdbcTemplate.query(Constants.GET_IDEA_LIST, rowMapper, ideaNumber);
     }catch(Error e){
-      System.out.println(e);
+      logger.error(e);
       return null;
     }
   }
@@ -60,21 +63,17 @@ public class IdeaDB implements IIdeaDB {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
         String b = getCategoryString(rs.getInt("category"));
-        Idea blob = new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
+        return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
             rs.getString("created_by"), rs.getTimestamp("created_at"), b, rs.getInt("vote_count"), 0);
-        return blob;
       } else {
         return null;
       }
     };
 
     try{
-      List<Idea> list = jdbcTemplate.query(
-          "SELECT * from idea_post where approved=false and is_archived=false and is_flagged=false ORDER BY created_at limit ?",
-          rowMapper, ideaNumber);
-      return list;
+      return jdbcTemplate.query(Constants.GET_UNAPPROVED_IDEAS, rowMapper, ideaNumber);
     }catch(Exception e){
-      System.out.println(e);
+      logger.error(e);
       return null;
     }
   }
@@ -84,23 +83,18 @@ public class IdeaDB implements IIdeaDB {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
         String a = getCategoryString(rs.getInt("category"));
-        Idea blob = new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
+        return new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
             rs.getBoolean("approved"), rs.getString("created_by"), rs.getTimestamp("created_at"),
             rs.getTimestamp("start_vote_date"), rs.getTimestamp("end_vote_date"), 0, a);
-        return blob;
       } else {
         return null;
       }
     };
 
     try{
-      List<Idea> list = jdbcTemplate.query(
-          "SELECT * from idea_post where start_vote_date > now() and is_archived=false and approved=true ORDER BY created_at ",
-          rowMapper);
-      return list;
-
+      return jdbcTemplate.query(Constants.GET_WAITING_IDEAS, rowMapper);
     }catch(Error e){
-      System.out.println(e);
+      logger.error(e);
       return null;
     }
   }
@@ -110,19 +104,17 @@ public class IdeaDB implements IIdeaDB {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
         String b = getCategoryString(rs.getInt("category"));
-        Idea blob = new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
+        Idea flaggedIdea = new Idea(rs.getInt("idea_id"), rs.getString("title"), rs.getString("description"),
             rs.getString("created_by"), rs.getTimestamp("created_at"), b, rs.getInt("vote_count"), 0);
-        blob.setFlagged(rs.getBoolean("is_flagged"));
-        return blob;
+        flaggedIdea.setFlagged(rs.getBoolean("is_flagged"));
+        return flaggedIdea;
       } else {
         return null;
       }
     };
 
-    // TODO: Add a check for dates
-    List<Idea> list = jdbcTemplate.query("SELECT * from idea_post where is_flagged=true ORDER BY created_at ",
+    return jdbcTemplate.query(Constants.GET_FLAGGED_IDEAS,
         rowMapper);
-    return list;
   }
 
   public List<Idea> getAdminIdeas(int category, int ideaNumber) {
@@ -138,12 +130,11 @@ public class IdeaDB implements IIdeaDB {
 
     try{
       // TODO: Add a check for dates
-      List<Idea> list = jdbcTemplate.query("SELECT * from idea_post where category=? ORDER BY created_at ", rowMapper,
+      return jdbcTemplate.query(Constants.GET_ADMIN_IDEAS, rowMapper,
           category);
-      return list;
 
     }catch(Error e){
-      System.out.println(e);
+      logger.error(e);
       return null;
     }
   }
@@ -161,22 +152,20 @@ public class IdeaDB implements IIdeaDB {
     };
 
     try{
-      // TODO: Add a check for dates
-      List<Idea> list = jdbcTemplate.query("SELECT * from idea_post where is_archived=true or end_vote_date < now() ORDER BY created_at ",
+      return jdbcTemplate.query(Constants.GET_ARCHIVE_IDEAS,
           rowMapper);
-      return list;
     }catch (Error e){
-      System.out.println(e);
+      logger.error(e);
       return null;
     }
   }
 
   public boolean isAdmin(String pidm) {
     try {
-      return jdbcTemplate.queryForObject("select exists(select 1 from idea_approvers where pidm=?)",
+      return jdbcTemplate.queryForObject(Constants.IS_ADMIN,
           new Object[] { pidm }, Boolean.class);
     } catch (Exception e) {
-      System.out.println(e);
+      logger.error(e);
       return false;
     }
   }
@@ -184,18 +173,15 @@ public class IdeaDB implements IIdeaDB {
   public void editIdea(Idea idea) {
     try{
       jdbcTemplate.update(
-          "update idea_post set (title, description, category, approved, start_vote_date, end_vote_date) = (?, ?, ?, ?, ?, ?) where idea_id=?",
+          Constants.EDIT_IDEA,
           idea.getTitle(), idea.getDescription(), getCategoryInt(idea.getCategory()), idea.isApproved(),
           idea.getStartVoteDate(), idea.getEndVoteDate(), idea.getId());
     }catch (Error e){
-      System.out.println(e);
+      logger.error(e);
     }
   }
 
   public void addIdea(Idea idea) {
-    int cat = jdbcTemplate.queryForObject("SELECT category_id from idea_categories where category like ?",
-        new Object[] { idea.getCategory() }, Integer.class);
-
     String title = idea.getTitle();
     if (title.length() > 50) {
       title = title.substring(0, 50);
@@ -208,10 +194,10 @@ public class IdeaDB implements IIdeaDB {
 
     try{
       jdbcTemplate.update(
-          "insert into idea_post (title, description, created_by, created_at, category) values (?, ?, ?, ?, ?)", title,
-          description, idea.getCreatedBy(), idea.getCreatedAt(), cat);
+          Constants.ADD_IDEA, title,
+          description, idea.getCreatedBy(), idea.getCreatedAt(), getCategoryInt(idea.getCategory()));
     }catch(Error e){
-      System.out.println(e);
+      logger.error(e);
     }
   }
 
@@ -227,35 +213,27 @@ public class IdeaDB implements IIdeaDB {
     try {
       call.executeFunction(null, voteSQL);
     }catch(Error e){
-      System.out.println(e);
+      logger.error(e);
     }
   }
 
- /* 
-  public void logForAdmin(String description, String ideaID, String pidm, Timestamp time) {
-    jdbcTemplate.update("insert into idea_flagged (idea_id, description, pidm, time) values (?, ?, ?, ?)", ideaID,
-        description, pidm, time);
-  }
-  */
-
   public int getCategoryInt(String cat) {
     try {
-      int categoryInt = jdbcTemplate.queryForObject("SELECT category_id from idea_categories where category like ?",
+      return jdbcTemplate.queryForObject(Constants.CATEGORY_INT,
           new Object[] { cat }, Integer.class);
-      return categoryInt;
     }catch(Error e){
-      System.out.println(e);
+      logger.error(e);
       return 0;
     }
   }
 
   public String getCategoryString(int cid) {
     try{
-      String categoryString = jdbcTemplate.queryForObject("SELECT category from idea_categories where category_id = ?",
+      String categoryString = jdbcTemplate.queryForObject(Constants.CATEGORY_STRING,
           new Object[] { cid }, String.class);
       return categoryString;
     }catch(Error e){
-      System.out.println(e);
+      logger.error(e);
       return "general";
 
     }
@@ -264,31 +242,31 @@ public class IdeaDB implements IIdeaDB {
   public void flagIdea(Idea idea) {
     try{
       jdbcTemplate.update(
-          "update idea_post set (is_flagged, flagged_by, flagged_on, approved) = (true, ?, ?, false) where idea_id=?",
+          Constants.FLAG_IDEA,
           idea.getFlaggedBy(), idea.getFlaggedOn(), idea.getId());
     }catch(Error e){
-      System.out.println(e);
+      logger.error(e);
     }
   }
 
   public void archiveIdea(Idea idea) {
     try{
-      jdbcTemplate.update("update idea_post set (is_archived) = (true, ?) where idea_id=?", idea.getId());
+      jdbcTemplate.update(Constants.ARCHIVE_IDEA, idea.getId());
     }catch(Error e){
-      System.out.println(e);
+      logger.error(e);
     }
   }
 
 
   public boolean isListEmpty(){
-    String sql = "SELECT COUNT(*) from idea_post where approved=true and start_vote_date <= now() and end_vote_date >= now()";
     try{
-      int count = jdbcTemplate.queryForObject(sql, Integer.class);
+      int count = jdbcTemplate.queryForObject(Constants.IS_LIST_EMPTY, Integer.class);
       if (count > 0){
         return false;
       }    
       return true;
     }catch(Error e){
+      logger.error(e);
       return false;
     }
   }
