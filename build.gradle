@@ -39,18 +39,38 @@ node {
 }
 
 
-
-apply plugin: 'java'
-apply plugin: 'eclipse-wtp'
-apply plugin: 'org.springframework.boot'
 apply plugin: 'com.moowork.node'
+apply plugin: 'eclipse-wtp'
 apply plugin: 'io.spring.dependency-management' // <-- add this to your build.gradle
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'org.springframework.boot'
 apply plugin: 'war'
 
 war {
     archiveName project.name + '.war'
-    baseName = 'preferrednames'
-    version = '1.0.0-SNAPSHOT'
+}
+
+bootWar {
+    archiveName project.name + '.war'
+}
+
+group = 'edu.oakland.portlet'
+version = '1.0.0'
+
+publishing {
+    publications {
+        mavenWeb(MavenPublication) {
+            from components.web
+        }
+    }
+
+    repositories {
+        maven {
+            url "https://maven.oakland.edu/nexus/content/repositories/uPortal"
+            name "nexus"
+        }
+    }
 }
 
 
