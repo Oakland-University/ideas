@@ -87,12 +87,21 @@ class Ideas extends Component {
       credentialsNeeded: false
     })
 
+    if (
+      waiting.status !== 200 ||
+      unapproved.status !== 200 ||
+      archive.status !== 200 ||
+      flagged.status !== 200
+    ) {
+      this.props.showError()
+    }
+
     this.setState({
       idea_list: list,
-      waiting_list: waiting,
-      unapproved_list: unapproved,
-      archive_list: archive,
-      flagged_list: flagged
+      waiting_list: waiting.list,
+      unapproved_list: unapproved.list,
+      archive_list: archive.list,
+      flagged_list: flagged.list
     })
   }
 

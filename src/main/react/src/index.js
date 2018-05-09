@@ -84,14 +84,24 @@ class ParentElement extends Component {
     })
   }
 
+  showError = () => {
+    this.setState({ isAdmin: 'error' })
+  }
+
   render() {
     const { isAdmin, isEmpty } = this.state
     if (isAdmin === 'error') {
       return <ErrorPage />
     } else if (isAdmin) {
-      return <AdminIdeas token={token} />
+      return <AdminIdeas showError={this.showError} token={token} />
     } else {
-      return <IdeaSoffit isEmpty={isEmpty} token={token} />
+      return (
+        <IdeaSoffit
+          showError={this.showError}
+          isEmpty={isEmpty}
+          token={token}
+        />
+      )
     }
   }
 }

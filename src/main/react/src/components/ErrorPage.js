@@ -8,7 +8,7 @@ import Error from 'material-ui-icons/Error'
 const styles = theme => ({
   root: {
     position: 'relative',
-    width: '90%'
+    width: '100%'
   },
 
   card: {
