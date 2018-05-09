@@ -1,8 +1,9 @@
 package edu.oakland.ideas.v1.model;
 
 import java.sql.Timestamp;
-import javax.validation.constraints.*;
-
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
 import lombok.Data;
 
 @Data
