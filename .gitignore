@@ -35,5 +35,4 @@ overridedb.*
 dump.rdb
 transaction-logs
 .vscode
-application.properties
 js/
