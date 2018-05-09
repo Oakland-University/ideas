@@ -111,7 +111,7 @@ processResources {
     filesMatching('**/application.properties') {
 		def props = new Properties()
 
-		file(System.getProperty("filters")).withInputStream {
+		file(System.getenv('PORTAL_HOME') + '/global.properties').withInputStream {
 			props.load(it)
 		}
 
@@ -121,19 +121,19 @@ processResources {
 
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-cache')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.postgresql:postgresql')
-	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
-	providedRuntime('org.apache.tomcat.embed:tomcat-embed-jasper')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
 	compile ('org.jasig.portal:uPortal-soffit-renderer:5.0.0-OU-1-c75b429c26')	
-	compile('org.jasig.portal:uPortal-soffit-core:5.0.0-OU-1-c75b429c26')
+	compile('org.apache.commons:commons-lang3:3.4')
 	compile("org.jasypt:jasypt:1.9.2")
-	compileOnly('org.projectlombok:lombok')
-	compile("org.apache.commons:commons-lang3:3.4")
 	compile("org.springframework:spring-jdbc")
+	compile('org.jasig.portal:uPortal-soffit-core:5.0.0-OU-1-c75b429c26')
+	compile('org.postgresql:postgresql')
+	compile('org.springframework.boot:spring-boot-starter-cache')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-  compile("edu.oakland:jwt-service:0.1.0")
-  runtime("org.springframework.boot:spring-boot-properties-migrator")
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compileOnly('org.projectlombok:lombok')
+	providedRuntime('org.apache.tomcat.embed:tomcat-embed-jasper')
+	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+  compile('edu.oakland:jwt-service:0.1.0')
+  runtime('org.springframework.boot:spring-boot-properties-migrator')
 }
