@@ -1,26 +1,34 @@
 package edu.oakland.ideas.v1.api;
-import java.util.LinkedList;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import edu.oakland.jwtservice.IJwtService;
-import java.time.Instant;
 import io.jsonwebtoken.Claims;
-import java.util.HashMap;
 
 import edu.oakland.ideas.v1.model.Idea;
 import edu.oakland.ideas.v1.model.Vote;
 import edu.oakland.ideas.v1.service.*;
-import java.util.List;
+import edu.oakland.jwtservice.IJwtService;
+
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+
+import javax.validation.Valid;
+
+import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,70 +42,82 @@ public class ApiV1 {
     @Autowired IJwtService jwtService;
 
     @RequestMapping("/getList")
-    public List<Idea> idea(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request) {
+    public ResponseEntity<List<Idea>> idea(@RequestParam(value = "ideaLimit", required = false, defaultValue = "5") int ideaLimit, HttpServletRequest request) {
         Claims claims = jwtService.decrypt(request);
         String pidm = (String) claims.get("pidm");
-        if (i < 1) {
-          return ideaDB.getIdeaList(5, pidm);
+        if (ideaLimit < 1) {
+          return new ResponseEntity<>(ideaDB.getIdeaList(5, pidm), HttpStatus.OK);
         }
-        return ideaDB.getIdeaList(i, pidm); 
+        return new ResponseEntity<>(ideaDB.getIdeaList(ideaLimit, pidm), HttpStatus.OK);
     }
 
     @RequestMapping("/getUnapprovedIdeas")
-    public List<Idea> getUnapprovedIdeas(@RequestParam(value = "i", required = false, defaultValue = "50") int i, HttpServletRequest request){
+    public ResponseEntity<List<Idea>> getUnapprovedIdeas(@RequestParam(value = "i", required = false, defaultValue = "50") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
 
       if (ideaDB.isAdmin(pidm)){
-        return ideaDB.getUnapprovedIdeas(i);
+        return new ResponseEntity<>(ideaDB.getUnapprovedIdeas(i), HttpStatus.OK);
       } else {
-        return ideaDB.getIdeaList(5, pidm);
+        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
       }
 
     }
 
     @RequestMapping("/getWaitingIdeas")
-    public List<Idea> getWaitingIdeas(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request){
+    public ResponseEntity<List<Idea>> getWaitingIdeas(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
 
 
       if (ideaDB.isAdmin(pidm)){
-        return ideaDB.getWaitingIdeas(i);
+        return new ResponseEntity<>(ideaDB.getWaitingIdeas(i), HttpStatus.OK);
       } else {
-        return ideaDB.getIdeaList(i, pidm);
+        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
       }
 
     }
 
     @RequestMapping("/getArchive")
-    public List<Idea> getArchive(@RequestParam(value = "i", required = false, defaultValue = "10") int i, HttpServletRequest request){
+    public ResponseEntity<List<Idea>> getArchive(@RequestParam(value = "i", required = false, defaultValue = "10") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
 
       if (ideaDB.isAdmin(pidm)){
-        return ideaDB.getArchiveIdeas(i);
+        return new ResponseEntity<>(ideaDB.getArchiveIdeas(i), HttpStatus.OK);
       } else {
-        return ideaDB.getIdeaList(i, pidm);
+        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
       }
     }
 
     @RequestMapping("/getFlagged")
-    public List<Idea> getFlagged(@RequestParam(value = "i", required = false, defaultValue = "10") int i, HttpServletRequest request){
+    public ResponseEntity<List<Idea>> getFlagged(@RequestParam(value = "i", required = false, defaultValue = "10") int i, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
 
       if (ideaDB.isAdmin(pidm)){
-        return ideaDB.getFlaggedIdeas(i);
+        return new ResponseEntity<>(ideaDB.getFlaggedIdeas(i), HttpStatus.OK);
       } else {
-        return ideaDB.getIdeaList(i, pidm);
+        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
       }
     }
 
     @PostMapping("/editIdea")
-    public void editIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
+    public ResponseEntity<Void> editIdea(@Valid Idea idea, BindingResult bindingResult, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
-      ideaDB.editIdea(idea);
+      String pidm = (String) claims.get("pidm");
+
+      if (bindingResult.hasErrors()) {
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+      }
+
+      if (ideaDB.isAdmin(pidm)){
+        ideaDB.editIdea(idea);
+        return new ResponseEntity<>(HttpStatus.OK);
+      }else{
+        //LOG IT
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+      }
     }
 
     @RequestMapping("/adminCheck")
@@ -108,15 +128,19 @@ public class ApiV1 {
     }
 
     @PostMapping("/submitIdea")
-    public void putIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
+    public ResponseEntity<Void> putIdea(@Valid Idea idea, BindingResult bindingResult, HttpServletRequest request) {
+      if (bindingResult.hasErrors()) {
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      }
       Claims claims = jwtService.decrypt(request);
       idea.setCreatedAt(new Timestamp(System.currentTimeMillis()));
       idea.setCreatedBy((String)claims.get("pidm"));
       ideaDB.addIdea(idea);
+      return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/flagIdea")
-    public void flagIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
+    public ResponseEntity<Void> flagIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
       if (ideaDB.isAdmin(pidm)){
@@ -124,17 +148,21 @@ public class ApiV1 {
         idea.setFlaggedBy(pidm);
         idea.setFlaggedOn(new Timestamp(System.currentTimeMillis()));
         ideaDB.flagIdea(idea);
+        return new ResponseEntity<>(HttpStatus.OK);
       } 
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
     
     @PostMapping("/archiveIdea")
-    public void archiveIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
+    public ResponseEntity<Void> archiveIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
       if (ideaDB.isAdmin(pidm)){
         //Flag the idea recording who flagged it and when 
         ideaDB.archiveIdea(idea);
+        return new ResponseEntity<>(HttpStatus.OK);
       } 
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("/submitVote")

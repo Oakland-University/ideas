@@ -174,7 +174,7 @@ public class IdeaDB implements IIdeaDB {
     try{
       jdbcTemplate.update(
           Constants.EDIT_IDEA,
-          idea.getTitle(), idea.getDescription(), getCategoryInt(idea.getCategory()), idea.isApproved(),
+          idea.getTitle(), idea.getDescription(), idea.getCategory(), idea.isApproved(),
           idea.getStartVoteDate(), idea.getEndVoteDate(), idea.getId());
     }catch (Error e){
       logger.error(e);
@@ -251,6 +251,7 @@ public class IdeaDB implements IIdeaDB {
 
   public void archiveIdea(Idea idea) {
     try{
+      System.out.println(idea.getId());
       jdbcTemplate.update(Constants.ARCHIVE_IDEA, idea.getId());
     }catch(Error e){
       logger.error(e);

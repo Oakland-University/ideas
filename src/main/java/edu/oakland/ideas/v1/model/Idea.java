@@ -1,13 +1,16 @@
 package edu.oakland.ideas.v1.model;
 
 import java.sql.Timestamp;
+import javax.validation.constraints.*;
 
 import lombok.Data;
 
 @Data
 public class Idea {
   private int id;
+  @NotBlank
   private String title;
+  @NotBlank
   private String description;
   private boolean approved;
   private Timestamp approvedAt;
@@ -19,7 +22,9 @@ public class Idea {
   private boolean isFlagged;
   private Timestamp flaggedOn;
   private String flaggedBy;
+  @PastOrPresent
   private Timestamp startVoteDate;
+  @Future
   private Timestamp endVoteDate;
   private int userVote;
   private int voteCount;

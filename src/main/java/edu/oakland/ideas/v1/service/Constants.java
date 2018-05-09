@@ -41,7 +41,7 @@ public class Constants{
    public static final String EDIT_IDEA = 
    " UPDATE idea_post " +
    " SET (title, description, category, approved, start_vote_date, end_vote_date) = " +
-   "      (?, ?, (SELECT category_id FROM idea_categories WHERE category =?), ?, ?, ?) " +
+   "      (?, ?, (SELECT category_id FROM idea_categories WHERE category = ?), ?, ?, ?) " +
    " WHERE idea_id =? " ;
 
    public static final String ADD_IDEA = 
@@ -63,7 +63,7 @@ public class Constants{
    " WHERE idea_id =?; ";
    
    public static final String ARCHIVE_IDEA = 
-   "update idea_post set (is_archived) = (true, ?) where idea_id=?";
+   "update idea_post set (is_archived) = (true) where idea_id=?";
 
    public static final String IS_LIST_EMPTY = 
    " SELECT count(*) " + 
