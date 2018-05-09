@@ -10,15 +10,15 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.jdbc.core.simple.SimpleJdbcCall;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Service;
 
 @Service
 public class IdeaDB implements IIdeaDB {
@@ -181,7 +181,7 @@ public class IdeaDB implements IIdeaDB {
     }
   }
 
-  public void addIdea(Idea idea) {
+  public boolean addIdea(Idea idea) {
     String title = idea.getTitle();
     if (title.length() > 50) {
       title = title.substring(0, 50);
@@ -196,8 +196,10 @@ public class IdeaDB implements IIdeaDB {
       jdbcTemplate.update(
           Constants.ADD_IDEA, title,
           description, idea.getCreatedBy(), idea.getCreatedAt(), getCategoryInt(idea.getCategory()));
+      return true;
     }catch(Error e){
       logger.error(e);
+      return false;
     }
   }
 
@@ -251,7 +253,6 @@ public class IdeaDB implements IIdeaDB {
 
   public void archiveIdea(Idea idea) {
     try{
-      System.out.println(idea.getId());
       jdbcTemplate.update(Constants.ARCHIVE_IDEA, idea.getId());
     }catch(Error e){
       logger.error(e);
@@ -259,16 +260,12 @@ public class IdeaDB implements IIdeaDB {
   }
 
 
-  public boolean isListEmpty(){
-    try{
-      int count = jdbcTemplate.queryForObject(Constants.IS_LIST_EMPTY, Integer.class);
-      if (count > 0){
-        return false;
-      }    
-      return true;
-    }catch(Error e){
+  public boolean isListEmpty() {
+    try {
+      return !jdbcTemplate.queryForObject(Constants.IS_LIST_EMPTY, Boolean.class);
+    } catch(Error e) {
       logger.error(e);
-      return false;
+      return true;
     }
   }
 }

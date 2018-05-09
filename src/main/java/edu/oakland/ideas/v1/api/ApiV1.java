@@ -40,6 +40,8 @@ public class ApiV1 {
     @Autowired IIdeaDB ideaDB;
 
     @Autowired IJwtService jwtService;
+    
+    //protected final Log logger = LogFactory.getLog(getClass());
 
     @RequestMapping("/getList")
     public ResponseEntity<List<Idea>> idea(@RequestParam(value = "ideaLimit", required = false, defaultValue = "5") int ideaLimit, HttpServletRequest request) {
@@ -52,12 +54,12 @@ public class ApiV1 {
     }
 
     @RequestMapping("/getUnapprovedIdeas")
-    public ResponseEntity<List<Idea>> getUnapprovedIdeas(@RequestParam(value = "i", required = false, defaultValue = "50") int i, HttpServletRequest request){
+    public ResponseEntity<List<Idea>> getUnapprovedIdeas(@RequestParam(value = "ideaLimit", required = false, defaultValue = "50") int ideaLimit, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
 
       if (ideaDB.isAdmin(pidm)){
-        return new ResponseEntity<>(ideaDB.getUnapprovedIdeas(i), HttpStatus.OK);
+        return new ResponseEntity<>(ideaDB.getUnapprovedIdeas(ideaLimit), HttpStatus.OK);
       } else {
         return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
       }
@@ -65,13 +67,12 @@ public class ApiV1 {
     }
 
     @RequestMapping("/getWaitingIdeas")
-    public ResponseEntity<List<Idea>> getWaitingIdeas(@RequestParam(value = "i", required = false, defaultValue = "5") int i, HttpServletRequest request){
+    public ResponseEntity<List<Idea>> getWaitingIdeas(@RequestParam(value = "ideaLimit", required = false, defaultValue = "5") int ideaLimit, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
 
-
       if (ideaDB.isAdmin(pidm)){
-        return new ResponseEntity<>(ideaDB.getWaitingIdeas(i), HttpStatus.OK);
+        return new ResponseEntity<>(ideaDB.getWaitingIdeas(ideaLimit), HttpStatus.OK);
       } else {
         return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
       }
@@ -79,24 +80,24 @@ public class ApiV1 {
     }
 
     @RequestMapping("/getArchive")
-    public ResponseEntity<List<Idea>> getArchive(@RequestParam(value = "i", required = false, defaultValue = "10") int i, HttpServletRequest request){
+    public ResponseEntity<List<Idea>> getArchive(@RequestParam(value = "ideaLimit", required = false, defaultValue = "10") int ideaLimit, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
 
       if (ideaDB.isAdmin(pidm)){
-        return new ResponseEntity<>(ideaDB.getArchiveIdeas(i), HttpStatus.OK);
+        return new ResponseEntity<>(ideaDB.getArchiveIdeas(ideaLimit), HttpStatus.OK);
       } else {
         return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
       }
     }
 
     @RequestMapping("/getFlagged")
-    public ResponseEntity<List<Idea>> getFlagged(@RequestParam(value = "i", required = false, defaultValue = "10") int i, HttpServletRequest request){
+    public ResponseEntity<List<Idea>> getFlagged(@RequestParam(value = "ideaLimit", required = false, defaultValue = "10") int ideaLimit, HttpServletRequest request){
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
 
       if (ideaDB.isAdmin(pidm)){
-        return new ResponseEntity<>(ideaDB.getFlaggedIdeas(i), HttpStatus.OK);
+        return new ResponseEntity<>(ideaDB.getFlaggedIdeas(ideaLimit), HttpStatus.OK);
       } else {
         return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
       }
@@ -108,7 +109,7 @@ public class ApiV1 {
       String pidm = (String) claims.get("pidm");
 
       if (bindingResult.hasErrors()) {
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       }
 
       if (ideaDB.isAdmin(pidm)){
@@ -135,8 +136,11 @@ public class ApiV1 {
       Claims claims = jwtService.decrypt(request);
       idea.setCreatedAt(new Timestamp(System.currentTimeMillis()));
       idea.setCreatedBy((String)claims.get("pidm"));
-      ideaDB.addIdea(idea);
-      return new ResponseEntity<>(HttpStatus.OK);
+      if(ideaDB.addIdea(idea)){
+        return new ResponseEntity<>(HttpStatus.CREATED);
+      }else{
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     }
 
     @PostMapping("/flagIdea")

@@ -63,13 +63,12 @@ public class Constants{
    " WHERE idea_id =?; ";
    
    public static final String ARCHIVE_IDEA = 
-   "update idea_post set (is_archived) = (true) where idea_id=?";
+   "update idea_post set is_archived = true, approved = false where idea_id=?";
 
    public static final String IS_LIST_EMPTY = 
-   " SELECT count(*) " + 
-   " FROM (SELECT 1 " + 
-   "       FROM idea_post " + 
-   "       WHERE approved = TRUE AND start_vote_date <= now() AND end_vote_date >= now() " + 
-   "       LIMIT 1) AS t "; 
+   "SELECT 1 " + 
+   "  FROM idea_post " + 
+   "  WHERE approved = TRUE AND start_vote_date <= now() AND end_vote_date >= now() " + 
+   "  LIMIT 1"; 
 
 }
