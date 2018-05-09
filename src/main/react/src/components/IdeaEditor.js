@@ -8,6 +8,7 @@ import IconButton from 'material-ui/IconButton'
 import Radio, { RadioGroup } from 'material-ui/Radio'
 import Slide from 'material-ui/transitions/Slide'
 import Snackbar from 'material-ui/Snackbar'
+
 import {
   submitIdea,
   categoryLabels,
@@ -49,11 +50,8 @@ class IdeaEditor extends Component {
     descError: false,
     description: '',
     snackOpen: false,
-    snackMessage: 'An error occured'
-  }
-
-  handleSnackClose = () => {
-    this.setState({ snackOpen: false })
+    snackMessage: 'An error occured',
+    submissionStatus: 0
   }
 
   handleRadioChange = (event, category) => {
@@ -82,7 +80,7 @@ class IdeaEditor extends Component {
     }
   }
 
-  generateForm = () => {
+  generateForm = async () => {
     let error = false
     if (this.state.title === '' || this.state.title.length > titleMax) {
       this.setState({ titleError: true })
@@ -104,12 +102,14 @@ class IdeaEditor extends Component {
     }
 
     //Submits form to backend
-    submitIdea(
+    let status = await submitIdea(
       this.state.title,
       this.state.description,
       this.state.category,
       this.props.token
     )
+
+    this.props.openSnackbar(status)
 
     //Clears this dialog for next time
     this.setState({
@@ -230,15 +230,6 @@ class IdeaEditor extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-        <Snackbar
-          open={this.state.snackOpen}
-          onClose={this.handleSnackClose}
-          transition={Slide}
-          SnackbarContentProps={{
-            'aria-describedby': 'message-id'
-          }}
-          message={<span id="message-id">{this.state.snackMessage}</span>}
-        />
       </div>
     )
   }

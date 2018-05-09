@@ -97,7 +97,7 @@ export const descriptionMax = 800
 
 export const submitIdea = async (title, desc, cat, token) => {
   try {
-    let response
+    let response, status
     let data = {
       title: title,
       description: desc,
@@ -121,6 +121,9 @@ export const submitIdea = async (title, desc, cat, token) => {
         }
       }
     )
+    status = await response.status
+    console.log(status)
+    return status
   } catch (err) {
     console.log(err)
   }
@@ -174,16 +177,20 @@ export const getList = async obj => {
 }
 
 export const getAdminData = async obj => {
+  let status, list
   try {
     const url = 'http://localhost:8080/ideas/api/v1/' + obj.url
     let response = await fetch(url, {
       credentials: 'include',
       headers: { Authorization: 'Bearer ' + obj.token }
     })
-    let blob = await response.json()
-    return blob
+    status = await response.status
+    list = await response.json()
+
+    return { list, status }
   } catch (err) {
     console.error(err)
+    return { list, status }
   }
 }
 
