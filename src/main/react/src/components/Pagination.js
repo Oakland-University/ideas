@@ -145,7 +145,7 @@ const ideaListItem = (ideas, func) => {
         }
       >
         <ListItemText inset primary={idea.title} />
-        <Typography>{idea.voteCount}</Typography>
+        <Typography>{`Votes: ${idea.voteCount}`}</Typography>
       </ListItem>
     )
   }
