@@ -109,7 +109,7 @@ export const submitIdea = async (title, desc, cat, token) => {
       .join('&')
 
     response = await fetch(
-      'http://localhost:8080/ideas/api/v1/submitIdea',
+      '/ideas/api/v1/submitIdea',
       {
         method: 'POST',
         body: formBody,
@@ -143,7 +143,7 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
       .join('&')
 
     response = await fetch(
-      'http://localhost:8080/ideas/api/v1/submitVote',
+      '/ideas/api/v1/submitVote',
       {
         body: formBody,
         credentials: 'include',
@@ -163,7 +163,7 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
 export const getList = async obj => {
   try {
     let response = await fetch(
-      'http://localhost:8080/ideas/api/v1/getList',
+      '/ideas/api/v1/getList',
       {
         credentials: 'include',
         headers: { Authorization: 'Bearer ' + obj.token }
@@ -179,7 +179,7 @@ export const getList = async obj => {
 export const getAdminData = async obj => {
   let status, list
   try {
-    const url = 'http://localhost:8080/ideas/api/v1/' + obj.url
+    const url = '/ideas/api/v1/' + obj.url
     let response = await fetch(url, {
       credentials: 'include',
       headers: { Authorization: 'Bearer ' + obj.token }
@@ -218,7 +218,7 @@ export const editIdea = async obj => {
       url = 'archiveIdea'
     }
 
-    response = await fetch('http://localhost:8080/ideas/api/v1/' + url, {
+    response = await fetch('/ideas/api/v1/' + url, {
       body: formBody,
       credentials: 'include',
       headers: {
@@ -235,7 +235,7 @@ export const editIdea = async obj => {
 
 export const adminCheck = async token => {
   try {
-    const url = 'http://localhost:8080/ideas/api/v1/adminCheck'
+    const url = '/ideas/api/v1/adminCheck'
     let response = await fetch(url, {
       method: 'POST',
       credentials: 'include',
@@ -251,7 +251,7 @@ export const adminCheck = async token => {
 
 export const isListEmpty = async () => {
   try {
-    const url = 'http://localhost:8080/ideas/api/v1/isListEmpty'
+    const url = '/ideas/api/v1/isListEmpty'
     let response = await fetch(url, {
       method: 'POST',
       credentials: 'include'
