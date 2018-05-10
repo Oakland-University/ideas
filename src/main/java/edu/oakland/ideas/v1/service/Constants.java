@@ -5,9 +5,12 @@ public class Constants{
    public static final String GET_TEST_IDEA = "select * from idea_post where category=1;";
 
    public static final String GET_IDEA_LIST = 
-   "SELECT * from idea_post where" +
-   "  approved=true and start_vote_date <= now() and end_vote_date >= now()" + 
-   "  ORDER BY vote_count DESC limit ?";
+     " SELECT * " +
+     "  from idea_post " + 
+     "    left outer join idea_vote on idea_post.idea_id = idea_vote.idea_id " + 
+     "  where approved = true and is_archived = false and start_vote_date <= now() and end_vote_date >= now() " + 
+     "  ORDER BY vote_count DESC " + 
+     "  limit ? ";
 
    public static final String GET_UNAPPROVED_IDEAS = 
    "SELECT * from idea_post where" + 
@@ -59,7 +62,7 @@ public class Constants{
 
    public static final String FLAG_IDEA = 
    " UPDATE idea_post " +
-   " SET (is_flagged, flagged_by, flagged_on, approved) = (TRUE, ?, ?, FALSE) " +
+   " SET (is_flagged, flagged_by, flagged_on, approved, is_archived) = (TRUE, ?, ?, FALSE, FALSE) " +
    " WHERE idea_id =?; ";
    
    public static final String ARCHIVE_IDEA = 

@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -28,21 +29,13 @@ public class IdeaDB implements IIdeaDB {
   
   protected final Log logger = LogFactory.getLog(getClass());
 
-  public List<Idea> getIdeaList(int ideaNumber, String pidm) {
+  public List<Idea> getIdeaList(int ideaNumber, String pidm) throws DataAccessException {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
-        int vote = 0;
-        //Vote will be updated from the database. If error occurs, it will remain 0
-        try {
-          vote = jdbcTemplate.queryForObject("SELECT vote_value from idea_vote where pidm like ? and idea_id = ?",
-              new Object[] { pidm, rs.getInt("idea_id") }, Integer.class);
-        } catch (Exception e) {
-          logger.error(e);
-        }
         String category = getCategoryString(rs.getInt("category"));
         Idea idea = new Idea(rs.getInt("idea_id"), rs.getBoolean("approved"), rs.getString("title"),
             rs.getString("description"), rs.getString("created_by"), rs.getTimestamp("created_at"), category,
-            rs.getInt("vote_count"), vote);
+            rs.getInt("vote_count"), rs.getInt("vote_value"));
         idea.setStartVoteDate(rs.getTimestamp("start_vote_date"));
         idea.setEndVoteDate(rs.getTimestamp("end_vote_date"));
         return idea;
@@ -51,15 +44,10 @@ public class IdeaDB implements IIdeaDB {
       }
     };
 
-    try{
-      return jdbcTemplate.query(Constants.GET_IDEA_LIST, rowMapper, ideaNumber);
-    }catch(Error e){
-      logger.error(e);
-      return null;
-    }
+    return jdbcTemplate.query(Constants.GET_IDEA_LIST, rowMapper, ideaNumber);
   }
 
-  public List<Idea> getUnapprovedIdeas(int ideaNumber) {
+  public List<Idea> getUnapprovedIdeas(int ideaNumber) throws DataAccessException {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
         String b = getCategoryString(rs.getInt("category"));
@@ -70,16 +58,11 @@ public class IdeaDB implements IIdeaDB {
       }
     };
 
-    try{
-      return jdbcTemplate.query(Constants.GET_UNAPPROVED_IDEAS, rowMapper, ideaNumber);
-    }catch(Exception e){
-      logger.error(e);
-      return null;
-    }
+    return jdbcTemplate.query(Constants.GET_UNAPPROVED_IDEAS, rowMapper, ideaNumber);
   }
 
   //Ideas approved but waiting for their start_vote_date
-  public List<Idea> getWaitingIdeas(int ideaNumber) {
+  public List<Idea> getWaitingIdeas(int ideaNumber) throws DataAccessException {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
         String a = getCategoryString(rs.getInt("category"));
@@ -91,16 +74,11 @@ public class IdeaDB implements IIdeaDB {
       }
     };
 
-    try{
-      return jdbcTemplate.query(Constants.GET_WAITING_IDEAS, rowMapper);
-    }catch(Error e){
-      logger.error(e);
-      return null;
-    }
+    return jdbcTemplate.query(Constants.GET_WAITING_IDEAS, rowMapper);
   }
 
   //Ideas approved but waiting for their start_vote_date
-  public List<Idea> getFlaggedIdeas(int ideaNumber) {
+  public List<Idea> getFlaggedIdeas(int ideaNumber) throws DataAccessException {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
         String b = getCategoryString(rs.getInt("category"));
@@ -139,7 +117,7 @@ public class IdeaDB implements IIdeaDB {
     }
   }
 
-  public List<Idea> getArchiveIdeas(int ideaNumber) {
+  public List<Idea> getArchiveIdeas(int ideaNumber) throws DataAccessException {
     RowMapper<Idea> rowMapper = (rs, rowNum) -> {
       if (rowNum < ideaNumber) {
         String a = getCategoryString(rs.getInt("category"));
@@ -151,13 +129,8 @@ public class IdeaDB implements IIdeaDB {
       }
     };
 
-    try{
-      return jdbcTemplate.query(Constants.GET_ARCHIVE_IDEAS,
-          rowMapper);
-    }catch (Error e){
-      logger.error(e);
-      return null;
-    }
+    return jdbcTemplate.query(Constants.GET_ARCHIVE_IDEAS,
+        rowMapper);
   }
 
   public boolean isAdmin(String pidm) {
@@ -170,18 +143,14 @@ public class IdeaDB implements IIdeaDB {
     }
   }
 
-  public void editIdea(Idea idea) {
-    try{
-      jdbcTemplate.update(
-          Constants.EDIT_IDEA,
-          idea.getTitle(), idea.getDescription(), idea.getCategory(), idea.isApproved(),
-          idea.getStartVoteDate(), idea.getEndVoteDate(), idea.getId());
-    }catch (Error e){
-      logger.error(e);
-    }
+  public void editIdea(Idea idea) throws DataAccessException {
+    jdbcTemplate.update(
+        Constants.EDIT_IDEA,
+        idea.getTitle(), idea.getDescription(), idea.getCategory(), idea.isApproved(),
+        idea.getStartVoteDate(), idea.getEndVoteDate(), idea.getId());
   }
 
-  public boolean addIdea(Idea idea) {
+  public void addIdea(Idea idea) throws DataAccessException {
     String title = idea.getTitle();
     if (title.length() > 50) {
       title = title.substring(0, 50);
@@ -192,18 +161,12 @@ public class IdeaDB implements IIdeaDB {
       description = description.substring(0, 800);
     }
 
-    try{
-      jdbcTemplate.update(
-          Constants.ADD_IDEA, title,
-          description, idea.getCreatedBy(), idea.getCreatedAt(), getCategoryInt(idea.getCategory()));
-      return true;
-    }catch(Error e){
-      logger.error(e);
-      return false;
-    }
+    jdbcTemplate.update(
+        Constants.ADD_IDEA, title,
+        description, idea.getCreatedBy(), idea.getCreatedAt(), getCategoryInt(idea.getCategory()));
   }
 
-  public void submitVote(Vote vote) {
+  public void submitVote(Vote vote) throws DataAccessException {
     HashMap params = new HashMap(3);
     params.put("p_idea", vote.getIdeaID());
     params.put("p_pidm", vote.getUserPidm());
@@ -212,11 +175,7 @@ public class IdeaDB implements IIdeaDB {
     SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate).withFunctionName("submit_vote");
     SqlParameterSource voteSQL = new MapSqlParameterSource().addValues(params);
 
-    try {
-      call.executeFunction(null, voteSQL);
-    }catch(Error e){
-      logger.error(e);
-    }
+    call.executeFunction(null, voteSQL);
   }
 
   public int getCategoryInt(String cat) {
@@ -241,26 +200,18 @@ public class IdeaDB implements IIdeaDB {
     }
   }
 
-  public void flagIdea(Idea idea) {
-    try{
-      jdbcTemplate.update(
-          Constants.FLAG_IDEA,
-          idea.getFlaggedBy(), idea.getFlaggedOn(), idea.getId());
-    }catch(Error e){
-      logger.error(e);
-    }
+  public void flagIdea(Idea idea) throws DataAccessException {
+    jdbcTemplate.update(
+        Constants.FLAG_IDEA,
+        idea.getFlaggedBy(), idea.getFlaggedOn(), idea.getId());
   }
 
-  public void archiveIdea(Idea idea) {
-    try{
-      jdbcTemplate.update(Constants.ARCHIVE_IDEA, idea.getId());
-    }catch(Error e){
-      logger.error(e);
-    }
+  public void archiveIdea(Idea idea) throws DataAccessException {
+    jdbcTemplate.update(Constants.ARCHIVE_IDEA, idea.getId());
   }
 
 
-  public boolean isListEmpty() {
+  public boolean isListEmpty() throws DataAccessException {
     try {
       return !jdbcTemplate.queryForObject(Constants.IS_LIST_EMPTY, Boolean.class);
     } catch(Error e) {

@@ -9,7 +9,7 @@ public interface IIdeaDB {
 
   public List<Idea> getIdeaList(int ideaNumber, String pidm);
 
-  public boolean addIdea(Idea idea);
+  public void addIdea(Idea idea);
 
   public void submitVote(Vote vote);
 
