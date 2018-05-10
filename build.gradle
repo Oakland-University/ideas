@@ -134,6 +134,6 @@ dependencies {
 	providedRuntime('org.apache.tomcat.embed:tomcat-embed-jasper')
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-  compile('edu.oakland:jwt-service:0.1.0')
+  compile('edu.oakland:jwt-service:0.2.0')
   runtime('org.springframework.boot:spring-boot-properties-migrator')
 }
