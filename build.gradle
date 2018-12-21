@@ -1,51 +1,29 @@
-buildscript {
-	ext {
-		springBootVersion = '2.0.1.RELEASE'
-	}
-	repositories {
-		maven {
-          url "https://maven.oakland.edu/nexus/content/groups/public"
-          name "nexus"
-        }
-		mavenLocal()
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
-}
+import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {  
-    id "com.moowork.node" version "1.2.0"   
-    id "net.linguica.maven-settings" version "0.5" 
+    //Gradle builtins
+    id 'java'
+    id 'war'
+    id 'maven-publish'
+    //Third party plugins
+    id 'com.moowork.node' version '1.2.0'
+    id 'io.franzbecker.gradle-lombok' version '1.14'
+    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
+    id 'net.linguica.maven-settings' version '0.5'
+    id 'org.springframework.boot' version '2.1.1.RELEASE'
 }
 
+//Configuring moowork node plugin
 node {
-  // Version of node to use.
-  version = '9.11.1'
-  // Base URL for fetching node distributions (change if you have a mirror).
-  distBaseUrl = 'https://nodejs.org/dist'
-  // If true, it will download node using above parameters.
-  // If false, it will try to use globally installed node.
+  //Version of nodejs
+  version = '10.14.2'
+  //Download regardless of system
   download = true
-  // Set the work directory for unpacking node
-  workDir = file("${project.buildDir}/nodejs")
-  // Set the work directory where node_modules should be located
-
-  // Set the work directory for Yarn
-  yarnWorkDir = file("${project.buildDir}/yarn")
-
+  // Set the work directory for npm
+  npmWorkDir = file("${project.buildDir}/npm")
+  // Set directory for node_modules 
   nodeModulesDir = file("src/main/react")
 }
-
-
-apply plugin: 'com.moowork.node'
-apply plugin: 'eclipse-wtp'
-apply plugin: 'io.spring.dependency-management' // <-- add this to your build.gradle
-apply plugin: 'java'
-apply plugin: 'maven-publish'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'war'
 
 war {
     archiveName project.name + '.war'
@@ -74,6 +52,7 @@ publishing {
 }
 
 
+//Java version we're working with
 sourceCompatibility = 1.8
 
 repositories {
@@ -85,7 +64,7 @@ configurations {
 	providedRuntime
 }
 
-task runBuild(type: YarnTask) {
+task runBuild(type: NpmTask) {
   args = ['run', 'build']
 }
 
@@ -98,8 +77,8 @@ clean.doFirst{
   delete 'src/main/webapp/js'
 }
 
-clean.finalizedBy(yarn_install)
-yarn_install.finalizedBy(runBuild)
+clean.finalizedBy(npm_install)
+npm_install.finalizedBy(runBuild)
 runBuild.finalizedBy(copyTask)
 
 war {
@@ -109,13 +88,13 @@ war {
 processResources {
 
     filesMatching('**/application.properties') {
-		def props = new Properties()
+      def props = new Properties()
 
-		file(System.getenv('PORTAL_HOME') + '/global.properties').withInputStream {
-			props.load(it)
-		}
+      file(System.getenv('PORTAL_HOME') + '/global.properties').withInputStream {
+        props.load(it)
+      }
 
-		filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: props)
+      filter(ReplaceTokens, tokens: props)
     }
 }
 
@@ -130,7 +109,6 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-cache')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compileOnly('org.projectlombok:lombok')
 	providedRuntime('org.apache.tomcat.embed:tomcat-embed-jasper')
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
