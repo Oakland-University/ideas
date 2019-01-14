@@ -1,13 +1,22 @@
 import React, { Component } from 'react'
-import AppBar from 'material-ui/AppBar'
-import Button from 'material-ui/Button'
-import { Close } from 'material-ui-icons'
-import Dialog, { DialogContent, DialogActions } from 'material-ui/Dialog'
-import { FormLabel, FormControl, FormControlLabel } from 'material-ui/Form'
-import IconButton from 'material-ui/IconButton'
-import Radio, { RadioGroup } from 'material-ui/Radio'
-import Slide from 'material-ui/transitions/Slide'
-import Snackbar from 'material-ui/Snackbar'
+import AppBar from '@material-ui/core/AppBar'
+import Button from '@material-ui/core/Button'
+import Close from '@material-ui/icons/Close'
+import Dialog from '@material-ui/core/Dialog'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogActions from '@material-ui/core/DialogActions'
+import FormLabel from '@material-ui/core/FormLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import IconButton from '@material-ui/core/IconButton'
+import Radio from '@material-ui/core/Radio'
+import RadioGroup from '@material-ui/core/RadioGroup'
+import Slide from '@material-ui/core/Slide'
+import Snackbar from '@material-ui/core/Snackbar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import TextField from '@material-ui/core/TextField'
+import { withStyles } from '@material-ui/core/styles'
 
 import {
   submitIdea,
@@ -16,10 +25,6 @@ import {
   titleMax,
   descriptionMax
 } from '../api/api.js'
-import Toolbar from 'material-ui/Toolbar'
-import Typography from 'material-ui/Typography'
-import TextField from 'material-ui/TextField'
-import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
   closeButton: {
@@ -129,6 +134,7 @@ class IdeaEditor extends Component {
     for (let i = 0; i < categoryValues.length; i++) {
       group.push(
         <FormControlLabel
+          key={i}
           value={categoryValues[i]}
           control={<Radio />}
           label={categoryLabels[i]}
@@ -146,20 +152,20 @@ class IdeaEditor extends Component {
           open={this.props.open}
           role="dialog"
           tabIndex="0"
-          onRequestClose={this.props.handleClose}
-          transition={Slide}
+          onClose={this.props.handleClose}
+          TransitionComponent={Slide}
         >
           <AppBar position="relative">
             <Toolbar>
               <IconButton
-                color="contrast"
+                color="primary"
                 onClick={this.props.handleClose}
                 aria-label="Close"
                 className={classes.closeButton}
               >
                 <Close />
               </IconButton>
-              <Typography type="title" color="inherit">
+              <Typography variant="h6" color="inherit">
                 Compose{' '}
               </Typography>
             </Toolbar>
@@ -167,18 +173,18 @@ class IdeaEditor extends Component {
           <DialogContent className={classes.dialogContent}>
             <Typography
               align="center"
-              type="subheading"
+              variant="subtitle1"
               className={classes.instructions}
             >
               Submit an idea on how to improve MySail. Give it a name, a brief
-              description, and a category.{' '}
+              description, and a category.
             </Typography>
             <TextField
               required
               id="idea-title"
               label="Title"
               className={classes.titleText}
-              inputProps={{ maxlength: 60 }}
+              inputProps={{ maxLength: 60 }}
               margin="normal"
               value={this.state.title}
               error={this.state.titleError}
@@ -225,7 +231,7 @@ class IdeaEditor extends Component {
             </FormControl>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.generateForm} color="accent">
+            <Button onClick={this.generateForm} color="secondary">
               Submit{' '}
             </Button>
           </DialogActions>

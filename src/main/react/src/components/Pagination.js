@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import Backward from 'material-ui-icons/ArrowBack'
-import Forward from 'material-ui-icons/ArrowForward'
-import IconButton from 'material-ui/IconButton'
-import List, { ListItem, ListItemText } from 'material-ui/List'
-import Typography from 'material-ui/Typography'
+import Backward from '@material-ui/icons/ArrowBack'
+import Forward from '@material-ui/icons/ArrowForward'
+import IconButton from '@material-ui/core/IconButton'
+import List, { ListItem, ListItemText } from '@material-ui/core/List'
+import Typography from '@material-ui/core/Typography'
 
 class Pagination extends Component {
   state = { start: 0, end: 5, page: 1 }

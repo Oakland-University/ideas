@@ -1,20 +1,22 @@
 import React, { Component } from 'react'
+
 import AdminDialog from './components/AdminDialog.js'
-import AppBar from 'material-ui/AppBar'
-import Checkbox from 'material-ui/Checkbox'
-import { FormControlLabel } from 'material-ui/Form'
+import AppBar from '@material-ui/core/AppBar'
+import Checkbox from '@material-ui/core/Checkbox'
+import PropTypes from 'prop-types'
+import Tabs, { Tab } from '@material-ui/core/Tabs'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import { MainList, FlaggedList, ArchiveList } from './components/Sublists'
+import { withStyles } from '@material-ui/core/styles'
+
 import {
   getList,
   getAdminData,
   categoryValues,
   categoryLabels
 } from './api/api.js'
-import { MainList, FlaggedList, ArchiveList } from './components/Sublists'
-import PropTypes from 'prop-types'
-import Toolbar from 'material-ui/Toolbar'
-import Typography from 'material-ui/Typography'
-import Tabs, { Tab } from 'material-ui/Tabs'
-import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
   root: {
