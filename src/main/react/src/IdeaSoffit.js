@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
-import Button from 'material-ui/Button'
+import Button from '@material-ui/core/Button'
+import Fab from '@material-ui/core/Fab'
 import IdeaEditor from './components/IdeaEditor'
 import EmptyCard from './components/EmptyCard'
 import IdeaList from './IdeaList'
-import AddIcon from 'material-ui-icons/Add'
-import Slide from 'material-ui/transitions/Slide'
-import Snackbar from 'material-ui/Snackbar'
-import { withStyles } from 'material-ui/styles'
+import AddIcon from '@material-ui/icons/Add'
+import Slide from '@material-ui/core/Slide'
+import Snackbar from '@material-ui/core/Snackbar'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
   root: {
@@ -74,14 +75,13 @@ class IdeaSoffit extends Component {
     return (
       <div className={classes.root}>
         {mainList}
-        <Button
-          fab
-          color="accent"
+        <Fab
+          color="secondary"
           className={classes.editButton}
           onClick={this.handleOpen}
         >
           <AddIcon />
-        </Button>
+        </Fab>
         <IdeaEditor
           handleClose={this.handleRequestClose}
           open={this.state.open}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import Collapse from 'material-ui/transitions/Collapse'
-import List, { ListItem, ListItemText } from 'material-ui/List'
+import Collapse from '@material-ui/core/Collapse'
+import List, { ListItem, ListItemText } from '@material-ui/core/List'
 import Pagination from './Pagination'
 
 class MainList extends Component {

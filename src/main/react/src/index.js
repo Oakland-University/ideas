@@ -8,6 +8,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { adminCheck, isListEmpty } from './api/api'
 
 /* global token */
+var token = 'demo'
 
 const theme = createMuiTheme({
   typography: {
@@ -37,12 +38,12 @@ class ParentElement extends Component {
   }
 
   componentDidMount() {
-    adminCheck(token).then(isAdmin => {
-      this.setState({ isAdmin })
-    })
-    isListEmpty().then(isEmpty => {
-      this.setState({ isEmpty })
-    })
+    //adminCheck(token).then(isAdmin => {
+    //  this.setState({ isAdmin })
+    //})
+    //isListEmpty().then(isEmpty => {
+    //  this.setState({ isEmpty })
+    //})
   }
 
   showError = () => {

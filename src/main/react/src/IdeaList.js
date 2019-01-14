@@ -1,13 +1,16 @@
 import React, { Component } from 'react'
-import ArrowDropDown from 'material-ui-icons/ArrowDropDown'
-import ArrowDropUp from 'material-ui-icons/ArrowDropUp'
-import Avatar from 'material-ui/Avatar'
-import Card, { CardContent, CardHeader } from 'material-ui/Card'
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown'
+import ArrowDropUp from '@material-ui/icons/ArrowDropUp'
+import Avatar from '@material-ui/core/Avatar'
+import Card from '@material-ui/core/Card'
+import CardHeader from '@material-ui/core/CardHeader'
+import CardContent from '@material-ui/core/CardContent'
 import ErrorPage from './components/ErrorPage'
-import IconButton from 'material-ui/IconButton'
-import List, { ListItem } from 'material-ui/List'
-import Typography from 'material-ui/Typography'
-import { withStyles } from 'material-ui/styles'
+import IconButton from '@material-ui/core/IconButton'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import Typography from '@material-ui/core/Typography'
+import { withStyles } from '@material-ui/core/styles'
 
 import { getList, getListDemo, submitVote } from './api/api.js'
 
@@ -64,7 +67,7 @@ class IdeaList extends Component {
     let iArray = []
     const { listItems } = this.state
     for (let i = 0; i < listItems.length; i++) {
-      iArray.push(<IdeaListItem token={this.props.token} idea={listItems[i]} />)
+      iArray.push(<IdeaListItem key={i} token={this.props.token} idea={listItems[i]} />)
     }
     return iArray
   }
