@@ -38,12 +38,12 @@ class ParentElement extends Component {
   }
 
   componentDidMount() {
-    //adminCheck(token).then(isAdmin => {
-    //  this.setState({ isAdmin })
-    //})
-    //isListEmpty().then(isEmpty => {
-    //  this.setState({ isEmpty })
-    //})
+    adminCheck(token).then(isAdmin => {
+      this.setState({ isAdmin })
+    })
+    isListEmpty().then(isEmpty => {
+      this.setState({ isEmpty })
+    })
   }
 
   showError = () => {
