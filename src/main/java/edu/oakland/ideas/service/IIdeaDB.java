@@ -1,6 +1,6 @@
-package edu.oakland.ideas.v1.service;
+package edu.oakland.ideas.service;
 
-import edu.oakland.ideas.v1.model.*;
+import edu.oakland.ideas.model.*;
 import java.sql.Timestamp;
 import java.util.List;
 

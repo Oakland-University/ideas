@@ -1,4 +1,4 @@
-package edu.oakland.ideas.v1.model;
+package edu.oakland.ideas.model;
 
 import java.sql.Timestamp;
 import javax.validation.constraints.Future;

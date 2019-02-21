@@ -1,4 +1,4 @@
-package edu.oakland.ideas.v1.service;
+package edu.oakland.ideas.service;
 
 public class Constants{
 

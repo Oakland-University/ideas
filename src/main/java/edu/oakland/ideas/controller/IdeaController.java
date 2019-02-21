@@ -1,4 +1,4 @@
-package edu.oakland.ideas.v1.api;
+package edu.oakland.ideas.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,9 +10,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.RestController;
 import io.jsonwebtoken.Claims;
 
-import edu.oakland.ideas.v1.model.Idea;
-import edu.oakland.ideas.v1.model.Vote;
-import edu.oakland.ideas.v1.service.*;
+import edu.oakland.ideas.model.Idea;
+import edu.oakland.ideas.model.Vote;
+import edu.oakland.ideas.service.*;
 import edu.oakland.jwtservice.IJwtService;
 
 import java.sql.Timestamp;
@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 @CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
-public class ApiV1 {
+public class IdeaController {
 
     @Autowired IIdeaDB ideaDB;
 
