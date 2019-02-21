@@ -16,15 +16,9 @@ import edu.oakland.ideas.v1.service.*;
 import edu.oakland.jwtservice.IJwtService;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 import org.apache.commons.logging.Log;
@@ -159,6 +153,7 @@ public class ApiV1 {
 
     @RequestMapping("/adminCheck")
     public boolean adminCheck(HttpServletRequest request) {
+      System.out.println(request);
       Claims claims = jwtService.decrypt(request);
       String pidm = (String) claims.get("pidm");
       return ideaDB.isAdmin(pidm);

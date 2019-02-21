@@ -60,6 +60,7 @@ repositories {
 	mavenCentral()
 }
 
+
 configurations {
 	providedRuntime
 }
@@ -100,11 +101,10 @@ processResources {
 
 
 dependencies {
-	compile ('org.jasig.portal:uPortal-soffit-renderer:5.0.0-OU-1-c75b429c26')	
 	compile('org.apache.commons:commons-lang3:3.4')
 	compile("org.jasypt:jasypt:1.9.2")
 	compile("org.springframework:spring-jdbc")
-	compile('org.jasig.portal:uPortal-soffit-core:5.0.0-OU-1-c75b429c26')
+  compile('org.jasig.portal:uPortal-soffit-renderer:5.4.1')
 	compile('org.postgresql:postgresql')
 	compile('org.springframework.boot:spring-boot-starter-cache')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')

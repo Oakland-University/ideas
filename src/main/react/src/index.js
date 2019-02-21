@@ -8,7 +8,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { adminCheck, isListEmpty } from './api/api'
 
 /* global token */
-var token = 'demo'
+//var token = 'demo'
 
 const theme = createMuiTheme({
   typography: {
