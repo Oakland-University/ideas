@@ -6,6 +6,7 @@ plugins {
     id 'war'
     id 'maven-publish'
     //Third party plugins
+    id 'com.diffplug.gradle.spotless' version '3.14.0'
     id 'com.moowork.node' version '1.2.0'
     id 'io.franzbecker.gradle-lombok' version '1.14'
     id 'io.spring.dependency-management' version '1.0.6.RELEASE'
@@ -31,6 +32,15 @@ war {
 
 bootWar {
     archiveName project.name + '.war'
+}
+
+spotless {
+  java {
+    googleJavaFormat()
+    importOrder "edu", "java", "com org", ""
+    removeUnusedImports()
+    trimTrailingWhitespace()
+  }
 }
 
 group = 'edu.oakland.portlet'
@@ -81,10 +91,8 @@ clean.doFirst{
 clean.finalizedBy(npm_install)
 npm_install.finalizedBy(runBuild)
 runBuild.finalizedBy(copyTask)
+copyTask.finalizedBy 'spotlessApply'
 
-war {
-  archiveName project.name + '.war'
-}
 
 processResources {
 
