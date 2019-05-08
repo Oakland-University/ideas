@@ -18,7 +18,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,9 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("v1")
 public class IdeaController {
 
   @Autowired IIdeaDB ideaDB;
@@ -37,7 +35,7 @@ public class IdeaController {
 
   protected final Log logger = LogFactory.getLog(getClass());
 
-  @GetMapping("/list")
+  @GetMapping("list")
   public ResponseEntity<List<Idea>> idea(
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "5") int ideaLimit,
       HttpServletRequest request) {
@@ -56,7 +54,7 @@ public class IdeaController {
     }
   }
 
-  @GetMapping("/unapproved")
+  @GetMapping("unapproved")
   public ResponseEntity<List<Idea>> getUnapprovedIdeas(
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "50") int ideaLimit,
       HttpServletRequest request) {
@@ -75,7 +73,7 @@ public class IdeaController {
     }
   }
 
-  @GetMapping("/waiting")
+  @GetMapping("waiting")
   public ResponseEntity<List<Idea>> getWaitingIdeas(
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "5") int ideaLimit,
       HttpServletRequest request) {
@@ -94,7 +92,7 @@ public class IdeaController {
     }
   }
 
-  @GetMapping("/archive")
+  @GetMapping("archive")
   public ResponseEntity<List<Idea>> getArchive(
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "10") int ideaLimit,
       HttpServletRequest request) {
@@ -113,7 +111,7 @@ public class IdeaController {
     }
   }
 
-  @GetMapping("/flagged")
+  @GetMapping("flagged")
   public ResponseEntity<List<Idea>> getFlagged(
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "10") int ideaLimit,
       HttpServletRequest request) {
@@ -132,7 +130,7 @@ public class IdeaController {
     }
   }
 
-  @PostMapping("/editIdea")
+  @PostMapping("editIdea")
   public ResponseEntity<Void> editIdea(
       @Valid Idea idea, BindingResult bindingResult, HttpServletRequest request) {
     Claims claims = jwtService.decrypt(request);
@@ -156,7 +154,7 @@ public class IdeaController {
     }
   }
 
-  @GetMapping("/is-admin")
+  @GetMapping("is-admin")
   public boolean adminCheck(HttpServletRequest request) {
     System.out.println(request);
     Claims claims = jwtService.decrypt(request);
@@ -164,7 +162,7 @@ public class IdeaController {
     return ideaDB.isAdmin(pidm);
   }
 
-  @PostMapping("/idea")
+  @PostMapping("idea")
   public ResponseEntity<Void> putIdea(
       @Valid Idea idea, BindingResult bindingResult, HttpServletRequest request) {
     if (bindingResult.hasErrors()) {
@@ -184,7 +182,7 @@ public class IdeaController {
     }
   }
 
-  @PostMapping("/flag")
+  @PostMapping("flag")
   public ResponseEntity<Void> flagIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
     Claims claims = jwtService.decrypt(request);
     String pidm = (String) claims.get("pidm");
@@ -203,7 +201,7 @@ public class IdeaController {
     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
   }
 
-  @PostMapping("/archive")
+  @PostMapping("archive")
   public ResponseEntity<Void> archiveIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
     Claims claims = jwtService.decrypt(request);
     String pidm = (String) claims.get("pidm");
@@ -220,7 +218,7 @@ public class IdeaController {
     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
   }
 
-  @PostMapping("/vote")
+  @PostMapping("vote")
   public ResponseEntity<Void> submitVote(@ModelAttribute Vote vote, HttpServletRequest request) {
     if (vote.getVoteValue() > 1) {
       vote.setVoteValue(1);
@@ -240,7 +238,7 @@ public class IdeaController {
     }
   }
 
-  @GetMapping("/is-empty")
+  @GetMapping("is-empty")
   public boolean isListEmpty() {
     return ideaDB.isListEmpty();
   }
