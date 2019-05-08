@@ -109,10 +109,11 @@ processResources {
 
 
 dependencies {
-	compile('org.apache.commons:commons-lang3:3.4')
-	compile("org.jasypt:jasypt:1.9.2")
-	compile("org.springframework:spring-jdbc")
-  compile('org.jasig.portal:uPortal-soffit-renderer:5.4.1')
+	implementation 'org.apache.commons:commons-lang3:3.4'
+	implementation 'org.jasypt:jasypt:1.9.2'
+	implementation 'org.springframework:spring-jdbc'
+  implementation 'org.jasig.portal:uPortal-soffit-renderer:5.4.1'
+  implementation 'edu.oakland:soffit-auth:0.0.3'
 	compile('org.postgresql:postgresql')
 	compile('org.springframework.boot:spring-boot-starter-cache')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
@@ -120,6 +121,5 @@ dependencies {
 	providedRuntime('org.apache.tomcat.embed:tomcat-embed-jasper')
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-  compile('edu.oakland:jwt-service:0.2.0')
   runtime('org.springframework.boot:spring-boot-properties-migrator')
 }

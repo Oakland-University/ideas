@@ -3,14 +3,14 @@ package edu.oakland.ideas.controller;
 import edu.oakland.ideas.model.Idea;
 import edu.oakland.ideas.model.Vote;
 import edu.oakland.ideas.service.*;
-import edu.oakland.jwtservice.IJwtService;
+import edu.oakland.soffit.auth.AuthService;
+import edu.oakland.soffit.auth.SoffitAuthException;
 
 import java.sql.Timestamp;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import io.jsonwebtoken.Claims;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +31,16 @@ public class IdeaController {
 
   @Autowired IIdeaDB ideaDB;
 
-  @Autowired IJwtService jwtService;
+  @Autowired AuthService authorizer;
 
   protected final Log logger = LogFactory.getLog(getClass());
 
   @GetMapping("list")
   public ResponseEntity<List<Idea>> idea(
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "5") int ideaLimit,
-      HttpServletRequest request) {
-    Claims claims = jwtService.decrypt(request);
-    String pidm = (String) claims.get("pidm");
+      HttpServletRequest request)
+      throws SoffitAuthException {
+    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
 
     if (ideaLimit < 1) {
       ideaLimit = 5;
@@ -57,9 +57,9 @@ public class IdeaController {
   @GetMapping("unapproved")
   public ResponseEntity<List<Idea>> getUnapprovedIdeas(
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "50") int ideaLimit,
-      HttpServletRequest request) {
-    Claims claims = jwtService.decrypt(request);
-    String pidm = (String) claims.get("pidm");
+      HttpServletRequest request)
+      throws SoffitAuthException {
+    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
 
     if (ideaDB.isAdmin(pidm)) {
       try {
@@ -76,9 +76,9 @@ public class IdeaController {
   @GetMapping("waiting")
   public ResponseEntity<List<Idea>> getWaitingIdeas(
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "5") int ideaLimit,
-      HttpServletRequest request) {
-    Claims claims = jwtService.decrypt(request);
-    String pidm = (String) claims.get("pidm");
+      HttpServletRequest request)
+      throws SoffitAuthException {
+    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
 
     if (ideaDB.isAdmin(pidm)) {
       try {
@@ -95,9 +95,9 @@ public class IdeaController {
   @GetMapping("archive")
   public ResponseEntity<List<Idea>> getArchive(
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "10") int ideaLimit,
-      HttpServletRequest request) {
-    Claims claims = jwtService.decrypt(request);
-    String pidm = (String) claims.get("pidm");
+      HttpServletRequest request)
+      throws SoffitAuthException {
+    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
 
     if (ideaDB.isAdmin(pidm)) {
       try {
@@ -114,9 +114,9 @@ public class IdeaController {
   @GetMapping("flagged")
   public ResponseEntity<List<Idea>> getFlagged(
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "10") int ideaLimit,
-      HttpServletRequest request) {
-    Claims claims = jwtService.decrypt(request);
-    String pidm = (String) claims.get("pidm");
+      HttpServletRequest request)
+      throws SoffitAuthException {
+    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
 
     if (ideaDB.isAdmin(pidm)) {
       try {
@@ -132,9 +132,9 @@ public class IdeaController {
 
   @PostMapping("editIdea")
   public ResponseEntity<Void> editIdea(
-      @Valid Idea idea, BindingResult bindingResult, HttpServletRequest request) {
-    Claims claims = jwtService.decrypt(request);
-    String pidm = (String) claims.get("pidm");
+      @Valid Idea idea, BindingResult bindingResult, HttpServletRequest request)
+      throws SoffitAuthException {
+    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
 
     if (bindingResult.hasErrors()) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -155,23 +155,22 @@ public class IdeaController {
   }
 
   @GetMapping("is-admin")
-  public boolean adminCheck(HttpServletRequest request) {
-    System.out.println(request);
-    Claims claims = jwtService.decrypt(request);
-    String pidm = (String) claims.get("pidm");
+  public boolean adminCheck(HttpServletRequest request) throws SoffitAuthException {
+    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
     return ideaDB.isAdmin(pidm);
   }
 
   @PostMapping("idea")
   public ResponseEntity<Void> putIdea(
-      @Valid Idea idea, BindingResult bindingResult, HttpServletRequest request) {
+      @Valid Idea idea, BindingResult bindingResult, HttpServletRequest request)
+      throws SoffitAuthException {
     if (bindingResult.hasErrors()) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    Claims claims = jwtService.decrypt(request);
+    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
     idea.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-    idea.setCreatedBy((String) claims.get("pidm"));
+    idea.setCreatedBy(pidm);
 
     try {
       ideaDB.addIdea(idea);
@@ -183,9 +182,9 @@ public class IdeaController {
   }
 
   @PostMapping("flag")
-  public ResponseEntity<Void> flagIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
-    Claims claims = jwtService.decrypt(request);
-    String pidm = (String) claims.get("pidm");
+  public ResponseEntity<Void> flagIdea(@ModelAttribute Idea idea, HttpServletRequest request)
+      throws SoffitAuthException {
+    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
     if (ideaDB.isAdmin(pidm)) {
       // Flag the idea recording who flagged it and when
       idea.setFlaggedBy(pidm);
@@ -202,9 +201,9 @@ public class IdeaController {
   }
 
   @PostMapping("archive")
-  public ResponseEntity<Void> archiveIdea(@ModelAttribute Idea idea, HttpServletRequest request) {
-    Claims claims = jwtService.decrypt(request);
-    String pidm = (String) claims.get("pidm");
+  public ResponseEntity<Void> archiveIdea(@ModelAttribute Idea idea, HttpServletRequest request)
+      throws SoffitAuthException {
+    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
     if (ideaDB.isAdmin(pidm)) {
       // Flag the idea recording who flagged it and when
       try {
@@ -219,15 +218,16 @@ public class IdeaController {
   }
 
   @PostMapping("vote")
-  public ResponseEntity<Void> submitVote(@ModelAttribute Vote vote, HttpServletRequest request) {
+  public ResponseEntity<Void> submitVote(@ModelAttribute Vote vote, HttpServletRequest request)
+      throws SoffitAuthException {
     if (vote.getVoteValue() > 1) {
       vote.setVoteValue(1);
     } else if (vote.getVoteValue() < -1) {
       vote.setVoteValue(-1);
     }
-    Claims claims = jwtService.decrypt(request);
+    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
     vote.setVotedAt(new Timestamp(System.currentTimeMillis()));
-    vote.setUserPidm((String) claims.get("pidm"));
+    vote.setUserPidm(pidm);
 
     try {
       ideaDB.submitVote(vote);
