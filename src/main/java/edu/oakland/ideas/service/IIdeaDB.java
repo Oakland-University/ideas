@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IIdeaDB {
 
-  public List<Idea> getIdeaList(int ideaNumber, String pidm);
+  public List<Idea> getIdeaList(int ideaNumber);
 
   public void addIdea(Idea idea);
 

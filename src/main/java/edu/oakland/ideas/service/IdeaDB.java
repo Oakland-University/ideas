@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -23,7 +24,7 @@ public class IdeaDB implements IIdeaDB {
 
   protected final Log logger = LogFactory.getLog(getClass());
 
-  public List<Idea> getIdeaList(int ideaNumber, String pidm) throws DataAccessException {
+  public List<Idea> getIdeaList(int ideaNumber) throws DataAccessException {
     RowMapper<Idea> rowMapper =
         (rs, rowNum) -> {
           if (rowNum < ideaNumber) {
@@ -261,8 +262,7 @@ public class IdeaDB implements IIdeaDB {
   public boolean isListEmpty() throws DataAccessException {
     try {
       return !jdbcTemplate.queryForObject(Constants.IS_LIST_EMPTY, Boolean.class);
-    } catch (Error e) {
-      logger.error(e);
+    } catch (EmptyResultDataAccessException e) {
       return true;
     }
   }

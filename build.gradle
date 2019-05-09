@@ -103,6 +103,10 @@ processResources {
         props.load(it)
       }
 
+      file(System.getenv('PORTAL_HOME') + '/uPortal.properties').withInputStream {
+        props.load(it)
+      }
+
       filter(ReplaceTokens, tokens: props)
     }
 }
