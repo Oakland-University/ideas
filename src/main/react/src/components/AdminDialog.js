@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import Button from '@material-ui/core/Button'
-import Card, { CardContent, CardActions } from '@material-ui/core/Card'
+import Card from '@material-ui/core/Card'
+import CardContent  from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
 import Dialog from '@material-ui/core/Dialog'
-import Input, { InputLabel } from '@material-ui/core/Input'
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
 import PropTypes from 'prop-types'
 import Select from '@material-ui/core/Select'
 import Slide from '@material-ui/core/Slide'
@@ -11,8 +14,8 @@ import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import { ListItem } from '@material-ui/core/List'
-import { MenuItem } from '@material-ui/core/Menu'
+import ListItem from '@material-ui/core/List'
+import MenuItem from '@material-ui/core/Menu'
 import { editIdea } from '../api/api.js'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -72,7 +75,7 @@ class AdminDialog extends Component {
     ]
     let menuArray = []
     for (let i = 0; i < categoryLabels.length; i++) {
-      menuArray.push(<MenuItem value={i}>{categoryLabels[i]}</MenuItem>)
+      menuArray.push(<MenuItem key={"menu-" + i} value={i}>{categoryLabels[i]}</MenuItem>)
     }
     return menuArray
   }

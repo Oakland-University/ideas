@@ -122,7 +122,6 @@ export const submitIdea = async (title, desc, cat, token) => {
       }
     )
     status = await response.status
-    console.log(status)
     return status
   } catch (err) {
     console.log(err)

@@ -4,7 +4,8 @@ import AdminDialog from './components/AdminDialog.js'
 import AppBar from '@material-ui/core/AppBar'
 import Checkbox from '@material-ui/core/Checkbox'
 import PropTypes from 'prop-types'
-import Tabs, { Tab } from '@material-ui/core/Tabs'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -63,6 +64,10 @@ class Ideas extends Component {
   }
 
   async componentDidMount() {
+    if (this.props.token === 'demo') {
+      return
+    }
+
     const list = await getList({
       token: this.props.token,
       url: './api/example.json',
@@ -155,6 +160,7 @@ class Ideas extends Component {
     for (let i = 0; i < categoryValues.length; i++) {
       checkBoxArray.push(
         <FormControlLabel
+          key={"checkbox-" + i}
           checked={this.state[categoryValues[i]]}
           control={
             <Checkbox
