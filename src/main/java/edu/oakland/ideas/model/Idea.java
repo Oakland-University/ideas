@@ -1,6 +1,7 @@
 package edu.oakland.ideas.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
@@ -22,8 +23,8 @@ public class Idea {
   private boolean isFlagged;
   private Timestamp flaggedOn;
   private String flaggedBy;
-  @PastOrPresent private Timestamp startVoteDate;
-  @Future private Timestamp endVoteDate;
+  @PastOrPresent private Timestamp startVoteDate = Timestamp.valueOf(LocalDateTime.now());
+  @Future private Timestamp endVoteDate = Timestamp.valueOf(LocalDateTime.now().plusDays(1));
   private int userVote;
   private int voteCount;
   private String avatar;

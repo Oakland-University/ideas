@@ -180,7 +180,7 @@ public class IdeaDB implements IIdeaDB {
   public boolean isAdmin(String pidm) {
     try {
       return jdbcTemplate.queryForObject(Constants.IS_ADMIN, new Object[] {pidm}, Boolean.class);
-    } catch (Exception e) {
+    } catch (DataAccessException e) {
       logger.error(e);
       return false;
     }
@@ -233,7 +233,7 @@ public class IdeaDB implements IIdeaDB {
   public int getCategoryInt(String cat) {
     try {
       return jdbcTemplate.queryForObject(Constants.CATEGORY_INT, new Object[] {cat}, Integer.class);
-    } catch (Error e) {
+    } catch (DataAccessException e) {
       logger.error(e);
       return 0;
     }

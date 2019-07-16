@@ -111,7 +111,6 @@ processResources {
     }
 }
 
-
 dependencies {
 	implementation 'org.apache.commons:commons-lang3:3.4'
 	implementation 'org.jasypt:jasypt:1.9.2'
@@ -124,6 +123,5 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	providedRuntime('org.apache.tomcat.embed:tomcat-embed-jasper')
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
   runtime('org.springframework.boot:spring-boot-properties-migrator')
 }

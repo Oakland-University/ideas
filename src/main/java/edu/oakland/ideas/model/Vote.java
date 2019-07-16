@@ -1,6 +1,7 @@
 package edu.oakland.ideas.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -9,7 +10,7 @@ public class Vote {
   private int ideaID;
   private String userPidm;
   private int voteValue;
-  private Timestamp votedAt;
+  private Timestamp votedAt = Timestamp.valueOf(LocalDateTime.now());
 
   public Vote() {}
 
