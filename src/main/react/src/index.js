@@ -8,11 +8,11 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { adminCheck, isListEmpty } from './api/api'
 
 /* global token */
-//var token = 'demo'
+var token = 'demo'
 
 const theme = createMuiTheme({
   typography: {
-    useNextVariants: true,
+    useNextVariants: true
   },
   palette: {
     primary: {
@@ -26,10 +26,9 @@ const theme = createMuiTheme({
       main: '#0074b7',
       dark: '#004987',
       contrastText: '#fff'
-    },
+    }
   }
 })
-
 
 class ParentElement extends Component {
   state = {
@@ -52,7 +51,15 @@ class ParentElement extends Component {
 
   render() {
     const { isAdmin, isEmpty } = this.state
-    if (isAdmin === 'error') {
+    if (token === 'demo') {
+      return (
+        <IdeaSoffit
+          showError={this.showError}
+          isEmpty={isEmpty}
+          token={token}
+        />
+      )
+    } else if (isAdmin === 'error') {
       return <ErrorPage />
     } else if (isAdmin) {
       return <AdminIdeas showError={this.showError} token={token} />
