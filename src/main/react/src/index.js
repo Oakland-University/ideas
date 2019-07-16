@@ -8,7 +8,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { adminCheck, isListEmpty } from './api/api'
 
 /* global token */
-//var token = 'demo'
+var token = 'demo'
 
 const theme = createMuiTheme({
   typography: {
@@ -55,7 +55,7 @@ class ParentElement extends Component {
       return (
         <IdeaSoffit
           showError={this.showError}
-          isEmpty={isEmpty}
+          isEmpty={false}
           token={token}
         />
       )

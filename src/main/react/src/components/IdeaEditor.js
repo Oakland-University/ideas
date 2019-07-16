@@ -224,9 +224,6 @@ class IdeaEditor extends Component {
             </FormControl>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.generateForm} color="secondary">
-              Submit{' '}
-            </Button>
             <Button
               color="secondary"
               onClick={this.props.handleClose}
@@ -234,6 +231,9 @@ class IdeaEditor extends Component {
               className={classes.closeButton}
             >
               Close
+            </Button>
+            <Button onClick={this.generateForm} color="secondary">
+              Submit{' '}
             </Button>
           </DialogActions>
         </Dialog>
