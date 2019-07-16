@@ -75,22 +75,22 @@ class Ideas extends Component {
     })
     const waiting = await getAdminData({
       token: this.props.token,
-      url: 'getWaitingIdeas',
+      url: 'waiting',
       credentialsNeeded: false
     })
     const unapproved = await getAdminData({
       token: this.props.token,
-      url: 'getUnapprovedIdeas',
+      url: 'unapproved',
       credentialsNeeded: false
     })
     const archive = await getAdminData({
       token: this.props.token,
-      url: 'getArchive',
+      url: 'archive',
       credentialsNeeded: false
     })
     const flagged = await getAdminData({
       token: this.props.token,
-      url: 'getFlagged',
+      url: 'flagged',
       credentialsNeeded: false
     })
 
@@ -101,6 +101,7 @@ class Ideas extends Component {
       flagged.status !== 200
     ) {
       this.props.showError()
+      return
     }
 
     this.setState({
@@ -108,7 +109,6 @@ class Ideas extends Component {
       waiting_list: waiting.list,
       unapproved_list: unapproved.list,
       archive_list: archive.list,
-      flagged_list: flagged.list
     })
   }
 

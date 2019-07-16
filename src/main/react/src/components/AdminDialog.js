@@ -127,12 +127,12 @@ class AdminDialog extends Component {
         open={this.props.open}
         role="dialog"
         tabIndex="0"
-        onRequestClose={this.props.handleClose}
+        onClose={this.props.handleClose}
         transition={Slide}
         className={classes.root}
         contentStyle={{ width: '100%' }}
       >
-        <ListItem>
+        <ListItem style={{ padding: 0 }}>
           <Card style={{ flex: 1 }}>
             <div style={{ width: '100%' }}>
               <div className={classes.header} style={color}>
@@ -179,14 +179,12 @@ class AdminDialog extends Component {
                   value={title}
                   onChange={this.handleChange('title')}
                 />
-                <FormControl
-                  style={{ flex: '1 1 auto', marginLeft: 8, marginRight: 8 }}
-                >
-                  <InputLabel htmlFor="age-simple">Category</InputLabel>
+                <FormControl>
+                  <InputLabel htmlFor="idea-category">Category</InputLabel>
                   <Select
                     value={category}
                     onChange={this.handleChange('category')}
-                    input={<Input id="category-select" />}
+                    input={<Input name="category" id="idea-category" />}
                   >
                     {this.generateMenuItem()}
                   </Select>
