@@ -36,3 +36,5 @@ dump.rdb
 transaction-logs
 .vscode
 js/
+css/
+media/

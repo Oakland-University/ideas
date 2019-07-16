@@ -109,7 +109,7 @@ export const submitIdea = async (title, desc, cat, token) => {
       .join('&')
 
     response = await fetch(
-      '/ideas/api/v1/submitIdea',
+      '/ideas/v1/idea',
       {
         method: 'POST',
         body: formBody,
@@ -122,7 +122,6 @@ export const submitIdea = async (title, desc, cat, token) => {
       }
     )
     status = await response.status
-    console.log(status)
     return status
   } catch (err) {
     console.log(err)
@@ -143,7 +142,7 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
       .join('&')
 
     response = await fetch(
-      '/ideas/api/v1/submitVote',
+      '/ideas/v1/vote',
       {
         body: formBody,
         credentials: 'include',
@@ -163,7 +162,7 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
 export const getList = async obj => {
   try {
     let response = await fetch(
-      '/ideas/api/v1/getList',
+      '/ideas/v1/list',
       {
         credentials: 'include',
         headers: { Authorization: 'Bearer ' + obj.token }
@@ -179,7 +178,7 @@ export const getList = async obj => {
 export const getAdminData = async obj => {
   let status, list
   try {
-    const url = '/ideas/api/v1/' + obj.url
+    const url = '/ideas/v1/' + obj.url
     let response = await fetch(url, {
       credentials: 'include',
       headers: { Authorization: 'Bearer ' + obj.token }
@@ -218,7 +217,7 @@ export const editIdea = async obj => {
       url = 'archiveIdea'
     }
 
-    response = await fetch('/ideas/api/v1/' + url, {
+    response = await fetch('/ideas/v1/' + url, {
       body: formBody,
       credentials: 'include',
       headers: {
@@ -235,9 +234,9 @@ export const editIdea = async obj => {
 
 export const adminCheck = async token => {
   try {
-    const url = '/ideas/api/v1/adminCheck'
+    const url = '/ideas/v1/is-admin'
     let response = await fetch(url, {
-      method: 'POST',
+      method: 'GET',
       credentials: 'include',
       headers: { Authorization: 'Bearer ' + token }
     })
@@ -251,9 +250,9 @@ export const adminCheck = async token => {
 
 export const isListEmpty = async () => {
   try {
-    const url = '/ideas/api/v1/isListEmpty'
+    const url = '/ideas/v1/is-empty'
     let response = await fetch(url, {
-      method: 'POST',
+      method: 'GET',
       credentials: 'include'
     })
     let blob = await response.json()

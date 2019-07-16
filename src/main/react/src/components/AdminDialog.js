@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import Button from '@material-ui/core/Button'
-import Card, { CardContent, CardActions } from '@material-ui/core/Card'
+import Card from '@material-ui/core/Card'
+import CardContent  from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
 import Dialog from '@material-ui/core/Dialog'
-import Input, { InputLabel } from '@material-ui/core/Input'
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
 import PropTypes from 'prop-types'
 import Select from '@material-ui/core/Select'
 import Slide from '@material-ui/core/Slide'
@@ -11,8 +14,8 @@ import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import { ListItem } from '@material-ui/core/List'
-import { MenuItem } from '@material-ui/core/Menu'
+import ListItem from '@material-ui/core/List'
+import MenuItem from '@material-ui/core/Menu'
 import { editIdea } from '../api/api.js'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -72,7 +75,7 @@ class AdminDialog extends Component {
     ]
     let menuArray = []
     for (let i = 0; i < categoryLabels.length; i++) {
-      menuArray.push(<MenuItem value={i}>{categoryLabels[i]}</MenuItem>)
+      menuArray.push(<MenuItem key={"menu-" + i} value={i}>{categoryLabels[i]}</MenuItem>)
     }
     return menuArray
   }
@@ -124,12 +127,12 @@ class AdminDialog extends Component {
         open={this.props.open}
         role="dialog"
         tabIndex="0"
-        onRequestClose={this.props.handleClose}
+        onClose={this.props.handleClose}
         transition={Slide}
         className={classes.root}
         contentStyle={{ width: '100%' }}
       >
-        <ListItem>
+        <ListItem style={{ padding: 0 }}>
           <Card style={{ flex: 1 }}>
             <div style={{ width: '100%' }}>
               <div className={classes.header} style={color}>
@@ -176,14 +179,12 @@ class AdminDialog extends Component {
                   value={title}
                   onChange={this.handleChange('title')}
                 />
-                <FormControl
-                  style={{ flex: '1 1 auto', marginLeft: 8, marginRight: 8 }}
-                >
-                  <InputLabel htmlFor="age-simple">Category</InputLabel>
+                <FormControl>
+                  <InputLabel htmlFor="idea-category">Category</InputLabel>
                   <Select
                     value={category}
                     onChange={this.handleChange('category')}
-                    input={<Input id="category-select" />}
+                    input={<Input name="category" id="idea-category" />}
                   >
                     {this.generateMenuItem()}
                   </Select>

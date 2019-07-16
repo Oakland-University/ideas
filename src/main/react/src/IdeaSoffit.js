@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Button from '@material-ui/core/Button'
 import Fab from '@material-ui/core/Fab'
 import IdeaEditor from './components/IdeaEditor'
 import EmptyCard from './components/EmptyCard'
@@ -37,12 +36,11 @@ class IdeaSoffit extends Component {
   }
 
   closeSnackbar = () => {
-    console.log('Hello')
     this.setState({ show_snackbar: false })
   }
 
   openSnackbar = status => {
-    if (status === 200) {
+    if (status === 200 || status === 201) {
       this.setState({
         show_snackbar: true,
         snackbar_message: 'Your idea has been submitted'

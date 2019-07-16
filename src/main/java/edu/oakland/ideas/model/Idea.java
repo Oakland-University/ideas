@@ -1,18 +1,18 @@
-package edu.oakland.ideas.v1.model;
+package edu.oakland.ideas.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
+
 import lombok.Data;
 
 @Data
 public class Idea {
   private int id;
-  @NotBlank
-  private String title;
-  @NotBlank
-  private String description;
+  @NotBlank private String title;
+  @NotBlank private String description;
   private boolean approved;
   private Timestamp approvedAt;
   private Approver approvedBy;
@@ -23,22 +23,29 @@ public class Idea {
   private boolean isFlagged;
   private Timestamp flaggedOn;
   private String flaggedBy;
-  @PastOrPresent
-  private Timestamp startVoteDate;
-  @Future
-  private Timestamp endVoteDate;
+  @PastOrPresent private Timestamp startVoteDate;
+  @Future private Timestamp endVoteDate;
   private int userVote;
   private int voteCount;
   private String avatar;
 
-  //Idea is an object that takes parameters in the order they show up above for constructors 
+  // Idea is an object that takes parameters in the order they show up above for constructors
 
   public Idea() {
+    startVoteDate = Timestamp.valueOf(LocalDateTime.now());
+    endVoteDate = Timestamp.valueOf(LocalDateTime.now().plusDays(1));
   }
 
-  //8
-  public Idea(int id, String title, String description, String createdBy, Timestamp createdAt, String category,
-      int voteCount, int userVote) {
+  // 8
+  public Idea(
+      int id,
+      String title,
+      String description,
+      String createdBy,
+      Timestamp createdAt,
+      String category,
+      int voteCount,
+      int userVote) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -51,9 +58,17 @@ public class Idea {
     this.userVote = userVote;
   }
 
-  //9
-  public Idea(int id, boolean approved, String title, String description, String createdBy, Timestamp createdAt,
-      String category, int voteCount, int userVote) {
+  // 9
+  public Idea(
+      int id,
+      boolean approved,
+      String title,
+      String description,
+      String createdBy,
+      Timestamp createdAt,
+      String category,
+      int voteCount,
+      int userVote) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -66,10 +81,17 @@ public class Idea {
     this.userVote = userVote;
   }
 
-
-
-  public Idea(int id, String title, String description, boolean approved, String createdBy, Timestamp createdAt,
-      Timestamp startVoteDate, Timestamp endVoteDate, int voteCount, String category) {
+  public Idea(
+      int id,
+      String title,
+      String description,
+      boolean approved,
+      String createdBy,
+      Timestamp createdAt,
+      Timestamp startVoteDate,
+      Timestamp endVoteDate,
+      int voteCount,
+      String category) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -81,8 +103,18 @@ public class Idea {
   }
 
   public String toString() {
-    String str = title + "\n" + description + "\n" + String.valueOf(approved) + "\n" + createdBy + "\n"
-        + String.valueOf(voteCount) + "\n" + String.valueOf(isFlagged);
+    String str =
+        title
+            + "\n"
+            + description
+            + "\n"
+            + String.valueOf(approved)
+            + "\n"
+            + createdBy
+            + "\n"
+            + String.valueOf(voteCount)
+            + "\n"
+            + String.valueOf(isFlagged);
     return str;
   }
 }

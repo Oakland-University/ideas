@@ -4,7 +4,8 @@ import AdminDialog from './components/AdminDialog.js'
 import AppBar from '@material-ui/core/AppBar'
 import Checkbox from '@material-ui/core/Checkbox'
 import PropTypes from 'prop-types'
-import Tabs, { Tab } from '@material-ui/core/Tabs'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -63,6 +64,10 @@ class Ideas extends Component {
   }
 
   async componentDidMount() {
+    if (this.props.token === 'demo') {
+      return
+    }
+
     const list = await getList({
       token: this.props.token,
       url: './api/example.json',
@@ -70,22 +75,22 @@ class Ideas extends Component {
     })
     const waiting = await getAdminData({
       token: this.props.token,
-      url: 'getWaitingIdeas',
+      url: 'waiting',
       credentialsNeeded: false
     })
     const unapproved = await getAdminData({
       token: this.props.token,
-      url: 'getUnapprovedIdeas',
+      url: 'unapproved',
       credentialsNeeded: false
     })
     const archive = await getAdminData({
       token: this.props.token,
-      url: 'getArchive',
+      url: 'archive',
       credentialsNeeded: false
     })
     const flagged = await getAdminData({
       token: this.props.token,
-      url: 'getFlagged',
+      url: 'flagged',
       credentialsNeeded: false
     })
 
@@ -96,6 +101,7 @@ class Ideas extends Component {
       flagged.status !== 200
     ) {
       this.props.showError()
+      return
     }
 
     this.setState({
@@ -103,7 +109,6 @@ class Ideas extends Component {
       waiting_list: waiting.list,
       unapproved_list: unapproved.list,
       archive_list: archive.list,
-      flagged_list: flagged.list
     })
   }
 
@@ -155,6 +160,7 @@ class Ideas extends Component {
     for (let i = 0; i < categoryValues.length; i++) {
       checkBoxArray.push(
         <FormControlLabel
+          key={"checkbox-" + i}
           checked={this.state[categoryValues[i]]}
           control={
             <Checkbox

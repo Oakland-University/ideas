@@ -6,6 +6,7 @@ plugins {
     id 'war'
     id 'maven-publish'
     //Third party plugins
+    id 'com.diffplug.gradle.spotless' version '3.14.0'
     id 'com.moowork.node' version '1.2.0'
     id 'io.franzbecker.gradle-lombok' version '1.14'
     id 'io.spring.dependency-management' version '1.0.6.RELEASE'
@@ -31,6 +32,15 @@ war {
 
 bootWar {
     archiveName project.name + '.war'
+}
+
+spotless {
+  java {
+    googleJavaFormat()
+    importOrder "edu", "java", "com org", ""
+    removeUnusedImports()
+    trimTrailingWhitespace()
+  }
 }
 
 group = 'edu.oakland.portlet'
@@ -60,6 +70,7 @@ repositories {
 	mavenCentral()
 }
 
+
 configurations {
 	providedRuntime
 }
@@ -80,10 +91,8 @@ clean.doFirst{
 clean.finalizedBy(npm_install)
 npm_install.finalizedBy(runBuild)
 runBuild.finalizedBy(copyTask)
+copyTask.finalizedBy 'spotlessApply'
 
-war {
-  archiveName project.name + '.war'
-}
 
 processResources {
 
@@ -94,24 +103,25 @@ processResources {
         props.load(it)
       }
 
+      file(System.getenv('PORTAL_HOME') + '/uPortal.properties').withInputStream {
+        props.load(it)
+      }
+
       filter(ReplaceTokens, tokens: props)
     }
 }
 
-
 dependencies {
-	compile ('org.jasig.portal:uPortal-soffit-renderer:5.0.0-OU-1-c75b429c26')	
-	compile('org.apache.commons:commons-lang3:3.4')
-	compile("org.jasypt:jasypt:1.9.2")
-	compile("org.springframework:spring-jdbc")
-	compile('org.jasig.portal:uPortal-soffit-core:5.0.0-OU-1-c75b429c26')
+	implementation 'org.apache.commons:commons-lang3:3.4'
+	implementation 'org.jasypt:jasypt:1.9.2'
+	implementation 'org.springframework:spring-jdbc'
+  implementation 'org.jasig.portal:uPortal-soffit-renderer:5.6.0'
+  implementation 'edu.oakland:soffit-auth:0.0.3'
 	compile('org.postgresql:postgresql')
 	compile('org.springframework.boot:spring-boot-starter-cache')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	providedRuntime('org.apache.tomcat.embed:tomcat-embed-jasper')
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-  compile('edu.oakland:jwt-service:0.2.0')
   runtime('org.springframework.boot:spring-boot-properties-migrator')
 }

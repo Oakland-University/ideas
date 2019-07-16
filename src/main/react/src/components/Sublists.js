@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Collapse from '@material-ui/core/Collapse'
-import List, { ListItem, ListItemText } from '@material-ui/core/List'
+import List from '@material-ui/core/List'
+import ListItem  from '@material-ui/core/ListItem'
+import ListItemText  from '@material-ui/core/ListItemText'
 import Pagination from './Pagination'
 
 class MainList extends Component {
@@ -13,7 +15,6 @@ class MainList extends Component {
         <Collapse
           component="li"
           in={true}
-          transitionDuration="auto"
           unmountOnExit
         >
           <List disablePadding>
@@ -29,7 +30,6 @@ class MainList extends Component {
         <Collapse
           component="li"
           in={true}
-          transitionDuration="auto"
           unmountOnExit
         >
           <List disablePadding>
@@ -45,7 +45,6 @@ class MainList extends Component {
         <Collapse
           component="li"
           in={true}
-          transitionDuration="auto"
           unmountOnExit
         >
           <Pagination
@@ -68,7 +67,6 @@ class FlaggedList extends Component {
         <Collapse
           component="li"
           in={true}
-          transitionDuration="auto"
           unmountOnExit
         >
           <Pagination
@@ -91,7 +89,6 @@ class ArchiveList extends Component {
         <Collapse
           component="li"
           in={true}
-          transitionDuration="auto"
           unmountOnExit
         >
           <Pagination
