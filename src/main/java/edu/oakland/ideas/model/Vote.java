@@ -10,9 +10,11 @@ public class Vote {
   private int ideaID;
   private String userPidm;
   private int voteValue;
-  private Timestamp votedAt = Timestamp.valueOf(LocalDateTime.now());
+  private Timestamp votedAt;
 
-  public Vote() {}
+  public Vote() {
+    votedAt = Timestamp.valueOf(LocalDateTime.now());
+  }
 
   public Vote(int ideaID, String userPidm, int voteValue, Timestamp votedAt) {
     this.ideaID = ideaID;

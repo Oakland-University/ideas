@@ -23,15 +23,18 @@ public class Idea {
   private boolean isFlagged;
   private Timestamp flaggedOn;
   private String flaggedBy;
-  @PastOrPresent private Timestamp startVoteDate = Timestamp.valueOf(LocalDateTime.now());
-  @Future private Timestamp endVoteDate = Timestamp.valueOf(LocalDateTime.now().plusDays(1));
+  @PastOrPresent private Timestamp startVoteDate;
+  @Future private Timestamp endVoteDate;
   private int userVote;
   private int voteCount;
   private String avatar;
 
   // Idea is an object that takes parameters in the order they show up above for constructors
 
-  public Idea() {}
+  public Idea() {
+    startVoteDate = Timestamp.valueOf(LocalDateTime.now());
+    endVoteDate = Timestamp.valueOf(LocalDateTime.now().plusDays(1));
+  }
 
   // 8
   public Idea(
