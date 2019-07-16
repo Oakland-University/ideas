@@ -156,14 +156,6 @@ class IdeaEditor extends Component {
         >
           <AppBar position="relative">
             <Toolbar>
-              <IconButton
-                color="primary"
-                onClick={this.props.handleClose}
-                aria-label="Close"
-                className={classes.closeButton}
-              >
-                <Close />
-              </IconButton>
               <Typography variant="h6" color="inherit">
                 Compose{' '}
               </Typography>
@@ -188,6 +180,7 @@ class IdeaEditor extends Component {
               value={this.state.title}
               error={this.state.titleError}
               onChange={this.handleTitleChange}
+              variant="outlined"
             />
             {this.state.titleError && (
               <Typography>
@@ -205,6 +198,7 @@ class IdeaEditor extends Component {
               margin="normal"
               error={this.state.descError}
               onChange={this.handleDescChange}
+              variant="outlined"
             />
             {this.state.descError && (
               <Typography>
@@ -232,6 +226,14 @@ class IdeaEditor extends Component {
           <DialogActions>
             <Button onClick={this.generateForm} color="secondary">
               Submit{' '}
+            </Button>
+            <Button
+              color="secondary"
+              onClick={this.props.handleClose}
+              aria-label="Close"
+              className={classes.closeButton}
+            >
+              Close
             </Button>
           </DialogActions>
         </Dialog>
