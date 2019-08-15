@@ -115,8 +115,8 @@ const ListItemStyles = {
 
 class IdeaListItem extends Component {
   state = {
-    voteCount: this.props.idea.voteCount,
-    userVote: this.props.idea.userVote
+    voteCount: +this.props.idea.voteCount,
+    userVote: +this.props.idea.userVote
   }
 
   handleVote = (id, createdAt, vote) => {
