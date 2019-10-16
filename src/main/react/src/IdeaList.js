@@ -66,6 +66,9 @@ class IdeaList extends Component {
   generateList = () => {
     let iArray = []
     const { listItems } = this.state
+    if (!listItems){
+      return null
+    }
     for (let i = 0; i < listItems.length; i++) {
       iArray.push(<IdeaListItem key={i} token={this.props.token} idea={listItems[i]} />)
     }
@@ -126,7 +129,7 @@ class IdeaListItem extends Component {
     } else if (this.state.userVote !== vote) {
       this.setState({
         userVote: vote,
-        voteCount: this.state.voteCount + vote * 2
+        voteCount: this.state.voteCount + vote
       })
     }
   }
