@@ -1,0 +1,43 @@
+* Ideas
+
+** About
+This project was developed to give a voice to Oakland University students when it comes to what they
+see in their MySail dashboard.
+
+[[https:mysail.oakland.edu/uPortal/f/welcome/normal/render.uP][MySail]] is the place where students can easily view their personal and academic information. Some
+examples of important information include a student's unique GID or current / upcoming course
+schedules.
+Going forward, we'd like to give students more of a voice when it comes to what
+information /they/ consider to be important, as well as what sort of services we could offer that
+would best complement our goal of Student Success.
+This project will allow authenticated users to
+vote on approved ideas, and submit new ideas for approval by a group of administrators. Our hope
+is that by allowing students to take part in the discussion of website features, we can develop
+more tools which are even better suited to help them.
+
+** Local Development
+This project uses the following tech-stack:
+
+| Database    | Backend | Frontend |
+|-------------+---------+----------|
+| Postgres 10 | Java 8  | ReactJS  |
+
+To build locally make sure that the above technologies are able to run on your machine. You need to
+set up / install Postgres and Java yourself, and have NodeJS and npm to run the React frontend.
+
+To start the backend, run the command
+
+#+begin_src shell
+./gradlew clean bootRun
+#+end_src
+
+This will start up the backend server on =localhost:8090= by default. You can change this in
+=src/main/application.properties=
+
+To start the frontend, change to the =src/main/react/= folder and run the command:
+
+#+begin_src shell
+npm i && npm start
+#+end_src
+
+This should automatically open a new tab in your default browser with the URL =localhost:3000=.
