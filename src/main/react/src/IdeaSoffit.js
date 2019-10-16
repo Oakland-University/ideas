@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab'
 import IdeaEditor from './components/IdeaEditor'
 import EmptyCard from './components/EmptyCard'
@@ -72,6 +75,13 @@ class IdeaSoffit extends Component {
 
     return (
       <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" color="inherit">
+              Student Ideas for MySail
+            </Typography>
+          </Toolbar>
+        </AppBar>
         {mainList}
         <Fab
           color="secondary"

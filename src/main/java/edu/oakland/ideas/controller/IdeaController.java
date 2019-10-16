@@ -11,8 +11,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -35,27 +35,27 @@ public class IdeaController {
 
   @Autowired AuthService authorizer;
 
-  protected final Log logger = LogFactory.getLog(getClass());
+  private Logger log = LoggerFactory.getLogger("ideas");
 
   @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Illegal Arguments given")
   @ExceptionHandler({IllegalArgumentException.class, DataAccessException.class})
   public void illegalArgumentError(Exception e) {
-    logger.error("Throwing Illegal Argument or Data Access error");
-    logger.error("", e);
+    log.error("Throwing Illegal Argument or Data Access error");
+    log.error("", e);
   }
 
   @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Invlaid JWT")
   @ExceptionHandler(SoffitAuthException.class)
   public void soffitError(SoffitAuthException e) {
-    logger.error("Invalid JWT");
-    logger.error("", e);
+    log.error("Invalid JWT");
+    log.error("", e);
   }
 
   @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Unspecified exception")
   @ExceptionHandler(Exception.class)
   public void generalError(Exception e) {
-    logger.error("Unspecified exception");
-    logger.error("", e);
+    log.error("Unspecified exception");
+    log.error("", e);
   }
 
   @GetMapping("list")
@@ -77,7 +77,7 @@ public class IdeaController {
       HttpServletRequest request)
       throws SoffitAuthException {
 
-    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
+    String pidm = authorizer.getClaimFromJWT(request, "pidm").asString();
 
     if (ideaDB.isAdmin(pidm)) {
       return ideaDB.getUnapprovedIdeas(ideaLimit);
@@ -91,7 +91,7 @@ public class IdeaController {
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "5") int ideaLimit,
       HttpServletRequest request)
       throws SoffitAuthException {
-    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
+    String pidm = authorizer.getClaimFromJWT(request, "pidm").asString();
 
     if (ideaDB.isAdmin(pidm)) {
       return ideaDB.getWaitingIdeas(ideaLimit);
@@ -105,7 +105,7 @@ public class IdeaController {
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "10") int ideaLimit,
       HttpServletRequest request)
       throws SoffitAuthException {
-    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
+    String pidm = authorizer.getClaimFromJWT(request, "pidm").asString();
 
     if (ideaDB.isAdmin(pidm)) {
       return ideaDB.getArchiveIdeas(ideaLimit);
@@ -119,7 +119,7 @@ public class IdeaController {
       @RequestParam(value = "ideaLimit", required = false, defaultValue = "10") int ideaLimit,
       HttpServletRequest request)
       throws SoffitAuthException {
-    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
+    String pidm = authorizer.getClaimFromJWT(request, "pidm").asString();
 
     if (ideaDB.isAdmin(pidm)) {
       return ideaDB.getFlaggedIdeas(ideaLimit);
@@ -132,7 +132,7 @@ public class IdeaController {
   public ResponseEntity<Void> editIdea(
       @Valid Idea idea, BindingResult bindingResult, HttpServletRequest request)
       throws SoffitAuthException {
-    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
+    String pidm = authorizer.getClaimFromJWT(request, "pidm").asString();
 
     if (bindingResult.hasErrors()) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -143,18 +143,18 @@ public class IdeaController {
         ideaDB.editIdea(idea);
         return new ResponseEntity<>(HttpStatus.OK);
       } catch (DataAccessException e) {
-        logger.error(e);
+        log.error("{}", e);
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
       }
     } else {
-      logger.error("NOT AN ADMIN: \t" + pidm);
+      log.error("NOT AN ADMIN: \t" + pidm);
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
   }
 
   @GetMapping("is-admin")
   public boolean adminCheck(HttpServletRequest request) throws SoffitAuthException {
-    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
+    String pidm = authorizer.getClaimFromJWT(request, "pidm").asString();
     return ideaDB.isAdmin(pidm);
   }
 
@@ -166,7 +166,7 @@ public class IdeaController {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
+    String pidm = authorizer.getClaimFromJWT(request, "pidm").asString();
     idea.setCreatedAt(new Timestamp(System.currentTimeMillis()));
     idea.setCreatedBy(pidm);
 
@@ -174,7 +174,7 @@ public class IdeaController {
       ideaDB.addIdea(idea);
       return new ResponseEntity<>(HttpStatus.CREATED);
     } catch (DataAccessException e) {
-      logger.error(e);
+      log.error("{}", e);
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -183,7 +183,7 @@ public class IdeaController {
   @ResponseStatus(HttpStatus.OK)
   public void flagIdea(@ModelAttribute Idea idea, HttpServletRequest request)
       throws SoffitAuthException {
-    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
+    String pidm = authorizer.getClaimFromJWT(request, "pidm").asString();
     if (ideaDB.isAdmin(pidm)) {
       // Flag the idea recording who flagged it and when
       idea.setFlaggedBy(pidm);
@@ -198,7 +198,7 @@ public class IdeaController {
   @ResponseStatus(HttpStatus.OK)
   public void archiveIdea(@ModelAttribute Idea idea, HttpServletRequest request)
       throws SoffitAuthException {
-    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
+    String pidm = authorizer.getClaimFromJWT(request, "pidm").asString();
     if (ideaDB.isAdmin(pidm)) {
       ideaDB.archiveIdea(idea);
       return;
@@ -216,7 +216,7 @@ public class IdeaController {
       vote.setVoteValue(-1);
     }
 
-    String pidm = authorizer.getClaimFromJWE(request, "pidm").asString();
+    String pidm = authorizer.getClaimFromJWT(request, "pidm").asString();
     vote.setVotedAt(new Timestamp(System.currentTimeMillis()));
     vote.setUserPidm(pidm);
 

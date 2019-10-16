@@ -109,7 +109,7 @@ export const submitIdea = async (title, desc, cat, token) => {
       .join('&')
 
     response = await fetch(
-      '/ideas/v1/idea',
+      '/v1/idea',
       {
         method: 'POST',
         body: formBody,
@@ -142,7 +142,7 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
       .join('&')
 
     response = await fetch(
-      '/ideas/v1/vote',
+      '/v1/vote',
       {
         body: formBody,
         credentials: 'include',
@@ -162,7 +162,7 @@ export const submitVote = async (ideaID, createdAt, voteValue, token) => {
 export const getList = async obj => {
   try {
     let response = await fetch(
-      '/ideas/v1/list',
+      '/v1/list',
       {
         credentials: 'include',
         headers: { Authorization: 'Bearer ' + obj.token }
@@ -178,7 +178,7 @@ export const getList = async obj => {
 export const getAdminData = async obj => {
   let status, list
   try {
-    const url = '/ideas/v1/' + obj.url
+    const url = '/v1/' + obj.url
     let response = await fetch(url, {
       credentials: 'include',
       headers: { Authorization: 'Bearer ' + obj.token }
@@ -217,7 +217,7 @@ export const editIdea = async obj => {
       url = 'archiveIdea'
     }
 
-    response = await fetch('/ideas/v1/' + url, {
+    response = await fetch('/v1/' + url, {
       body: formBody,
       credentials: 'include',
       headers: {
@@ -234,7 +234,7 @@ export const editIdea = async obj => {
 
 export const adminCheck = async token => {
   try {
-    const url = '/ideas/v1/is-admin'
+    const url = '/v1/is-admin'
     let response = await fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -250,7 +250,7 @@ export const adminCheck = async token => {
 
 export const isListEmpty = async () => {
   try {
-    const url = '/ideas/v1/is-empty'
+    const url = '/v1/is-empty'
     let response = await fetch(url, {
       method: 'GET',
       credentials: 'include'
